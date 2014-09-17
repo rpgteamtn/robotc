@@ -1,4 +1,4 @@
-#include "functionLibraryCommon.c";
+#include "Common.c";
 
 bool RPGtime = NULL;
 bool RPGstart = NULL;
