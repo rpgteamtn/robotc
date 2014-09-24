@@ -1,4 +1,3 @@
-
 #include "functions\AutoProgramQuestions.c"
 
 void back(int time)
@@ -18,7 +17,7 @@ void forward(int time)
 task main()
 {
 
-	bool RPGtime = Question1();//asks the questions and sets RPGtime as the answer either true or false
+	int timeDelay = QuestionInt("amount of delay", "left = minus 1 second","right = add 1 second");//asks the questions and sets RPGtime as the answer either true or false
 	bool RPGstart = Question2();
 	bool RPGkickStand = Question3();
 	bool RPGmove30 = Question4();
@@ -31,7 +30,7 @@ task main()
 
 	waitForStartorButton();
 
-	if(RPGtime == true)
+	if(timeDelay == true)
 	{
 		wait1Msec(10000)
 	}

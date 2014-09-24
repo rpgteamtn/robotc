@@ -1,7 +1,7 @@
-#define nxtorange 3
-#define nxtleft 2
-#define nxtright 1
-#define nxtgrey 0
+#define nxtOrange 3
+#define nxtLeft 2
+#define nxtRight 1
+#define nxtGrey 0
 
 void waitForStartOrButton()
 {
@@ -31,4 +31,3 @@ void waitForStartOrButton()
 /* -----------------------------------------------
 This is ___ function
 ------------------------------------------------*/
-

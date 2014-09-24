@@ -10,6 +10,7 @@ bool RPGscore60 = NULL;
 bool RPGscore90 = NULL;
 bool RPGscoreCenter = NULL;
 bool RPGkickStand = NULL;
+
 /**********************************************************
 1st Question
 ***********************************************************/
@@ -301,4 +302,55 @@ bool Question10()
 		}
 	}
 	return true;
+}
+
+int questionInt(string questionText, string leftText, string rightText)
+{
+	int value = 0;
+
+	string foo = value;
+	nxtDisplayCenteredTextLine(1, questionText);//Displays second question
+	nxtDisplayCenteredTextLine(4, leftText); // Displays instructions
+	nxtDisplayCenteredTextLine(3, rightText); // Displays instructions
+
+	while(nNxtButtonPressed =! nxtOrange)
+	{
+		switch(nNxtButtonPressed)
+		{
+		case nxtRight:
+			value++;
+			break;
+
+		case nxtLeft:
+			value--;
+			break;
+		}
+		foo = value;
+		nxtDisplayCenteredTextLine(6, foo);
+	}
+	return value;
+}
+
+bool questionBool(string questionText, string leftText, string rightText)
+{
+	string value = "false"
+	nxtDisplayCenteredTextLine(1, questionText);//Displays second question
+	nxtDisplayCenteredTextLine(4, leftText); // Displays instructions
+	nxtDisplayCenteredTextLine(3, rightText); // Displays instructions
+
+	while(nNxtButtonPressed =! nxtOrange)
+	{
+		switch(nNxtButtonPressed)
+		{
+		case nxtRight:
+			value = "true";
+			break;
+
+		case nxtLeft:
+			value = "false";
+			break;
+		}
+		nxtDisplayCenteredTextLine(6, value);
+	}
+	return value == "true";//evaluating the value of value
 }
