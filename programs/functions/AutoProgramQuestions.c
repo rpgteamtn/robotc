@@ -3,7 +3,7 @@
 #ifndef "main"
 void main()
 {
-	1=1
+1=1
 }
 #enddef*/
 
@@ -12,47 +12,53 @@ void main()
 #define nxtRight '1'
 #define nxtGrey '0'
 
-int questionInt(const string questionText, const string leftText, const string rightText)
+int questionInt(const string squestionText, const string sleftText, const string srightText)
 {
-	int value = 0;
+	int ivalue = 0;
 
-	string foo;
-	displayCenteredTextLine(1, questionText);//Displays second question
-	displayCenteredTextLine(3, leftText); // Displays instructions
-	displayCenteredTextLine(4, rightText); // Displays instructions
+	string sfoo;
+	displayCenteredTextLine(1, squestionText);//Displays second question
+	displayCenteredTextLine(3, sleftText); // Displays instructions
+	displayCenteredTextLine(4, srightText); // Displays instructions
 
 	while(nNxtButtonPressed != nxtOrange)
 	{
 		if(nNxtButtonPressed == nxtRight)
 		{
-			value++;
+			ivalue++;
 		}
 		if(nNxtButtonPressed == nxtLeft)
 		{
-			value--;
+			ivalue--;
 		}
-		sprintf(foo, "%i", value);
-		displayCenteredTextLine(6, foo);
+		sprintf(foo, "%i", ivalue);
+		displayCenteredTextLine(6, sfoo);
 	}
-	return value;
+	return ivalue;
 }
-
-bool questionBool(const string questionText, const string leftText, const string rightText)
+// Function: question bool
+// Parameters:
+//	squestionText: string for the question you are asking
+//	sleftText: what answer the left button would give
+//	srightText: what answer the right button would give
+// this funcation lets you ask a question that returns as bool
+//Outputs: boolan answer
+bool questionBool(const string squestionText, const string sleftText, const string srightText)
 {
-	bool value = false;
-	displayCenteredTextLine(1, questionText);//Displays second question
-	displayCenteredTextLine(4, leftText); // Displays instructions
-	displayCenteredTextLine(3, rightText); // Displays instructions
+	bool bvalue = false;
+	displayCenteredTextLine(1, squestionText);//Displays second question
+	displayCenteredTextLine(4, sleftText); // Displays instructions
+	displayCenteredTextLine(3, srightText); // Displays instructions
 
 	while(nNxtButtonPressed != nxtOrange)
 	{
 		if(nNxtButtonPressed == nxtRight)
 		{
-			value = true;
+			bvalue = true;
 		}
 		if(nNxtButtonPressed == nxtLeft)
 		{
-			value = false;
+			bvalue = false;
 		}
 	displayCenteredTextLine(6, value?"true":"false");
 	}
