@@ -7,33 +7,59 @@ void main()
 }
 #enddef*/
 
-#define nxtOrange '3'
-#define nxtLeft '2'
-#define nxtRight '1'
-#define nxtGrey '0'
+#define noButton -1
+#define nxtOrange 3
+#define nxtLeft 2
+#define nxtRight 1
+#define nxtGrey 0
 
-int questionInt(const string squestionText, const string sleftText, const string srightText)
+int questionInt(const string squestionText, const string sleftText, const string srightText, const int min, const int max)
 {
 	int ivalue = 0;
-
-	string sfoo;
+	string svalue;
 	displayCenteredTextLine(1, squestionText);//Displays second question
 	displayCenteredTextLine(3, sleftText); // Displays instructions
 	displayCenteredTextLine(4, srightText); // Displays instructions
 
-	while(nNxtButtonPressed != nxtOrange)
+	repeatUntil(nNxtButtonPressed == nxtOrange)
 	{
+
+		while(nNxtButtonPressed == noButton)
+		{	}
+
 		if(nNxtButtonPressed == nxtRight)
 		{
-			ivalue++;
+			if(ivalue < max)
+			{
+				ivalue++;
+			}
+			else
+			{
+				displayCenteredTextLine(7, "error: reached max num");
+			}
 		}
 		if(nNxtButtonPressed == nxtLeft)
 		{
-			ivalue--;
+			if(ivalue > min)
+			{
+				ivalue--;
+			}
+			else
+			{
+				displayCenteredTextLine(7, "error: reached min num")
+			}
 		}
-		sprintf(sfoo, "%i", ivalue);
-		displayCenteredTextLine(6, sfoo);
+		if(nxtOrange == nNxtButtonPressed)
+		{
+			break;
+		}
+		sprintf(svalue,"value = %i", ivalue,);
+
+		displayCenteredTextLine(6, svalue)
+		repeatUntil(nNxtButtonPressed == noButton)
+		{}
 	}
+	eraseDisplay();
 	return ivalue;
 }
 // Function: question bool
@@ -50,17 +76,29 @@ bool questionBool(const string squestionText, const string sleftText, const stri
 	displayCenteredTextLine(4, sleftText); // Displays instructions
 	displayCenteredTextLine(3, srightText); // Displays instructions
 
-	while(nNxtButtonPressed != nxtOrange)
+	repeatUntil(nNxtButtonPressed == nxtOrange)
 	{
+
+		while(nNxtButtonPressed == noButton)
+		{	}
+
 		if(nNxtButtonPressed == nxtRight)
 		{
 			bvalue = true;
+
 		}
 		if(nNxtButtonPressed == nxtLeft)
 		{
 			bvalue = false;
 		}
-	displayCenteredTextLine(6, bvalue?"true":"false");
+		if(nxtOrange == nNxtButtonPressed)
+		{
+			break;
+		}
+		displayCenteredTextLine(6, bvalue?"true":"false");
+		repeatUntil(nNxtButtonPressed == noButton)
+		{}
 	}
-	return bvalue; //evaluating the value of value
+	eraseDisplay();
+	return bvalue;
 }
