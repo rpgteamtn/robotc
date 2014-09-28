@@ -31,7 +31,7 @@ int questionInt(const string squestionText, const string sleftText, const string
 		{
 			ivalue--;
 		}
-		sprintf(foo, "%i", ivalue);
+		sprintf(sfoo, "%i", ivalue);
 		displayCenteredTextLine(6, sfoo);
 	}
 	return ivalue;
@@ -60,7 +60,7 @@ bool questionBool(const string squestionText, const string sleftText, const stri
 		{
 			bvalue = false;
 		}
-	displayCenteredTextLine(6, value?"true":"false");
+	displayCenteredTextLine(6, bvalue?"true":"false");
 	}
-	return value;//evaluating the value of value
+	return bvalue; //evaluating the value of value
 }
