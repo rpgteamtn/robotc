@@ -1,0 +1,8 @@
+#pragma config(Hubs,  S1, HTMotor,  none,     none,     none)
+#pragma config(Hubs,  S2, HTMotor,  none,     none,     none)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
+#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
+#pragma config(Motor,  mtr_S1_C1_1,     LeftFront,     tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     LeftBack,      tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S2_C1_1,     RightFront,    tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S2_C1_2,     LeftBack,      tmotorTetrix, openLoop)
