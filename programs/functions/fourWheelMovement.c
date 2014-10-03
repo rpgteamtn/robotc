@@ -6,12 +6,12 @@
 //	lfPower: int for the power of the left front wheel
 //  lbPower: int for the power of the left back wheel
 //Outputs: none
-void setMotors(const int leftFront, const int leftBack, const int rightFront, const int rightBack)
+void setMotors(const int lfPower, const int lbPower, const int rfPower, const int rbPower)
 {
-	motor[leftFront] = leftFront;
-	motor[leftBack] = leftBack;
-	motor[rightFront] = rightFront;
-	motor[rightBack] = rightBack;
+	motor[leftFront] = lfPower;
+	motor[leftBack] = lbPower;
+	motor[rightFront] = rfPower;
+	motor[rightBack] = rbPower;
 }
 
 // Function: stopMotors
