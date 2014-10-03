@@ -6,7 +6,9 @@
 //	lfPower: int for the power of the left front wheel
 //  lbPower: int for the power of the left back wheel
 //Outputs: none
+
 void setMotors(const int lfPower, const int lbPower, const int rfPower, const int rbPower)
+
 {
 	motor[leftFront] = lfPower;
 	motor[leftBack] = lbPower;
@@ -33,7 +35,8 @@ void setMotion(const int y1, const int y2)
 	setMotors(rescale(y1), rescale(y1), rescale(y2), rescale(y2));
 }
 
-void strafe(int x1, int x2)
+void strafe(const int forward)
 {
-	stopMotors();
+	int reverse = -1 * forward;
+	setMotors(reverse, forward, forward, reverse);
 }

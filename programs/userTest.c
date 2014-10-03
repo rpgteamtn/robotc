@@ -13,12 +13,28 @@
 and go to the side.  */
 #include "JoystickDriver.c"
 #include "functions\fourWheelMovement.c"
+#define deadZone 5
 
 task main()
 {
 	while(true)
 	{
 		getJoystickSettings(joystick);  // Update Buttons and Joysticks
-		setMotion(joystick.joy1_y1, joystick.joy1_y2);
+		if((abs(joystick.joy1_y1) >= deadZone) && (abs(joystick.joy1_y2) >= deadZone))
+		{
+			setMotion(joystick.joy1_y1, joystick.joy1_y2);
+		}
+		else if(joy1Btn(6))
+		{
+			strafe(50);
+		}
+		else if(joy1Btn(2))
+		{
+			strafe(-50);
+		}
+		else
+		{
+			stopMotors();
+		}
 	}
 }
