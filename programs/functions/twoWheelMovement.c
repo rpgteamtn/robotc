@@ -12,6 +12,26 @@ void setMotors(int left, int right)
 	motor[rightFront] = right;
 }
 
+void leftTurn(const int power)
+{
+	setMotors(-power, power);
+}
+
+void rightTurn(const int power)
+{
+	setMotors(power, -power);
+}
+
+void forward(const int power)
+{
+	setMotors(power, power);
+}
+
+void backward(const int power)
+{
+	setMotors(-power, -power);
+}
+
 // Function: stopMotors
 // this function stops all the motors
 // Parameters: none

@@ -16,6 +16,25 @@ void setMotors(const int lfPower, const int lbPower, const int rfPower, const in
 	motor[rightBack] = rbPower;
 }
 
+void leftTurn(const int power);
+{
+	setMotors(-power, -power, power, power);
+}
+
+void rightTurn(const int power);
+{
+	setMotors(power, power, -power, -power);
+}
+
+void forward(const int power);
+{
+	setMotors(power, power, power, power);
+}
+
+void backward(const int power)
+{
+	setMotors(-power, -power, -power, -power);
+}
 // Function: stopMotors
 // this function stops all the motors
 // Parameters: none
