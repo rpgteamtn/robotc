@@ -6,12 +6,7 @@ void main()
 1=1
 }
 #enddef*/
-
-#define noButton -1
-#define nxtOrange 3
-#define nxtLeft 2
-#define nxtRight 1
-#define nxtGrey 0
+#include "common.c"
 
 int questionInt(const string squestionText, const string sleftText, const string srightText, const int min, const int max)
 {
