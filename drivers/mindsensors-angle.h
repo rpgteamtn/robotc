@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: mindsensors-angle.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __MSANG_H__
 #define __MSANG_H__
 /** \file mindsensors-angle.h
@@ -20,7 +24,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 20 February 2011
@@ -46,20 +50,21 @@
 // Various commands
 #define MSANG_CMD_RST_ANG      0x72      /*!< Resets 0 position to current shaft angle */
 
-short MSANGreadAngle(tSensors link);
-short MSANGreadRPM(tSensors link);
-short MSANGreadRaw(tSensors link);
+int MSANGreadAngle(tSensors link);
+int MSANGreadRPM(tSensors link);
+int MSANGreadRaw(tSensors link);
 bool MSANGresetAngle(tSensors link);
 
 tByteArray MSANG_I2CRequest;             /*!< Array to hold I2C command data */
 tByteArray MSANG_I2CReply;               /*!< Array to hold I2C reply data */
+
 
 /**
  * Return the current angle
  * @param link the MSANG port number
  * @return current angle or -1 if an error occurred.
  */
-short MSANGreadAngle(tSensors link) {
+int MSANGreadAngle(tSensors link) {
   memset(MSANG_I2CRequest, 0, sizeof(tByteArray));
 
   MSANG_I2CRequest[0] = 2;                         // Message size
@@ -72,12 +77,13 @@ short MSANGreadAngle(tSensors link) {
   return MSANG_I2CReply[0] + (MSANG_I2CReply[1] << 8) + (MSANG_I2CReply[2] << 16) + (MSANG_I2CReply[3] << 24);
 }
 
+
 /**
  * Return the current raw sensor value
  * @param link the MSANG port number
  * @return current raw value or -1 if an error occurred.
  */
-short MSANGreadRaw(tSensors link) {
+int MSANGreadRaw(tSensors link) {
   memset(MSANG_I2CRequest, 0, sizeof(tByteArray));
 
   MSANG_I2CRequest[0] = 2;                         // Message size
@@ -90,12 +96,13 @@ short MSANGreadRaw(tSensors link) {
   return MSANG_I2CReply[0] + (MSANG_I2CReply[1] << 8) + (MSANG_I2CReply[2] << 16) + (MSANG_I2CReply[3] << 24);
 }
 
+
 /**
  * Return the rpm that the shaft is currently rotating at
  * @param link the MSANG port number
  * @return the current rpm of the shaft or -1 if an error occurred.
  */
-short MSANGreadRPM(tSensors link) {
+int MSANGreadRPM(tSensors link) {
   memset(MSANG_I2CRequest, 0, sizeof(tByteArray));
 
   MSANG_I2CRequest[0] = 2;                           // Message size
@@ -107,6 +114,7 @@ short MSANGreadRPM(tSensors link) {
 
   return (MSANG_I2CReply[1] <<  8) + MSANG_I2CReply[0];
 }
+
 
 /**
  * Reset the 0 position to the current shaft angle.
@@ -124,7 +132,11 @@ bool MSANGresetAngle(tSensors link) {
   return writeI2C(link, MSANG_I2CRequest);
 }
 
+
 #endif // __MSANG_H__
 
+ /*
+ * $Id: mindsensors-angle.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

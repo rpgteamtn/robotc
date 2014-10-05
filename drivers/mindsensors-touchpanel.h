@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: mindsensors-touchpanel.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __MSTP_H__
 #define __MSTP_H__
 
@@ -14,14 +18,14 @@
  * mindsensors-touchpanel.h provides an API for the Mindsensors TouchPanel.
  *
  * Changelog:
- *  - 0.1 Initial  release.
+ *  - 0.1 Initial	release.
  *
  * Credits:
  * - Big thanks to Mindsensors for providing me with the hardware necessary to write and test this.
  *
  * License: You may use this code as you wish, provided you give credit where it's due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat
  * \date 30 November 2011
@@ -32,7 +36,7 @@
 #pragma systemFile
 
 #ifndef __COMMON_H__
-  #include "common.h"
+	#include "common.h"
 #endif
 
 #define MSTP_I2C_ADDR     0x04
@@ -83,10 +87,12 @@ tByteArray MSTP_I2CReply;      /*!< Array to hold I2C reply data */
 #define isButtonR3Touched(X) (X >> BUTTON_R3) & 0x01  /*!< Check if the R3 button is pressed */
 #define isButtonR4Touched(X) (X >> BUTTON_R4) & 0x01  /*!< Check if the R4 button is pressed */
 
-bool MSTPgetTouch(tSensors link, short &x, short &y, ubyte &buttons, ubyte addr = MSTP_I2C_ADDR);
+
+bool MSTPgetTouch(tSensors link, int &x, int &y, ubyte &buttons, ubyte addr = MSTP_I2C_ADDR);
 bool MSTPsendCmd(tSensors link, ubyte cmd, ubyte addr = MSTP_I2C_ADDR);
 
 #define MSTPresetCalibration(x) MSTPsendCmd(tSensors link, ubyte cmd, ubyte addr = MSTP_I2C_ADDR);
+
 
 /**
  * Fetch all the information from the TouchPanel, including
@@ -99,7 +105,7 @@ bool MSTPsendCmd(tSensors link, ubyte cmd, ubyte addr = MSTP_I2C_ADDR);
  * @param addr the I2C address of the TouchPanel, is optional, defaults to 0x04
  * @return true if no error has occured, false if it did
  */
-bool MSTPgetTouch(tSensors link, short &x, short &y, ubyte &buttons, ubyte addr) {
+bool MSTPgetTouch(tSensors link, int &x, int &y, ubyte &buttons, ubyte addr) {
   memset(MSTP_I2CRequest, 0, sizeof(tByteArray));
 
   MSTP_I2CRequest[0] = 2;                      // Message size
@@ -115,6 +121,7 @@ bool MSTPgetTouch(tSensors link, short &x, short &y, ubyte &buttons, ubyte addr)
 
   return true;
 }
+
 
 /**
  * Send a command to the TouchPanel
@@ -135,8 +142,9 @@ bool MSTPsendCmd(tSensors link, ubyte cmd, ubyte addr)
   return writeI2C(link, MSTP_I2CRequest);
 }
 
+
 /*
-short MSTPgetGesture(tSensors link)
+int MSTPgetGesture(tSensors link)
 {
   memset(MSTP_I2CRequest, 0, sizeof(tByteArray));
 
@@ -153,9 +161,13 @@ short MSTPgetGesture(tSensors link)
   if (MSTP_I2CReply[0] == 0)
     return 0;
 
+
 }
 */
 #endif // __MSTP_H__
 
+/*
+ * $Id: mindsensors-touchpanel.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

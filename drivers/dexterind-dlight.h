@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: dexterind-dlight.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __DLIGHT_H__
 #define __DLIGHT_H__
 /** \file dexterind-dlight.h
@@ -20,8 +24,9 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
+ 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 09 March 2013
  * \version 0.1
@@ -30,12 +35,13 @@
 
 #pragma systemFile
 
+
 #ifndef __COMMON_H__
 #include "common.h"
 #endif
 
 #ifndef __COMMON_LIGHT_H__
-#include "common-light.h"
+#include "drivers/common-light.h"
 #endif
 
 #define DLIGHT_I2C_ADDR_ALL 0xE0        /*!< dLight I2C device address for all connected devices */
@@ -58,6 +64,7 @@
 #define DLIGHT_CMD_DISABLE_BLINK  0xAA  /*!< dLight cmmand to disable blinking */
 #define DLIGHT_CMD_ENABLE_BLINK   0xFF  /*!< dLight cmmand to enable blinking  */
 
+
 tByteArray DLIGHT_I2CRequest;             /*!< Array to hold I2C command data */
 
 /**
@@ -76,7 +83,7 @@ bool DLIGHTinit(tSensors link, ubyte addr){
   if (!writeI2C(link, DLIGHT_I2CRequest))
     return false;
 
-  sleep(50);
+  wait1Msec(50);
 
   DLIGHT_I2CRequest[0] = 3;
   DLIGHT_I2CRequest[1] = addr;
@@ -85,6 +92,7 @@ bool DLIGHTinit(tSensors link, ubyte addr){
 
   return writeI2C(link, DLIGHT_I2CRequest);
 }
+
 
 /**
  * Set the dLight to the specified RGB colour
@@ -106,6 +114,7 @@ bool DLIGHTsetColor(tSensors link, ubyte addr, ubyte r, ubyte g, ubyte b){
   return writeI2C(link, DLIGHT_I2CRequest);
 }
 
+
 /**
  * Set the dLight to the specified RGB colour
  * @param link the dLight port number
@@ -121,6 +130,7 @@ bool DLIGHTsetExternal(tSensors link, ubyte addr, ubyte external){
 
   return writeI2C(link, DLIGHT_I2CRequest);
 }
+
 
 /**
  * Set the dLight to the specified RGB colour
@@ -143,6 +153,7 @@ bool DLIGHTsetBlinking(tSensors link, ubyte addr, float BlinkRate, long DutyCycl
   return writeI2C(link, DLIGHT_I2CRequest);
 }
 
+
 /**
  * Start blinking the LED
  * @param link the dLight port number
@@ -157,6 +168,7 @@ bool DLIGHTstartBlinking(tSensors link, ubyte addr){
   return writeI2C(link, DLIGHT_I2CRequest);
 }
 
+
 /**
  * Stop blinking the LED
  * @param link the dLight port number
@@ -170,6 +182,7 @@ bool DLIGHTstopBlinking(tSensors link, ubyte addr){
   DLIGHT_I2CRequest[3] = DLIGHT_CMD_DISABLE_BLINK;
   return writeI2C(link, DLIGHT_I2CRequest);
 }
+
 
 /**
  * Turn off the LED
@@ -188,5 +201,8 @@ bool DLIGHTdisable(tSensors link, ubyte addr)
 
 #endif // __DLIGHT_H__
 
+/*
+ * $Id: dexterind-dlight.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

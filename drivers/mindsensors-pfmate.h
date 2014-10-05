@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: mindsensors-pfmate.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 /** \file mindsensors-pfmate.h
  * \brief Mindsensors PFMate Sensor driver
  *
@@ -18,7 +22,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 22 July 2009
@@ -56,11 +60,14 @@
 #define MSPFM_BRAKE       0x03
 #define MSPFM_NOOP        0x0F
 
+
 bool MSPFMcontrolMotorA(tSensors link, byte chan, byte motor_op, byte motor_speed, ubyte address = MSPFM_I2C_ADDR);
 bool MSPFMcontrolMotorB(tSensors link, byte chan, byte motor_op, byte motor_speed, ubyte address = MSPFM_I2C_ADDR);
 bool MSPFMcontrolMotorAB(tSensors link, byte chan, byte motorA_op, byte motorA_speed, byte motorB_op, byte motorB_speed, ubyte address = MSPFM_I2C_ADDR);
 
+
 tByteArray MSPFM_I2CRequest;       /*!< Array to hold I2C command data */
+
 
 /**
  * Control motor A with the PFMate.
@@ -76,6 +83,7 @@ bool MSPFMcontrolMotorA(tSensors link, byte chan, byte motor_op, byte motor_spee
   return MSPFMcontrolMotorAB(link, chan, motor_op, motor_speed, MSPFM_NOOP, 0);
 }
 
+
 /**
  * Control motor B with the PFMate.
  *
@@ -89,6 +97,7 @@ bool MSPFMcontrolMotorA(tSensors link, byte chan, byte motor_op, byte motor_spee
 bool MSPFMcontrolMotorB(tSensors link, byte chan, byte motor_op, byte motor_speed, ubyte address) {
   return MSPFMcontrolMotorAB(link, chan, MSPFM_NOOP, 0, motor_op, motor_speed);
 }
+
 
 /**
  * Control motors A and B with the PFMate.
@@ -132,7 +141,11 @@ bool MSPFMcontrolMotorAB(tSensors link, byte chan, byte motorA_op, byte motorA_s
   return writeI2C(link, MSPFM_I2CRequest);
 }
 
+
 #endif // __MSPFM_H__
 
+/*
+ * $Id: mindsensors-pfmate.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

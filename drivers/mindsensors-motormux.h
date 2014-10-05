@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: mindsensors-motormux.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __MSMMUX_H__
 #define __MSMMUX_H__
 /** \file mindsensors-motormux.h
@@ -20,7 +24,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 05 April 2010
@@ -106,11 +110,6 @@
 //#define MSMMUX_ROT_ROTATIONS    0x02
 #define MSMMUX_ROT_SECONDS      0x03  /*!< Use time target to control motor (ie run for X seconds) */
 
-typedef struct
-{
-  tI2CData I2CData;
-  tMMUXData MMUXData;
-} tMSMMUX, *tMSMMUXPtr;
 
 tByteArray MSMMUX_I2CRequest;    /*!< Array to hold I2C command data */
 tByteArray MSMMUX_I2CReply;      /*!< Array to hold I2C reply data */
@@ -120,13 +119,13 @@ void MSMMUXinit();
 bool MSMMUXreadStatus(tMUXmotor muxmotor, ubyte &motorStatus);
 bool MSMMUXsendCommand(tSensors link, ubyte channel, long setpoint, byte speed, ubyte seconds, ubyte commandA, ubyte address = MSMMUX_I2C_ADDR);
 bool MSMMUXsendCommand(tSensors link, ubyte command, ubyte address = MSMMUX_I2C_ADDR);
-bool MSMMUXsetPID(tSensors link, unsigned short kpTacho, unsigned short kiTacho, unsigned short kdTacho, unsigned short kpSpeed, unsigned short kiSpeed, unsigned short kdSpeed, ubyte passCount, ubyte tolerance, ubyte address = MSMMUX_I2C_ADDR);
-// bool MSMMUXsetPID(tSensors link, short kpTacho, short kiTacho, short kdTacho, short kpSpeed, short kiSpeed, short kdSpeed, ubyte passCount, ubyte tolerance, ubyte address = MSMMUX_I2C_ADDR);
+bool MSMMUXsetPID(tSensors link, unsigned int kpTacho, unsigned int kiTacho, unsigned int kdTacho, unsigned int kpSpeed, unsigned int kiSpeed, unsigned int kdSpeed, ubyte passCount, ubyte tolerance, ubyte address = MSMMUX_I2C_ADDR);
+// bool MSMMUXsetPID(tSensors link, int kpTacho, int kiTacho, int kdTacho, int kpSpeed, int kiSpeed, int kdSpeed, ubyte passCount, ubyte tolerance, ubyte address = MSMMUX_I2C_ADDR);
 bool MSMMotor(tMUXmotor muxmotor, byte power, ubyte address = MSMMUX_I2C_ADDR);
 bool MSMotorStop(tMUXmotor muxmotor, ubyte address = MSMMUX_I2C_ADDR);
 bool MSMotorStop(tMUXmotor muxmotor, bool brake, ubyte address = MSMMUX_I2C_ADDR);
 void MSMMotorSetRotationTarget(tMUXmotor muxmotor, long target);
-void MSMMotorSetTimeTarget(tMUXmotor muxmotor, short target);
+void MSMMotorSetTimeTarget(tMUXmotor muxmotor, int target);
 void MSMMotorSetEncoderTarget(tMUXmotor muxmotor, long target);
 void MSMMotorSetEncoderTarget(tMUXmotor muxmotor, long target, bool relative);
 long MSMMotorEncoder(tMUXmotor muxmotor, ubyte address = MSMMUX_I2C_ADDR);
@@ -139,11 +138,12 @@ void MSMMotorSetFloat(tMUXmotor muxmotor);
 void MSMMotorSetSpeedCtrl(tMUXmotor muxmotor, bool constspeed);
 void MSMMotorSetRamping(tMUXmotor muxmotor, bool ramping);
 
+
 /*
  * Initialise the mmuxData array needed for keeping track of motor settings
  */
 void MSMMUXinit(){
-  for (short i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; i++) {
     memset(mmuxData[i].runToTarget[0], false, 4);
     memset(mmuxData[i].brake[0], true, 4);
     memset(mmuxData[i].pidcontrol[0], true, 4);
@@ -153,6 +153,7 @@ void MSMMUXinit(){
     mmuxData[i].initialised = true;
   }
 }
+
 
 /**
  * Read the status byte of the specified motor
@@ -181,6 +182,7 @@ bool MSMMUXreadStatus(tMUXmotor muxmotor, ubyte &motorStatus, ubyte address) {
 
   return true;
 }
+
 
 /**
  * Send a command to the MMUX.
@@ -218,6 +220,7 @@ bool MSMMUXsendCommand(tSensors link, ubyte channel, long setpoint, byte speed, 
 
 }
 
+
 /**
  * Send a command to the MMUX.
  *
@@ -237,6 +240,7 @@ bool MSMMUXsendCommand(tSensors link, ubyte command, ubyte address) {
 
   return writeI2C(link, MSMMUX_I2CRequest);
 }
+
 
 /**
  * Configure the internal PID controller.  Tweaking these values will change the
@@ -259,7 +263,7 @@ bool MSMMUXsendCommand(tSensors link, ubyte command, ubyte address) {
  * @param address I2C address of the sensor (optional)
  * @return true if no error occured, false if it did
  */
-bool MSMMUXsetPID(tSensors link, unsigned short kpTacho, unsigned short kiTacho, unsigned short kdTacho, unsigned short kpSpeed, unsigned short kiSpeed, unsigned short kdSpeed, ubyte passCount, ubyte tolerance, ubyte address) {
+bool MSMMUXsetPID(tSensors link, unsigned int kpTacho, unsigned int kiTacho, unsigned int kdTacho, unsigned int kpSpeed, unsigned int kiSpeed, unsigned int kdSpeed, ubyte passCount, ubyte tolerance, ubyte address) {
   memset(MSMMUX_I2CRequest, 0, sizeof(tByteArray));
 
   MSMMUX_I2CRequest[0] = 16;               // Message size
@@ -282,6 +286,7 @@ bool MSMMUXsetPID(tSensors link, unsigned short kpTacho, unsigned short kiTacho,
 
   return writeI2C(link, MSMMUX_I2CRequest);
 }
+
 
 /**
  * Run motor with specified speed.
@@ -309,6 +314,7 @@ bool MSMMotor(tMUXmotor muxmotor, byte power, ubyte address) {
   return true;
 }
 
+
 /**
  * Stop the motor. Uses the brake method specified with MSMMotorSetBrake or MSMMotorSetFloat.
  * The default is to use braking.
@@ -324,6 +330,7 @@ bool MSMotorStop(tMUXmotor muxmotor, ubyte address) {
     return MSMotorStop(muxmotor, mmuxData[SPORT(muxmotor)].brake[MPORT(muxmotor)], address);
   return true;
 }
+
 
 /**
  * Stop the motor. This function overrides the preconfigured braking method.
@@ -341,6 +348,7 @@ bool MSMotorStop(tMUXmotor muxmotor, bool brake, ubyte address) {
   return true;
 }
 
+
 /**
  * Set rotation target for specified mux motor.
  *
@@ -353,6 +361,7 @@ void MSMMotorSetRotationTarget(tMUXmotor muxmotor, long target) {
   mmuxData[SPORT(muxmotor)].targetUnit[MPORT(muxmotor)] = MSMMUX_ROT_DEGREES;
 }
 
+
 /**
  * Set time target for specified mux motor. Seconds can be specified in
  * increments of 1 second with an upper limit of 255 seconds.
@@ -361,10 +370,11 @@ void MSMMotorSetRotationTarget(tMUXmotor muxmotor, long target) {
  * @param target the time target value in seconds [1-255]
  * @return true if no error occured, false if it did
  */
-void MSMMotorSetTimeTarget(tMUXmotor muxmotor, short target) {
+void MSMMotorSetTimeTarget(tMUXmotor muxmotor, int target) {
   mmuxData[SPORT(muxmotor)].target[MPORT(muxmotor)] = target;
   mmuxData[SPORT(muxmotor)].targetUnit[MPORT(muxmotor)] = MSMMUX_ROT_SECONDS;
 }
+
 
 /**
  * Set encoder target for specified mux motor.  Target is relative to current position.
@@ -379,6 +389,7 @@ void MSMMotorSetEncoderTarget(tMUXmotor muxmotor, long target) {
   mmuxData[SPORT(muxmotor)].relTarget[MPORT(muxmotor)] = true;
 }
 
+
 /**
  * Set encoder target for specified mux motor.
  *
@@ -392,6 +403,7 @@ void MSMMotorSetEncoderTarget(tMUXmotor muxmotor, long target, bool relative) {
   mmuxData[SPORT(muxmotor)].targetUnit[MPORT(muxmotor)] = MSMMUX_ROT_DEGREES;
   mmuxData[SPORT(muxmotor)].relTarget[MPORT(muxmotor)] = relative;
 }
+
 
 /**
  * Fetch the current encoder value for specified motor channel
@@ -421,6 +433,7 @@ long MSMMotorEncoder(tMUXmotor muxmotor, ubyte address) {
   return result;
 }
 
+
 /**
  * Reset target encoder for specified motor channel, use only at
  * the start of your program.  If you are using the standard NXT wheels
@@ -440,6 +453,7 @@ bool MSMMotorEncoderReset(tMUXmotor muxmotor, ubyte address) {
   return false;
 }
 
+
 /**
  * Reset all encoders on the specified motor-MUX. Use only at
  * the start of your program.  If you are using the standard NXT wheels
@@ -453,6 +467,7 @@ bool MSMMotorEncoderReset(tMUXmotor muxmotor, ubyte address) {
 bool MSMMotorEncoderResetAll(tSensors link, ubyte address) {
   return MSMMUXsendCommand(link, MSMMUX_CMD_RESET_ALL, address);
 }
+
 
 /**
  * Check if the specified motor is running or not.
@@ -494,6 +509,7 @@ bool MSMMotorBusy(tMUXmotor muxmotor, ubyte address) {
   return false;
 }
 
+
 /**
  * Check if the specified motor is running or not.
  *
@@ -509,6 +525,7 @@ bool MSMMotorStalled(tMUXmotor muxmotor, ubyte address) {
   return ((status & MSMMUX_STAT_STALLED) != 0);
 }
 
+
 /**
  * Set the stopping method for the specified motor to brake.
  *
@@ -517,6 +534,7 @@ bool MSMMotorStalled(tMUXmotor muxmotor, ubyte address) {
 void MSMMotorSetBrake(tMUXmotor muxmotor) {
   mmuxData[SPORT(muxmotor)].brake[MPORT(muxmotor)] = true;
 }
+
 
 /**
  * Set the stopping method for the specified motor to float.
@@ -527,6 +545,7 @@ void MSMMotorSetFloat(tMUXmotor muxmotor) {
   mmuxData[SPORT(muxmotor)].brake[MPORT(muxmotor)] = false;
 }
 
+
 /**
  * Set the motor speed control for the specified motor.
  *
@@ -536,6 +555,7 @@ void MSMMotorSetFloat(tMUXmotor muxmotor) {
 void MSMMotorSetSpeedCtrl(tMUXmotor muxmotor, bool constspeed) {
   mmuxData[SPORT(muxmotor)].pidcontrol[MPORT(muxmotor)] = true;
 }
+
 
 /**
  * Set the ramping control for the specified motor.
@@ -549,5 +569,8 @@ void MSMMotorSetRamping(tMUXmotor muxmotor, bool ramping) {
 
 #endif //  __MSMMUX_H__
 
+/*
+ * $Id: mindsensors-motormux.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

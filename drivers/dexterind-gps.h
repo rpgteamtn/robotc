@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: dexterind-gps.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __DGPS_H__
 #define __DGPS_H__
 /** \file dexterind-gps.h
@@ -23,7 +27,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 20 February 2011
@@ -50,21 +54,22 @@
 #define DGPS_CMD_SLAT   0x0B      /*!< Set latitude of destination */
 #define DGPS_CMD_SLONG  0x0C      /*!< Set longitude of destination */
 
+
 bool DGPSreadStatus(tSensors link);
 long DGPSreadUTC(tSensors link);
 long DGPSreadLatitude(tSensors link);
 long DGPSreadLongitude(tSensors link);
-short DGPSreadVelocity(tSensors link);
-short DGPSreadHeading(tSensors link);
-short DGPSreadRelHeading(tSensors link);
-short DGPSreadTravHeading(tSensors link);
+int DGPSreadVelocity(tSensors link);
+int DGPSreadHeading(tSensors link);
+int DGPSreadRelHeading(tSensors link);
+int DGPSreadTravHeading(tSensors link);
 bool DGPSsetDestination(tSensors link, long latitude, long longitude);
-short DGPSreadDistToDestination(tSensors link);
+int DGPSreadDistToDestination(tSensors link);
 
 tByteArray DGPS_I2CRequest;    /*!< Array to hold I2C command data */
 tByteArray DGPS_I2CReply;      /*!< Array to hold I2C reply data */
 
-long _DGPSreadRegister(tSensors link, unsigned byte command, short replysize) {
+long _DGPSreadRegister(tSensors link, unsigned byte command, int replysize) {
   memset(DGPS_I2CRequest, 0, sizeof(tByteArray));
 
   DGPS_I2CRequest[0] = 2;               // Message size
@@ -87,9 +92,11 @@ long _DGPSreadRegister(tSensors link, unsigned byte command, short replysize) {
   return 0;
 }
 
+
 bool DGPSreadStatus(tSensors link) {
   return (_DGPSreadRegister(link, DGPS_CMD_STATUS, 1) == 1) ? true : false;
 }
+
 
 /**
  * Read the time returned by the GPS in UTC.
@@ -100,6 +107,7 @@ long DGPSreadUTC(tSensors link) {
   return _DGPSreadRegister(link, DGPS_CMD_UTC, 4);
 }
 
+
 /**
  * Read the current location's latitude in decimal degree format
  * @param link the DGPS port number
@@ -108,6 +116,7 @@ long DGPSreadUTC(tSensors link) {
 long DGPSreadLatitude(tSensors link) {
   return _DGPSreadRegister(link, DGPS_CMD_LAT, 4);
 }
+
 
 /**
  * Read the current location's longitude in decimal degree format
@@ -118,32 +127,36 @@ long DGPSreadLongitude(tSensors link) {
   return _DGPSreadRegister(link, DGPS_CMD_LONG, 4);
 }
 
+
 /**
  * Read the current velocity in cm/s
  * @param link the DGPS port number
  * @return current velocity in cm/s
  */
-short DGPSreadVelocity(tSensors link) {
+int DGPSreadVelocity(tSensors link) {
   return _DGPSreadRegister(link, DGPS_CMD_VELO, 3);
 }
+
 
 /**
  * Read the current heading in degrees
  * @param link the DGPS port number
  * @return current heading in degrees
  */
-short DGPSreadHeading(tSensors link) {
+int DGPSreadHeading(tSensors link) {
   return _DGPSreadRegister(link, DGPS_CMD_HEAD, 2);
 }
+
 
 /**
  * Angle to destination
  * @param link the DGPS port number
  * @return heading in degrees
  */
-short DGPSreadRelHeading(tSensors link) {
+int DGPSreadRelHeading(tSensors link) {
   return _DGPSreadRegister(link, DGPS_CMD_ANGD, 2);
 }
+
 
 /**
  * Angle travelled since last request, resets the request coordinates on the
@@ -151,9 +164,10 @@ short DGPSreadRelHeading(tSensors link) {
  * @param link the DGPS port number
  * @return heading in degrees
  */
-short DGPSreadTravHeading(tSensors link) {
+int DGPSreadTravHeading(tSensors link) {
   return _DGPSreadRegister(link, DGPS_CMD_ANGR, 2);
 }
+
 
 /**
  * Set the destination coordinates
@@ -176,7 +190,7 @@ bool DGPSsetDestination(tSensors link, long latitude, long longitude) {
   if (!writeI2C(link, DGPS_I2CRequest))
     return false;
 
-  sleep(100);
+  wait1Msec(100);
 
   // Then send longitude
   DGPS_I2CRequest[0] = 2;               // Message size
@@ -190,16 +204,20 @@ bool DGPSsetDestination(tSensors link, long latitude, long longitude) {
   return writeI2C(link, DGPS_I2CRequest);
 }
 
+
 /**
  * Distance to destination in meters
  * @param link the DGPS port number
  * @return distance to destination in meters
  */
-short DGPSreadDistToDestination(tSensors link) {
+int DGPSreadDistToDestination(tSensors link) {
   return _DGPSreadRegister(link, DGPS_CMD_DIST, 4);
 }
 
 #endif // __DGPS_H__
 
+/*
+ * $Id: dexterind-gps.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

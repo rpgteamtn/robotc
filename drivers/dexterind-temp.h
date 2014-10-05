@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: dexterind-temp.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __DTMP_DRIVER_H__
 #define __DTMP_DRIVER_H__
 
@@ -21,7 +25,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (mightor@gmail.com)
  * \date 13 June 2010
@@ -43,6 +47,7 @@ bool DTMPreadTemp(tSensors link, float &temp);
 bool DTMPreadTempK(tSensors link, float &temp);
 bool DTMPreadTempF(tSensors link, float &temp);
 
+
 /**
  * Read the temperature in degrees Celcius.
  * @param link the DI Temp Sensor port number
@@ -58,6 +63,7 @@ bool DTMPreadTemp(tSensors link, float &temp) {
   return true;
 }
 
+
 /**
  * Read the temperature in Kelvin.
  * @param link the DI Temp Sensor port number
@@ -67,7 +73,7 @@ bool DTMPreadTemp(tSensors link, float &temp) {
 bool DTMPreadTempK(tSensors link, float &temp) {
   // local vars
   byte i = 0;
-  short val = 0;
+  int val = 0;
   float RtRt25 = 0.0;
   float lnRtRt25 = 0.0;
 
@@ -94,6 +100,7 @@ bool DTMPreadTempK(tSensors link, float &temp) {
   return true;
 }
 
+
 /**
  * Read the temperature in Fahrenheit.
  * @param link the DI Temp Sensor port number
@@ -112,5 +119,8 @@ bool DTMPreadTempF(tSensors link, float &temp) {
 
 #endif // __DTMP_DRIVER_H__
 
+/*
+ * $Id: dexterind-temp.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */
