@@ -6,9 +6,10 @@
 #define nxtGrey 0
 #define noButton -1
 
-/* -----------------------------------------------
-This is start function.
-------------------------------------------------*/
+// Function: waitForStartOrButton
+// Parameters:none
+// this funcation lets you press a button or wait for the start of the program
+//Outputs: none
 void waitForStartOrButton()
 {
 	while (true)
@@ -34,9 +35,10 @@ void waitForStartOrButton()
 	}
 	return;
 }
-/* -----------------------------------------------
-This is ___ function
-------------------------------------------------*/
+// Function: waitTillNoButton
+// Parameters:none
+// this funcation lets you wait till no button is pressed
+//Outputs: none
 
 void waitTillNoButton()
 {
@@ -46,7 +48,10 @@ void waitTillNoButton()
 	}
 }
 
-//.....................
+// Function: resetEndcoders
+// Parameters:none
+// this funcation resets the encoders
+//Outputs: none
 
 void resetEncoders()
 {
