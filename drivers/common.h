@@ -225,14 +225,14 @@ bool writeI2C(tSensors link, tByteArray &request) {
 	    hogCPU();
 	    PlaySound(soundException);
 	    eraseDisplay();
-	    nxtDisplayCenteredTextLine(0, "3rd Party Driver");
-	    nxtDisplayCenteredTextLine(1, "ERROR");
-	    nxtDisplayCenteredTextLine(2, "You have not");
-	    nxtDisplayCenteredTextLine(3, "setup the sensor");
-	    nxtDisplayCenteredTextLine(4, "port correctly. ");
-	    nxtDisplayCenteredTextLine(5, "Please refer to");
-	    nxtDisplayCenteredTextLine(6, "one of the");
-	    nxtDisplayCenteredTextLine(7, "examples.");
+	    displayCenteredTextLine(0, "3rd Party Driver");
+	    displayCenteredTextLine(1, "ERROR");
+	    displayCenteredTextLine(2, "You have not");
+	    displayCenteredTextLine(3, "setup the sensor");
+	    displayCenteredTextLine(4, "port correctly. ");
+	    displayCenteredTextLine(5, "Please refer to");
+	    displayCenteredTextLine(6, "one of the");
+	    displayCenteredTextLine(7, "examples.");
 	    wait1Msec(10000);
 	    StopAllTasks();
   }
