@@ -9,13 +9,20 @@
 #include "drivers\hitechnic-irseeker-v2.h"
 //#include "programs\functions\Common.c"
 
-#define pointA = 3
-#define pointB = 8
-#define pointC = 15
-#define pointD = 20
-#define distanceA1 = 36.0
-#define distanceA2 = 24.0
-//put the ret here later!
+#define pointA 3
+#define pointB 8
+#define pointC 15
+#define pointD 20
+#define distanceA1 36.0
+#define distanceA2 24.0
+#define distanceB1 23.0
+#define distanceB2 10.0
+#define distanceC1 15.0
+#define distanceC2 13.0
+#define distanceD1 3.0
+#define distanceD2 18.0
+#define distanceD3 13.0
+
 void resetEncoders()
 {
 	nMotorEncoder[rightFront] = 0;
@@ -26,10 +33,10 @@ void resetEncoders()
 
 int getIRReading(tSensors ir_seeker)
 {
-  wait1Msec(1);                              // Wait 1 ms
-  int ir = HTIRS2readACDir(ir_seeker);      // IR receiver -> ir variable
-  wait1Msec(1);                              // Down time before recheck
-  return ir;
+	wait1Msec(1);                              // Wait 1 ms
+	int ir = HTIRS2readACDir(ir_seeker);      // IR receiver -> ir variable
+	wait1Msec(1);                              // Down time before recheck
+	return ir;
 }
 
 float calculateDist(const int encoderValue)
@@ -66,14 +73,27 @@ void strategyA()
 
 void strategyB()
 {
+	leftTurnDegrees(90);
+	travelDistance(distanceB1);
+	rightTurnDegrees(90);
+	travelDistance(distanceB2);
 }
 
 void strategyC()
 {
+	leftTurnDegrees(90);
+	travelDistance(distanceC1);
+	rightTurnDegrees(45);
+	travelDistance(distanceC2);
 }
 
 void strategyD()
 {
+	travelDistance(distanceD1);
+	leftTurnDegrees(90);
+	travelDistance(distanceD2);
+	leftTurnDegrees(90);
+	travelDistance(distanceD3);
 }
 
 task main()
@@ -86,14 +106,14 @@ task main()
 	}
 	else if(travelled <= pointB)
 	{
-		strategyb();
+		strategyB();
 	}
 
 	else if(travelled <= pointC)
 	{
 		strategyC();
 	}
-	else if(travelled <= pointD)
+	else(travelled <= pointD)
 	{
 		strategyD();
 	}
