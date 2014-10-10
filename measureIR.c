@@ -74,9 +74,15 @@ void goIR(tSensors ir_seeker)
 	}
 }
 
+float calculateDist(const int encoderValue)
+{
+	float dist = encoderValue / 360.0 * CIRCUMFERENCE;
+	return dist;
+}
+
 task main()
 {
-	waitForStartOrButton();
+	//waitForStartOrButton();
 	eraseDisplay();
 	resetEncoders();
 	goIR(IR);
@@ -84,6 +90,8 @@ task main()
 	encoderValue = (nMotorEncoder[leftFront] + nMotorEncoder[rightFront]) / 2;
 	sprintf(text, "encoder = %i", encoderValue);
 	displayCenteredTextLine(1, text);
+	sprintf(text, "distance = %f", calculateDist(encoderValue));
+	displayCenteredTextLine(2, text);
 	wait1Msec(10000);
-	eraseDisplay();
+//	eraseDisplay();
 }

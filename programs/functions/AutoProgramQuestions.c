@@ -41,7 +41,7 @@ int questionInt(const string squestionText, const string sleftText, const string
 			}
 			else
 			{
-				displayCenteredTextLine(7, "error: reached min num")
+				displayCenteredTextLine(7, "error: reached min num");
 			}
 		}
 		if(nxtOrange == nNxtButtonPressed)
@@ -50,11 +50,11 @@ int questionInt(const string squestionText, const string sleftText, const string
 		}
 		sprintf(svalue,"value = %i", ivalue,);
 
-		displayCenteredTextLine(6, svalue)
+		displayCenteredTextLine(6, svalue);
 		repeatUntil(nNxtButtonPressed == noButton)
 		{}
 	}
-	eraseDisplay();
+
 	return ivalue;
 }
 // Function: question bool
@@ -94,6 +94,5 @@ bool questionBool(const string squestionText, const string sleftText, const stri
 		repeatUntil(nNxtButtonPressed == noButton)
 		{}
 	}
-	eraseDisplay();
 	return bvalue;
 }

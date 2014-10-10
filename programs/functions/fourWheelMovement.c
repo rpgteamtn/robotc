@@ -7,6 +7,9 @@
 //  lbPower: int for the power of the left back wheel
 //Outputs: none
 
+#define DIAMETER 0
+#define CIRCUMFERENCE 3.14 * DIAMETER
+
 void setMotors(const int lfPower, const int lbPower, const int rfPower, const int rbPower)
 
 {
@@ -20,13 +23,18 @@ void leftTurn(const int power);
 {
 	setMotors(-power, -power, power, power);
 }
+void leftTurnDegrees(const int degrees) {
+}
 
-void rightTurn(const int power);
+void rightTurnDegrees(const int degrees) {
+}
+
+void rightTurn(const int power)
 {
 	setMotors(power, power, -power, -power);
 }
 
-void forward(const int power);
+void forward(const int power)
 {
 	setMotors(power, power, power, power);
 }
