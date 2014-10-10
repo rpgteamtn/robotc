@@ -4,11 +4,12 @@
 #pragma config(Sensor, S3,     IR,             sensorHiTechnicIRSeeker1200)
 
 #include "autoIR.c"
+#include "measureIR"
 
-#define encodeA
-#define encodeB
-#define encodeC
-#define encodeD
+int encodeA
+int encodeB
+int encodeC
+int encodeD
 
 #define distA1
 #define distA2
@@ -32,8 +33,55 @@ void turnLeft()
 	motor[rightFront] = 0;
 }
 
+
 task main()
 {
-	if (
 
+	if(nMotorEncoder[leftFront, rightFront] =encodeA)
+	{
+		getIRReading();
+		if(reading = yeah)
+		{
+			go forward distA1;
+			turnRight();
+			go forward distA2;
+			turnLeft();
+			go forward distA3;
+		}
+	}
+
+	else if(nMotorEncoder[leftFront, rightFront] =encodeB)
+	{
+		getIRReading;
+		if(reading = yeah)
+		{
+			turnLeft();
+			go forward distB1;
+			turn 45 right;
+			go forward distA2;
+			turnLeft();
+			go forward distA3;
+		}
+	}
+
+	else if(nMotorEncoder <= C)
+	{
+		getIRReading();
+		if(reading = yeah)
+		{
+			turnLeft();
+			go forward distC1;
+			turnLeft();
+			go forward distC2;
+		}
+	}
+
+	else if(nMotorEncoder = encodeD)
+	{
+		turnLeft();
+		go forward distD1;
+		turnRight();
+		go forward distD2;
+	}
+}
 }
