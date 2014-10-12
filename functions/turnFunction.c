@@ -2,8 +2,9 @@
 #pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl)
 #pragma config(Motor,  motorC,          rightFront,    tmotorNXT, PIDControl)
 
-typedef enum {dRight, dLeft } eDirection;
+#include "twoWheelMovement.c"
 
+typedef enum {dRight, dLeft } eDirection;
 float fWheelCir;
 float fTurnCir;
 int iWheelDeg;
@@ -36,7 +37,7 @@ void turn(int deg, eDirection direct)
 	{
 		while((nMotorEncoder[leftFront] < iWheelDeg)||(abs(nMotorEncoder[rightFront]) < iWheelDeg))
 		{
-			//turnRight
+			rightTurn(70);
 		}
 	}
 
@@ -44,7 +45,7 @@ void turn(int deg, eDirection direct)
 	{
 		while((nMotorEncoder[rightFront] < iWheelDeg)||(abs(nMotorEncoder[leftFront]) < iWheelDeg))
 		{
-			//turnRight
+			leftTurn(70);
 		}
 	}
 }
