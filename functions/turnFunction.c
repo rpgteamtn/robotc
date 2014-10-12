@@ -5,12 +5,12 @@
 #include "twoWheelMovement.c"
 
 typedef enum {dRight, dLeft } eDirection;
+
 float fWheelCir;
 float fTurnCir;
 int iWheelDeg;
-int iTurnDeg;
-float fRobotWid;
-float fWheelDiam;
+float fRobotWid = 4.625;
+float fWheelDiam = 2.25;
 
 float mmTOinch(float mm)
 {
@@ -19,6 +19,7 @@ float mmTOinch(float mm)
 
 void turn(int deg, eDirection direct)
 {
+	resetEncoders();
 	//fWheelCir = mmTOinch(fWheelCir);
 
 	if(fWheelCir == NULL)
@@ -31,21 +32,33 @@ void turn(int deg, eDirection direct)
 		fTurnCir = fRobotWid*PI;
 	}
 
-	iWheelDeg = fWheelCir / fTurnCir * iTurnDeg;
+	iWheelDeg = fWheelCir / fTurnCir * deg;
 
 	if(direct == dRight)
 	{
-		while((nMotorEncoder[leftFront] < iWheelDeg)||(abs(nMotorEncoder[rightFront]) < iWheelDeg))
+		while((abs(nMotorEncoder[leftFront]) < iWheelDeg*8)||(abs(nMotorEncoder[rightFront]) < iWheelDeg*8))
 		{
 			rightTurn(70);
 		}
 	}
 
-	else if(direct == dLeft)
+	 if(direct == dLeft)
 	{
-		while((nMotorEncoder[rightFront] < iWheelDeg)||(abs(nMotorEncoder[leftFront]) < iWheelDeg))
+		while((abs(nMotorEncoder[rightFront]) < iWheelDeg*8)||(abs(nMotorEncoder[leftFront]) < iWheelDeg*8))
 		{
 			leftTurn(70);
 		}
 	}
+}
+
+task main()
+{
+ turn(90, dRight);
+ stopMotors();
+ wait1Msec(1000);
+ turn(180, dLeft);
+ stopMotors();
+ wait1Msec(1000);
+ turn(90, dRight);
+ stopMotors();
 }

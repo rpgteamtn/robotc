@@ -30,7 +30,7 @@ void resetEncoders()
 }
 
 
-void rightTurnDegrees(int degrees, int power)
+/*void rightTurnDegrees(int degrees, int power)
 {
 	int goal = (SensorValue[gyro] + degrees);  // 'goal' is be the current gyro reading + our turning degrees
 	while(SensorValue[gyro] < goal)   // while the gyro sensor reading is less than our goal:
@@ -49,7 +49,7 @@ void leftTurnDegrees(int degrees, int power)
 	}
 	setMotors(0, 0);
 }
-
+*/
 void leftTurn(const int power)
 {
 	setMotors(-power, power);
