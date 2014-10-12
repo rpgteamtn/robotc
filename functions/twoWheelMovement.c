@@ -16,12 +16,24 @@ void setMotors(int left, int right)
 	motor[rightFront] = right;
 }
 
-void leftTurnDegrees(const int degrees)
+void rightTurnDegrees(int degrees, int power)
 {
+	int goal = (SensorValue[gyro] + degrees);  // 'goal' is be the current gyro reading + our turning degrees
+	while(SensorValue[gyro] < goal)   // while the gyro sensor reading is less than our goal:
+	{
+		setMotors(power, -power);
+	}
+	setMotors(0, 0);
 }
 
-void rightTurnDegrees(const int degrees)
+void leftTurnDegrees(int degrees, int power)
 {
+	int goal = (SensorValue[gyro] - degrees);  // 'goal' is be the current gyro reading + our turning degreess
+	while(SensorValue[gyro] > goal)   // while the gyro sensor reading is less than our goal:
+	{
+		setMotors(-power, power);
+	}
+	setMotors(0, 0);
 }
 
 void leftTurn(const int power)
