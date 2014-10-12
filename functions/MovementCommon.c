@@ -22,4 +22,7 @@ void travelDistance(const float distance)
 		encoderValue = getSingleEncoderValue();
 	}
 	stopMotors();
+	string text;
+	sprintf(text, "distance = %f", calculateDist(encoderValue));
+	displayCenteredTextLine(3, text);
 }

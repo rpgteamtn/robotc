@@ -57,10 +57,10 @@ void resetEncoders()
 
 int getIRReading(tSensors ir_seeker)
 {
-  wait1Msec(1);                              // Wait 1 ms
-  int ir = HTIRS2readACDir(ir_seeker);      // IR receiver -> ir variable
-  wait1Msec(1);                              // Down time before recheck
-  return ir;
+	wait1Msec(1);                              // Wait 1 ms
+	int ir = HTIRS2readACDir(ir_seeker);      // IR receiver -> ir variable
+	wait1Msec(1);                              // Down time before recheck
+	return ir;
 }
 
 void goIR(tSensors ir_seeker)
@@ -93,5 +93,5 @@ task main()
 	sprintf(text, "distance = %f", calculateDist(encoderValue));
 	displayCenteredTextLine(2, text);
 	wait1Msec(10000);
-//	eraseDisplay();
+	//	eraseDisplay();
 }
