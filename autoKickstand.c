@@ -29,7 +29,7 @@
 	//nMotorEncoder[rightBack] = 0;
 	nMotorEncoder[leftFront] = 0;
 	//nMotorEncoder[leftBack] = 0;
-}
+}*/
 
 int getIRReading(tSensors ir_seeker)
 {
@@ -37,7 +37,7 @@ int getIRReading(tSensors ir_seeker)
 	int ir = HTIRS2readACDir(ir_seeker);      // IR receiver -> ir variable
 	wait1Msec(1);                              // Down time before recheck
 	return ir;
-}*/
+}
 
 float calculateDist(const int encoderValue)
 {
@@ -65,34 +65,34 @@ void travelDistance(const float distance)
 
 void strategyA()
 {
-	leftTurnDegrees(90);
+	leftTurnDegrees(90, 50);
 	travelDistance(distanceA1);
-	leftTurnDegrees(90);
+	leftTurnDegrees(90, 50);
 	travelDistance(distanceA2);
 }
 
 void strategyB()
 {
-	leftTurnDegrees(90);
+	leftTurnDegrees(90, 50);
 	travelDistance(distanceB1);
-	rightTurnDegrees(90);
+	rightTurnDegrees(90, 50);
 	travelDistance(distanceB2);
 }
 
 void strategyC()
 {
-	leftTurnDegrees(90);
+	leftTurnDegrees(90, 50);
 	travelDistance(distanceC1);
-	rightTurnDegrees(45);
+	rightTurnDegrees(45, 50);
 	travelDistance(distanceC2);
 }
 
 void strategyD()
 {
 	travelDistance(distanceD1);
-	leftTurnDegrees(90);
+	leftTurnDegrees(90, 50);
 	travelDistance(distanceD2);
-	leftTurnDegrees(90);
+	leftTurnDegrees(90, 50);
 	travelDistance(distanceD3);
 }
 
