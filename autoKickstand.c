@@ -9,6 +9,7 @@
 #include "drivers\hitechnic-sensormux.h"     //Drivers for IR Beacon
 #include "drivers\hitechnic-irseeker-v2.h"
 #include "functions\Common.c"
+#include "functions\MovementCommon.c"
 
 #define pointA 3
 #define pointB 8
@@ -40,12 +41,6 @@ int getIRReading(tSensors ir_seeker)
 	return ir;
 }
 
-float calculateDist(const int encoderValue)
-{
-	float dist = encoderValue / 360.0 * CIRCUMFERENCE;
-	return dist;
-}
-
 float findIR(tSensors ir_seeker)
 {
 	int	ir_value = getIRReading(ir_seeker);
@@ -60,9 +55,6 @@ float findIR(tSensors ir_seeker)
 	return calculateDist(encoderValue);
 }
 
-void travelDistance(const float distance)
-{
-}
 
 void strategyA()
 {

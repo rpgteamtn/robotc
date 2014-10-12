@@ -10,11 +10,18 @@
 #define DIAMETER 2.25
 #define CIRCUMFERENCE 3.14 * DIAMETER
 
+int getSingleEncoderValue()
+{
+	int value = motor[leftFront] + motor[rightFront] / 2;
+	return value;
+}
+
 void setMotors(int left, int right)
 {
 	motor[leftFront] = left;
 	motor[rightFront] = right;
 }
+
 
 void resetEncoders()
 {
