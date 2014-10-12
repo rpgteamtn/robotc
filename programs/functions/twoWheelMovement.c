@@ -16,10 +16,12 @@ void setMotors(int left, int right)
 	motor[rightFront] = right;
 }
 
-void leftTurnDegrees(const int degrees) {
+void leftTurnDegrees(const int degrees)
+{
 }
 
-void rightTurnDegrees(const int degrees) {
+void rightTurnDegrees(const int degrees)
+{
 }
 
 void leftTurn(const int power)
