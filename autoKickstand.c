@@ -1,5 +1,4 @@
-#pragma config(Sensor, S3,     IR,             sensorHiTechnicIRSeeker1200)
-#pragma config(Sensor, S4,     gyro,           sensorI2CHiTechnicGyro)
+#pragma config(Sensor, S3,     IR,             sensorI2CCustom)
 #pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl)
 #pragma config(Motor,  motorC,          rightFront,    tmotorNXT, PIDControl)
@@ -12,6 +11,7 @@
 //#include "drivers\hitechnic-gyro.h"
 #include "functions\Common.c"
 #include "functions\MovementCommon.c"
+#include "functions\turnFunction.c"
 
 #define pointA 3
 #define pointB 8
@@ -26,14 +26,6 @@
 #define distanceD1 3.0
 #define distanceD2 18.0
 #define distanceD3 13.0
-
-/*void resetEncoders()
-{
-nMotorEncoder[rightFront] = 0;
-//nMotorEncoder[rightBack] = 0;
-nMotorEncoder[leftFront] = 0;
-//nMotorEncoder[leftBack] = 0;
-}*/
 
 int getIRReading(tSensors ir_seeker)
 {
@@ -60,39 +52,40 @@ float findIR(tSensors ir_seeker)
 
 void strategyA()
 {
-	leftTurnDegrees(90, 50);
+	turn(90, dLeft);
 	travelDistance(distanceA1);
-	leftTurnDegrees(90, 50);
+	turn(90, dLeft);
 	travelDistance(distanceA2);
 }
 
 void strategyB()
 {
-	leftTurnDegrees(90, 50);
+	turn(90, dLeft);
 	travelDistance(distanceB1);
-	rightTurnDegrees(90, 50);
+	turn(90, dRight);
 	travelDistance(distanceB2);
 }
 
 void strategyC()
 {
-	leftTurnDegrees(90, 50);
+	turn(90, dLeft);
 	travelDistance(distanceC1);
-	rightTurnDegrees(45, 50);
+	turn(45, dRight);
 	travelDistance(distanceC2);
 }
 
 void strategyD()
 {
 	travelDistance(distanceD1);
-	leftTurnDegrees(90, 50);
+	turn(90, dLeft);
 	travelDistance(distanceD2);
-	leftTurnDegrees(90, 50);
+	turn(90, dLeft);
 	travelDistance(distanceD3);
 }
 
 task main()
 {
+//	waitForStartOrButton();
 	string text;
 	eraseDisplay();
 	float travelled = abs(findIR(IR));

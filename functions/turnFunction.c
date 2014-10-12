@@ -1,8 +1,8 @@
-#pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
-#pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl)
-#pragma config(Motor,  motorC,          rightFront,    tmotorNXT, PIDControl)
+//#pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
+//#pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl)
+//#pragma config(Motor,  motorC,          rightFront,    tmotorNXT, PIDControl)
 
-#include "twoWheelMovement.c"
+//#include "twoWheelMovement.c"
 
 typedef enum {dRight, dLeft } eDirection;
 
@@ -50,7 +50,7 @@ void turn(int deg, eDirection direct)
 		}
 	}
 }
-
+/*
 task main()
 {
  turn(90, dRight);
@@ -62,3 +62,4 @@ task main()
  turn(90, dRight);
  stopMotors();
 }
+*/
