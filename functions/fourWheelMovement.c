@@ -19,6 +19,15 @@ void setMotors(const int lfPower, const int lbPower, const int rfPower, const in
 	motor[rightBack] = rbPower;
 }
 
+void resetEncoders()
+{
+	nMotorEncoder[rightFront] = 0;
+	nMotorEncoder[rightBack] = 0;
+	nMotorEncoder[leftFront] = 0;
+	nMotorEncoder[leftBack] = 0;
+}
+
+
 void leftTurn(const int power);
 {
 	setMotors(-power, -power, power, power);

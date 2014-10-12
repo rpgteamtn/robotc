@@ -16,6 +16,13 @@ void setMotors(int left, int right)
 	motor[rightFront] = right;
 }
 
+void resetEncoders()
+{
+	nMotorEncoder[rightFront] = 0;
+	nMotorEncoder[leftFront] = 0;
+}
+
+
 void leftTurnDegrees(const int degrees)
 {
 }

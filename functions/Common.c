@@ -53,10 +53,10 @@ void waitTillNoButton()
 // this funcation resets the encoders
 //Outputs: none
 
-void resetEncoders()
+/*void resetEncoders()
 {
 	nMotorEncoder[rightFront] = 0;
 	//nMotorEncoder[rightBack] = 0;
 	nMotorEncoder[leftFront] = 0;
 	//nMotorEncoder[leftBack] = 0;
-}
+}*/
