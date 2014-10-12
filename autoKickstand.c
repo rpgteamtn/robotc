@@ -7,7 +7,7 @@
 #include "functions\twoWheelMovement.c"
 #include "drivers\hitechnic-sensormux.h"     //Drivers for IR Beacon
 #include "drivers\hitechnic-irseeker-v2.h"
-//#include "programs\functions\Common.c"
+#include "functions\Common.c"
 
 #define pointA 3
 #define pointB 8
@@ -23,7 +23,7 @@
 #define distanceD2 18.0
 #define distanceD3 13.0
 
-void resetEncoders()
+/*void resetEncoders()
 {
 	nMotorEncoder[rightFront] = 0;
 	//nMotorEncoder[rightBack] = 0;
@@ -37,7 +37,7 @@ int getIRReading(tSensors ir_seeker)
 	int ir = HTIRS2readACDir(ir_seeker);      // IR receiver -> ir variable
 	wait1Msec(1);                              // Down time before recheck
 	return ir;
-}
+}*/
 
 float calculateDist(const int encoderValue)
 {
