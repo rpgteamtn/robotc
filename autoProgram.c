@@ -10,7 +10,7 @@
 
 task main()
 {
-	/*setBluetoothOff();
+	setBluetoothOff();
 
 	bool check = false;
 	int timeDelay;
@@ -54,7 +54,7 @@ task main()
 	wait1Msec(5000);
 	forward(50);
 	wait1Msec(500);
-	stopMotors();*/
+	stopMotors();
 	//eraseDisplay();
 	forward(50);
   wait1Msec(500);
