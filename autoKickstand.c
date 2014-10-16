@@ -8,7 +8,7 @@
 #include "functions\twoWheelMovement.c"
 #include "drivers\hitechnic-sensormux.h"     //Drivers for IR Beacon
 #include "drivers\hitechnic-irseeker-v2.h"
-//#include "drivers\hitechnic-gyro.h"
+#include "3rdPartyDrivers\hitechnic-gyro.h"
 #include "functions\Common.c"
 #include "functions\MovementCommon.c"
 #include "functions\turnFunction.c"
