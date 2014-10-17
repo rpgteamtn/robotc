@@ -59,5 +59,5 @@ task main()
 	forward(50);
   wait1Msec(500);
   stopMotors();
-  rightTurnDegrees(90, 50);
+  turn(90, dRight);
 }

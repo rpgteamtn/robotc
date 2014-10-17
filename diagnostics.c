@@ -12,8 +12,8 @@
 
 
 #include "JoystickDriver.c"  //Include file to "handle" the Bluetooth messages.
-#include "functions\Common.c"
-#include "functions\movement.c"
+#include "functions\common.c"
+#include "functions\twoWheelMovement.c"
 
 void initializeRobot()
 {
@@ -54,7 +54,7 @@ task main()
 		while((nMotorEncoder[rightFront] < 1800)||(nMotorEncoder[rightBack] < 1800)||(nMotorEncoder[leftBack] < 1800)||(nMotorEncoder[leftFront]< 1800))
 		{
 			eraseDisplay();
-			setMotors(70,70,70,70);
+			setMotors(70,70);
 		}
 		stopMotors();
 

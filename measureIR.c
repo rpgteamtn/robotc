@@ -47,14 +47,6 @@ void waitForStartOrButton()
 	return;
 }
 
-void resetEncoders()
-{
-	nMotorEncoder[rightFront] = 0;
-	//nMotorEncoder[rightBack] = 0;
-	nMotorEncoder[leftFront] = 0;
-	//nMotorEncoder[leftBack] = 0;
-}
-
 int getIRReading(tSensors ir_seeker)
 {
 	wait1Msec(1);                              // Wait 1 ms
@@ -82,7 +74,7 @@ float calculateDist(const int encoderValue)
 
 task main()
 {
-	//waitForStartOrButton();
+	waitForStartOrButton();
 	eraseDisplay();
 	resetEncoders();
 	goIR(IR);

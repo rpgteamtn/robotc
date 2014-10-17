@@ -499,7 +499,7 @@ long getUID() {
  */
 bool strtok(char *buffer, char *token, char *seperator)
 {
-  short pos = stringFind(buffer, seperator);
+  short pos = StringFind(buffer, seperator);
   char t_buff[STRTOK_MAX_BUFFER_SIZE];
 
   // Make sure we zero out the buffer and token

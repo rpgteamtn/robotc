@@ -28,7 +28,7 @@ void resetEncoders()
 }
 
 
-void leftTurn(const int power);
+void leftTurn(const int power)
 {
 	setMotors(-power, -power, power, power);
 }
