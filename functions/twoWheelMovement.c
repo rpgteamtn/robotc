@@ -10,10 +10,23 @@
 #define DIAMETER 2.25
 #define CIRCUMFERENCE 3.14 * DIAMETER
 
+typedef enum {dRight, dLeft } eDirection;
+
+float fWheelCir;
+float fTurnCir;
+int iWheelDeg;
+float fRobotWid = 4.625;
+float fWheelDiam = 2.25;
+
 int getSingleEncoderValue()
 {
 	int value = motor[leftFront] + motor[rightFront] / 2;
 	return value;
+}
+
+float mmTOinch(float mm)
+{
+	return mm / 25.4;
 }
 
 void setMotors(int left, int right)
@@ -70,8 +83,6 @@ void backward(const int power)
 	setMotors(-power, -power);
 }
 
-
-
 // Function: stopMotors
 // this function stops all the motors
 // Parameters: none
@@ -94,4 +105,38 @@ void setMotion(const int y1, const int y2)
 void strafe(int x1, int x2)
 {
 	stopMotors();
+}
+
+void turn(int deg, eDirection direct)
+{
+	resetEncoders();
+	//fWheelCir = mmTOinch(fWheelCir);
+
+	if(fWheelCir == NULL)
+	{
+		fWheelCir = fWheelDiam*PI;
+	}
+
+	if(fTurnCir == NULL)
+	{
+		fTurnCir = fRobotWid*PI;
+	}
+
+	iWheelDeg = fWheelCir / fTurnCir * deg;
+
+	if(direct == dRight)
+	{
+		while((abs(nMotorEncoder[leftFront]) < iWheelDeg*8)||(abs(nMotorEncoder[rightFront]) < iWheelDeg*8))
+		{
+			rightTurn(70);
+		}
+	}
+
+	 if(direct == dLeft)
+	{
+		while((abs(nMotorEncoder[rightFront]) < iWheelDeg*8)||(abs(nMotorEncoder[leftFront]) < iWheelDeg*8))
+		{
+			leftTurn(70);
+		}
+	}
 }
