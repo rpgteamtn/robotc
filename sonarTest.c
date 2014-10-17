@@ -7,7 +7,7 @@
 //hi
 
 #include "JoystickDriver.c"  //Include file to "handle" the Bluetooth messages.
-#include "../sensors/gyroSensor.c"
+#include "sensors\gyroSensor.c"
 
 #define RUNVAL 50
 typedef enum {dRight, dLeft } eDirection;

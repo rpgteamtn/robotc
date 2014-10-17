@@ -8,7 +8,7 @@
 #ifndef GYRO_SENSOR
 #define GYRO_SENSOR true
 
-#include "gyro.c"
+#include "..\robotc\3rdPartyDriver\hitechnic-gyro.h"
 
 #define MEASUREMENT_MS 25
 
