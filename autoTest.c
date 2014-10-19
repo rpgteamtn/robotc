@@ -5,7 +5,7 @@
 
 /*This is a set of movement functions.  Goals: make the robot go forward, backwards, turn,
 and go to the side.  */
-#include "functions\twoWheelMovement.c"
+#include "twoWheelMovement.c"
 
 task main()
 {
