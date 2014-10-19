@@ -3,8 +3,7 @@
 #pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  motorC,          rightFront,    tmotorNXT, PIDControl, encoder)
 
-#include "functions\twoWheelMovement.c"
-#include "autoIR.c"
+#include "twoWheelMovement.c"
 
 task main()
 {

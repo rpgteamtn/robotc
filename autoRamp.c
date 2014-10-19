@@ -15,7 +15,7 @@
 
 //all the distance numbers are bogus
 
-#include "functions\fourWheelMovement.c"
+#include "fourWheelMovement.c"
 int tubeDist
 
 void goToTube()
