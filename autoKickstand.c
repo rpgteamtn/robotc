@@ -27,13 +27,7 @@
 #define distanceD2 18.0
 #define distanceD3 13.0
 
-int getIRReading(tSensors ir_seeker)
-{
-	wait1Msec(1);                              // Wait 1 ms
-	int ir = HTIRS2readACDir(ir_seeker);      // IR receiver -> ir variable
-	wait1Msec(1);                              // Down time before recheck
-	return ir;
-}
+
 
 float findIR(tSensors ir_seeker)
 {
@@ -48,7 +42,6 @@ float findIR(tSensors ir_seeker)
 	int encoderValue = (nMotorEncoder[leftFront] + nMotorEncoder[rightFront]) / 2;
 	return calculateDist(encoderValue);
 }
-
 
 void strategyA()
 {
