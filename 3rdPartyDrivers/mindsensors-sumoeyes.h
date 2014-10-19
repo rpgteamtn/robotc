@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: mindsensors-sumoeyes.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __MSSUMO_H__
 #define __MSSUMO_H__
 /** \file mindsensors-sumoeyes.h
@@ -20,7 +24,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 30 October 2011
@@ -38,7 +42,7 @@
 TSensorTypes MSSUMOLRType = sensorLightInactive;
 TSensorTypes MSSUMOSRType = sensorLightActive;
 
-typedef enum tObstacleZone {
+typedef enum {
   MSSUMO_NONE = 0,
   MSSUMO_FRONT = 1,
   MSSUMO_LEFT = 2,
@@ -55,30 +59,31 @@ void MSSUMOsetLongRange(tSensors link);
  * @return raw value of the sensor
  */
 tObstacleZone MSSUMOreadZone(tSensors link) {
-  short sensordata = 0;
+  int sensordata = 0;
 
   sensordata = SensorValue[link];
 
-   if ( sensordata > 30 && sensordata < 36 )
-   {
-    // obstacle is on left
+ 	if ( sensordata > 30 && sensordata < 36 )
+ 	{
+	  // obstacle is on left
     return (MSSUMO_LEFT);
-  }
-  else if ( sensordata > 63 && sensordata < 69 )
-  {
-    // obstacle is on right
+	}
+	else if ( sensordata > 63 && sensordata < 69 )
+	{
+	  // obstacle is on right
     return (MSSUMO_RIGHT);
-  }
-  else if ( sensordata >= 74 && sensordata <= 80 )
-  {
-    // obstacle is in front.
+	}
+	else if ( sensordata >= 74 && sensordata <= 80 )
+	{
+	  // obstacle is in front.
     return (MSSUMO_FRONT);
-  }
-  else
-  {
-    return (MSSUMO_NONE);
-  }
+	}
+	else
+	{
+	  return (MSSUMO_NONE);
+	}
 }
+
 
 /**
  * Set the range of the sensor to short range, this is done
@@ -87,8 +92,9 @@ tObstacleZone MSSUMOreadZone(tSensors link) {
  */
 void MSSUMOsetShortRange(tSensors link) {
   if (SensorType[link] != MSSUMOSRType)
-    SensorType[link] = MSSUMOSRType;
+    SetSensorType(link, MSSUMOSRType);
 }
+
 
 /**
  * Set the range of the sensor to long range, this is done
@@ -97,10 +103,14 @@ void MSSUMOsetShortRange(tSensors link) {
  */
 void MSSUMOsetLongRange(tSensors link) {
   if (SensorType[link] != MSSUMOLRType)
-    SensorType[link] = MSSUMOLRType;
+    SetSensorType(link, MSSUMOLRType);
 }
+
 
 #endif // __MSSUMO_H__
 
+/*
+ * $Id: mindsensors-sumoeyes.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

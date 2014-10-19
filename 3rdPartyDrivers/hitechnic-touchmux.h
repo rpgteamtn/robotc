@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: hitechnic-touchmux.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __HTTMUX_H__
 #define __HTTMUX_H__
 /** \file hitechnic-touchmux.h
@@ -20,7 +24,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 15 March 2009
@@ -30,70 +34,54 @@
 
 #pragma systemFile
 
-#ifndef __COMMON_H__
-#include "common.h"
-#endif
-
-typedef struct
-{
-  tI2CData I2CData;
-  ubyte statusMask;
-  bool status[4];
-} tHTTMUX, *tHTTMUXPtr;
-
-bool initSensor(tHTTMUXPtr httmuxPtr, tSensors port);
-bool readSensor(tHTTMUXPtr httmuxPtr);
-
+int HTTMUXgetActive(tSensors link);
+bool HTTMUXisActive(tSensors link, int touch);
 
 /**
- * Initialise the sensor's data struct and port
- *
- * @param httmuxPtr pointer to the sensor's data struct
- * @param port the sensor port
- * @return true if no error occured, false if it did
+ * Read the value of all of the currently connected touch sensors.  The status is logically OR'd
+ * together. Touch 1 = 1, Touch 2 = 2, Touch 3 = 4, Touch 4 = 8.  If Touch 1 and 3 are active,
+ * the return value will be 1 + 4 == 5.
+ * @param link the HTTMUX port number
+ * @return the value of the switches status
  */
-bool initSensor(tHTTMUXPtr httmuxPtr, tSensors port)
-{
-  memset(httmuxPtr, 0, sizeof(tHTTMUXPtr));
-  httmuxPtr->I2CData.port = port;
-  httmuxPtr->I2CData.type = sensorRawValue;
-
-  // Ensure the sensor is configured correctly
-  if (SensorType[httmuxPtr->I2CData.port] != httmuxPtr->I2CData.type)
-    SensorType[httmuxPtr->I2CData.port] = httmuxPtr->I2CData.type;
-
-  return true;
-}
-
-
-/**
- * Read all the sensor's data
- *
- * @param httmuxPtr pointer to the sensor's data struct
- * @return true if no error occured, false if it did
- */
-bool readSensor(tHTTMUXPtr httmuxPtr)
-{
+int HTTMUXgetActive(tSensors link) {
   long muxvalue = 0;
   long switches = 0;
 
+  // Make sure the sensor is configured as type sensorRawValue
+  if (SensorType[link] != sensorRawValue) {
+    SetSensorType(link, sensorRawValue);
+    wait1Msec(100);
+  }
+
   // Voodoo magic starts here.  This is taken straight from the Touch MUX pamphlet.
   // No small furry animals were hurt during the calculation of this algorithm.
-  muxvalue = 1023 - SensorRaw[httmuxPtr->I2CData.port];
+  muxvalue = 1023 - SensorRaw[link];
   switches = 339 * muxvalue;
   switches /= (1023 - muxvalue);
   switches += 5;
   switches /= 10;
 
-  httmuxPtr->statusMask = switches;
-  for (int i = 0; i < 4; i++)
-  {
-  	httmuxPtr->status[i] = (httmuxPtr->statusMask & (1 << i)) ? true : false;
-  }
-
-  return true;
+  return (int)switches;
 }
+
+/**
+ * Read the value of specific touch sensor.
+ * @param link the HTTMUX port number
+ * @param touch the touch sensor to be checked, numbered 1 to 4.
+ * @return the value of the switches status
+ */
+bool HTTMUXisActive(tSensors link, int touch) {
+  if (HTTMUXgetActive(link) & (1 << (touch - 1)))
+    return true;
+  else
+    return false;
+}
+
 #endif // __HTTMUX_H__
 
+/*
+ * $Id: hitechnic-touchmux.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

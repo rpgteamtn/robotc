@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: mindsensors-nxtcam.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __NXTCAM_H__
 #define __NXTCAM_H__
 /** \file mindsensors-nxtcam.h
@@ -26,7 +30,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where it's due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat
  * \author Gordon Wyeth
@@ -51,12 +55,12 @@
 
 /*! Blob struct, contains all the data for a blob. */
 typedef struct {
-  short x1;       /*!< left */
-  short y1;       /*!< top */
-  short x2;       /*!< right */
-  short y2;       /*!< bottom */
-  short colour;   /*!< Blob colour */
-  short size;     /*!< Blob size */
+  int x1;       /*!< left */
+  int y1;       /*!< top */
+  int x2;       /*!< right */
+  int y2;       /*!< bottom */
+  int colour;   /*!< Blob colour */
+  int size;     /*!< Blob size */
 } blob;
 
 /*! Array of blob as a typedef, this is a work around for RobotC's inability to pass an array to a function */
@@ -68,16 +72,16 @@ tByteArray NXTCAM_I2CReply;      /*!< Array to hold I2C reply data */
 // "public" functions
 bool NXTCAMinit(tSensors link, ubyte address = NXTCAM_I2C_ADDR);
 bool NXTCAMinitTL(tSensors link, ubyte address = NXTCAM_I2C_ADDR);
-short NXTCAMgetBlobs(tSensors link, blob_array &blobs, bool mergeBlobs, ubyte address = NXTCAM_I2C_ADDR);
-short NXTCAMgetBlobs(tSensors link, blob_array &blobs, ubyte address = NXTCAM_I2C_ADDR);
+int NXTCAMgetBlobs(tSensors link, blob_array &blobs, bool mergeBlobs, ubyte address = NXTCAM_I2C_ADDR);
+int NXTCAMgetBlobs(tSensors link, blob_array &blobs, ubyte address = NXTCAM_I2C_ADDR);
 
 // internal functions, used by the above
 bool _camera_cmd(tSensors link, byte cmd, ubyte address);
-short _mergeBlobs(short blob1, short blob2, short nblobs, blob_array &blobs);
-short _merge(short nblobs, blob_array &blobs);
-void _sortBlobs(short nblobs, blob_array &blobs);
-void NXTCAMgetAverageCenter(blob_array &blobs, short nblobs, short colourindex, short &x, short &y);
-void NXTCAMgetCenter(blob_array &blobs, short index, short &x, short &y);
+int _mergeBlobs(int blob1, int blob2, int nblobs, blob_array &blobs);
+int _merge(int nblobs, blob_array &blobs);
+void _sortBlobs(int nblobs, blob_array &blobs);
+void NXTCAMgetAverageCenter(blob_array &blobs, int nblobs, int colourindex, int &x, int &y);
+void NXTCAMgetCenter(blob_array &blobs, int index, int &x, int &y);
 
 /*! boolean to signal if there are still blobs that might qualify for merging */
 bool still_merging = false;
@@ -109,22 +113,23 @@ bool _camera_cmd(tSensors link, byte cmd, ubyte address) {
 bool NXTCAMinit(tSensors link, ubyte address) {
   if (!_camera_cmd(link, 'D', address)) // Stop object tracking
     return false;
-  sleep(500);
+  wait1Msec(500);
 
   if (!_camera_cmd(link, 'A', address)) // Sort by size
     return false;
-  sleep(500);
+  wait1Msec(500);
 
   if (!_camera_cmd(link,'B', address))  // Set object tracking mode
     return false;
-  sleep(500);
+  wait1Msec(500);
 
   if (!_camera_cmd(link,'E', address))  // Start object tracking
     return false;
-  sleep(500);
+  wait1Msec(500);
 
   return true;
 }
+
 
 /**
  * This function initialises camera ready to track lines.
@@ -135,22 +140,23 @@ bool NXTCAMinit(tSensors link, ubyte address) {
 bool NXTCAMinitTL(tSensors link, ubyte address) {
   if (!_camera_cmd(link, 'D', address)) // Stop object tracking
     return false;
-  sleep(500);
+  wait1Msec(500);
 
   if (!_camera_cmd(link, 'X', address)) // Do not sort objects
     return false;
-  sleep(500);
+  wait1Msec(500);
 
   if (!_camera_cmd(link,'L', address))  // Set tracking line mode
     return false;
-  sleep(500);
+  wait1Msec(500);
 
   if (!_camera_cmd(link,'E', address))  // Start tracking
     return false;
 
-  sleep(500);
+  wait1Msec(500);
   return true;
 }
+
 
 /**
  * This function fetches the blob data from the camera and merges the colliding ones.
@@ -160,8 +166,8 @@ bool NXTCAMinitTL(tSensors link, ubyte address) {
  * @param address the I2C address to use, optional, defaults to 0x02
  * @return the number of blobs detected, -1 if an error occurred
  */
-short NXTCAMgetBlobs(tSensors link, blob_array &blobs, bool mergeBlobs, ubyte address) {
-  short _nblobs = NXTCAMgetBlobs(link, blobs, address);
+int NXTCAMgetBlobs(tSensors link, blob_array &blobs, bool mergeBlobs, ubyte address) {
+  int _nblobs = NXTCAMgetBlobs(link, blobs, address);
   if (mergeBlobs == true)
     return _merge(_nblobs, blobs);
   return _nblobs;
@@ -174,8 +180,8 @@ short NXTCAMgetBlobs(tSensors link, blob_array &blobs, bool mergeBlobs, ubyte ad
  * @param address the I2C address to use, optional, defaults to 0x02
  * @return the number of blobs detected, -1 if an error occurred
  */
-short NXTCAMgetBlobs(tSensors link, blob_array &blobs, ubyte address) {
-  short _nblobs = 0;
+int NXTCAMgetBlobs(tSensors link, blob_array &blobs, ubyte address) {
+  int _nblobs = 0;
 
   // clear the array used for the blobs
   memset(blobs, 0, sizeof(blob_array));
@@ -194,7 +200,7 @@ short NXTCAMgetBlobs(tSensors link, blob_array &blobs, ubyte address) {
   }
 
   // Get nblobs of blob data from the camera
-  for (short _i = 0; _i < _nblobs; _i++) {
+  for (int _i = 0; _i < _nblobs; _i++) {
 
     // Request blob data
     NXTCAM_I2CRequest[0] = 2;                         // Message size
@@ -205,11 +211,11 @@ short NXTCAMgetBlobs(tSensors link, blob_array &blobs, ubyte address) {
       return -1;
 
     // Put the I2C data into the blob
-    blobs[_i].colour    = (short)NXTCAM_I2CReply[0];
-    blobs[_i].x1        = (short)NXTCAM_I2CReply[1];
-    blobs[_i].y1        = (short)NXTCAM_I2CReply[2];
-    blobs[_i].x2        = (short)NXTCAM_I2CReply[3];
-    blobs[_i].y2        = (short)NXTCAM_I2CReply[4];
+    blobs[_i].colour    = (int)NXTCAM_I2CReply[0];
+    blobs[_i].x1        = (int)NXTCAM_I2CReply[1];
+    blobs[_i].y1        = (int)NXTCAM_I2CReply[2];
+    blobs[_i].x2        = (int)NXTCAM_I2CReply[3];
+    blobs[_i].y2        = (int)NXTCAM_I2CReply[4];
     blobs[_i].size      = abs(blobs[_i].x2 - blobs[_i].x1) * abs(blobs[_i].y2 - blobs[_i].y1);
   }
   return _nblobs;
@@ -223,12 +229,12 @@ short NXTCAMgetBlobs(tSensors link, blob_array &blobs, ubyte address) {
  * @param blobs the array of blobs
  * @return the number of blobs detected
  */
-short _merge(short nblobs, blob_array &blobs) {
+int _merge(int nblobs, blob_array &blobs) {
   still_merging = true;
   while (still_merging == true) {
     still_merging = false;
-    for(short i = 0; i < nblobs; i++) {
-      for(short j = i+1; j < nblobs; j++) {
+    for(int i = 0; i < nblobs; i++) {
+      for(int j = i+1; j < nblobs; j++) {
         nblobs = _mergeBlobs(i,j, nblobs, blobs);
       }
     }
@@ -247,11 +253,11 @@ short _merge(short nblobs, blob_array &blobs) {
  * @param blobs the array of blobs
  * @return the number of blobs detected
  */
-short _mergeBlobs(short blob1, short blob2, short nblobs, blob_array &blobs) {
-  short _blob1_center;
-  short _blob2_center;
-  short _blob1_proj;
-  short _blob2_proj;
+int _mergeBlobs(int blob1, int blob2, int nblobs, blob_array &blobs) {
+  int _blob1_center;
+  int _blob2_center;
+  int _blob1_proj;
+  int _blob2_proj;
   bool _overlapx = false;
   bool _overlapy = false;
 
@@ -296,7 +302,7 @@ short _mergeBlobs(short blob1, short blob2, short nblobs, blob_array &blobs) {
     blobs[blob1].y2 = max2(blobs[blob1].y2, blobs[blob2].y2);
     blobs[blob1].size = abs(blobs[blob1].x2 - blobs[blob1].x1) * abs(blobs[blob1].y2 - blobs[blob1].y1);
 
-    for (short _i = blob2; _i < nblobs - 1; _i++) {
+    for (int _i = blob2; _i < nblobs - 1; _i++) {
       memcpy(blobs[_i], blobs[_i+1], sizeof(blob));
     }
 
@@ -317,9 +323,9 @@ short _mergeBlobs(short blob1, short blob2, short nblobs, blob_array &blobs) {
  * @param nblobs the number of blobs
  * @param blobs the array of blobs
  */
-void _sortBlobs(short nblobs, blob_array &blobs) {
+void _sortBlobs(int nblobs, blob_array &blobs) {
   blob _tmpBlob;
-  short i, j;
+  int i, j;
 
   // Outer boundary definition
   for (i = 1; i < nblobs; i++) {
@@ -349,12 +355,12 @@ void _sortBlobs(short nblobs, blob_array &blobs) {
  * @param x x-coordinate of the center
  * @param y y-coordinate of the center
  */
-void NXTCAMgetAverageCenter(blob_array &blobs, short nblobs, short colourindex, short &x, short &y) {
+void NXTCAMgetAverageCenter(blob_array &blobs, int nblobs, int colourindex, int &x, int &y) {
   long _totalX = 0;
   long _totalY = 0;
-  short _counter = 0;
+  int _counter = 0;
 
-  for (short i = 0; i < nblobs; i++){
+  for (int i = 0; i < nblobs; i++){
     if ((blobs[i].colour == colourindex) && (blobs[i].size > 400)) {
       _totalX += SIDE_CENTER(blobs[i].x1, blobs[i].x2);
       _totalY += SIDE_CENTER(blobs[i].y1, blobs[i].y2);
@@ -365,6 +371,7 @@ void NXTCAMgetAverageCenter(blob_array &blobs, short nblobs, short colourindex, 
   y = _totalY / (_counter  -1);
 }
 
+
 /**
  * Calculate the center of a specified blob.
  *
@@ -374,12 +381,15 @@ void NXTCAMgetAverageCenter(blob_array &blobs, short nblobs, short colourindex, 
  * @param x x-coordinate of the center
  * @param y y-coordinate of the center
  */
-void NXTCAMgetCenter(blob_array &blobs, short index, short &x, short &y) {
+void NXTCAMgetCenter(blob_array &blobs, int index, int &x, int &y) {
   x = SIDE_CENTER(blobs[index].x1, blobs[index].x2);
   y = SIDE_CENTER(blobs[index].y1, blobs[index].y2);
 }
 
 #endif // __NXTCAM_H__
 
+/*
+ * $Id: mindsensors-nxtcam.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

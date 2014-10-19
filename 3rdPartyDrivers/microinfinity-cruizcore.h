@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: microinfinity-cruizcore.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __MICC_H__
 #define __MICC_H__
 /** \file microinfinity-cruizcore.h
@@ -20,7 +24,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 29 May 2011
@@ -50,9 +54,9 @@
 #define MICC_CMD_RANGE_4G   0x62  /*!< MICC Acceleration up to 4G */
 #define MICC_CMD_RANGE_8G   0x63  /*!< MICC Acceleration up to 8G */
 
-short MICCreadRelativeHeading(tSensors link);
-short MICCreadTurnRate(tSensors link);
-bool MICCreadAccel(tSensors link, short &x_accel, short &y_accel, short &z_accel);
+int MICCreadRelativeHeading(tSensors link);
+int MICCreadTurnRate(tSensors link);
+bool MICCreadAccel(tSensors link, int &x_accel, int &y_accel, int &z_accel);
 bool MICCsendCmd(tSensors link, ubyte command);
 
 #define MICCsetRange2G(x) MICCsendCmd(x, MICC_CMD_RANGE_2G) /*!< Macro for setting sensor to 2G range */
@@ -63,12 +67,13 @@ bool MICCsendCmd(tSensors link, ubyte command);
 tByteArray MICC_I2CRequest;       /*!< Array to hold I2C command data */
 tByteArray MICC_I2CReply;         /*!< Array to hold I2C reply data */
 
+
 /**
  * Return the current relative heading, value between -179 and 180 degrees.<br>
  * Angle is measured in 100th degrees.  So 12899 = 128.99 degrees.
  * @return the relative heading
  */
-short MICCreadRelativeHeading(tSensors link) {
+int MICCreadRelativeHeading(tSensors link) {
   memset(MICC_I2CRequest, 0, sizeof(tByteArray));
 
   MICC_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -79,14 +84,15 @@ short MICCreadRelativeHeading(tSensors link) {
     return 0;
 
   // Each result is made up of two bytes.
-  return (MICC_I2CReply[1] << 8) + MICC_I2CReply[0];
+	return (MICC_I2CReply[1] << 8) + MICC_I2CReply[0];
 }
+
 
 /**
  * Return the Rate of Turn in degrees per second
  * @return the current rate of turn
  */
-short MICCreadTurnRate(tSensors link) {
+int MICCreadTurnRate(tSensors link) {
   memset(MICC_I2CRequest, 0, sizeof(tByteArray));
 
   MICC_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -97,7 +103,7 @@ short MICCreadTurnRate(tSensors link) {
     return 0;
 
   // Each result is made up of two bytes.
-  return (MICC_I2CReply[1] << 8) + MICC_I2CReply[0];
+	return (MICC_I2CReply[1] << 8) + MICC_I2CReply[0];
 }
 
 /**
@@ -108,7 +114,7 @@ short MICCreadTurnRate(tSensors link) {
  * @param z_accel Z acceleration data
  * @return true if no error occured, false if it did
  */
-bool MICCreadAccel(tSensors link, short &x_accel, short &y_accel, short &z_accel) {
+bool MICCreadAccel(tSensors link, int &x_accel, int &y_accel, int &z_accel) {
   memset(MICC_I2CRequest, 0, sizeof(tByteArray));
 
   MICC_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -119,11 +125,12 @@ bool MICCreadAccel(tSensors link, short &x_accel, short &y_accel, short &z_accel
     return false;
 
   // Each result is made up of two bytes.
-  x_accel = (MICC_I2CReply[1] << 8) + MICC_I2CReply[0];
-  y_accel = (MICC_I2CReply[3] << 8) + MICC_I2CReply[2];
-  z_accel = (MICC_I2CReply[5] << 8) + MICC_I2CReply[4];
+	x_accel = (MICC_I2CReply[1] << 8) + MICC_I2CReply[0];
+	y_accel = (MICC_I2CReply[3] << 8) + MICC_I2CReply[2];
+	z_accel = (MICC_I2CReply[5] << 8) + MICC_I2CReply[4];
   return true;
 }
+
 
 /**
  * Send a command to the sensor
@@ -143,5 +150,8 @@ bool MICCsendCmd(tSensors link, ubyte command) {
 
 #endif //__MICC_H__
 
+/*
+ * $Id: microinfinity-cruizcore.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

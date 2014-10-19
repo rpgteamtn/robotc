@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: mindsensors-accelerometer.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 #ifndef __MSAC_H__
 #define __MSAC_H__
 /** \file mindsensors-accelerometer.h
@@ -22,7 +26,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 28 November 2009
@@ -54,13 +58,14 @@
 #define MSAC_RANGE_6_7      3     /*!< Acceleration up to 6.7G */
 #define MSAC_RANGE_10       4     /*!< Acceleration up to 10G */
 
-bool MSACreadTilt(tSensors link, short &x_tilt, short &y_tilt, short &z_tilt);
-bool MSACreadAccel(tSensors link, short &x_accel, short &y_accel, short &z_accel);
+bool MSACreadTilt(tSensors link, int &x_tilt, int &y_tilt, int &z_tilt);
+bool MSACreadAccel(tSensors link, int &x_accel, int &y_accel, int &z_accel);
 bool MSACsendCmd(tSensors link, byte command);
-bool MSACsetRange(tSensors link, short range);
+bool MSACsetRange(tSensors link, int range);
 
 tByteArray MSAC_I2CRequest;       /*!< Array to hold I2C command data */
 tByteArray MSAC_I2CReply;         /*!< Array to hold I2C reply data */
+
 
 /**
  * Read tilt data from the sensor
@@ -70,7 +75,7 @@ tByteArray MSAC_I2CReply;         /*!< Array to hold I2C reply data */
  * @param z_tilt Z tilt data
  * @return true if no error occured, false if it did
  */
-bool MSACreadTilt(tSensors link, short &x_tilt, short &y_tilt, short &z_tilt) {
+bool MSACreadTilt(tSensors link, int &x_tilt, int &y_tilt, int &z_tilt) {
   memset(MSAC_I2CRequest, 0, sizeof(tByteArray));
 
   MSAC_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -81,11 +86,12 @@ bool MSACreadTilt(tSensors link, short &x_tilt, short &y_tilt, short &z_tilt) {
     return false;
 
   x_tilt = MSAC_I2CReply[0] - 128;
-  y_tilt = MSAC_I2CReply[1] - 128;
-  z_tilt = MSAC_I2CReply[2] - 128;
+	y_tilt = MSAC_I2CReply[1] - 128;
+	z_tilt = MSAC_I2CReply[2] - 128;
 
   return true;
 }
+
 
 /**
  * Read tilt data from the sensor
@@ -95,7 +101,7 @@ bool MSACreadTilt(tSensors link, short &x_tilt, short &y_tilt, short &z_tilt) {
  * @param z_accel Z acceleration data
  * @return true if no error occured, false if it did
  */
-bool MSACreadAccel(tSensors link, short &x_accel, short &y_accel, short &z_accel) {
+bool MSACreadAccel(tSensors link, int &x_accel, int &y_accel, int &z_accel) {
   memset(MSAC_I2CRequest, 0, sizeof(tByteArray));
 
   MSAC_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -106,11 +112,12 @@ bool MSACreadAccel(tSensors link, short &x_accel, short &y_accel, short &z_accel
     return false;
 
   // Each result is made up of two bytes.
-  x_accel = MSAC_I2CReply[0] + (MSAC_I2CReply[1] << 8);
-  y_accel = MSAC_I2CReply[2] + (MSAC_I2CReply[3] << 8);
-  z_accel = MSAC_I2CReply[4] + (MSAC_I2CReply[5] << 8);
+	x_accel = MSAC_I2CReply[0] + (MSAC_I2CReply[1] << 8);
+	y_accel = MSAC_I2CReply[2] + (MSAC_I2CReply[3] << 8);
+	z_accel = MSAC_I2CReply[4] + (MSAC_I2CReply[5] << 8);
   return true;
 }
+
 
 /**
  * Send a command to the sensor
@@ -129,13 +136,14 @@ bool MSACsendCmd(tSensors link, byte command) {
   return writeI2C(link, MSAC_I2CRequest);
 }
 
+
 /**
  * Set sensitivity range of sensor.
  * @param link the sensor port number
  * @param range 1 = 2.5G, 2 = 3.3G, 3 = 6.7G, 4 = 10G
  * @return true if no error occured, false if it did
  */
-bool MSACsetRange(tSensors link, short range) {
+bool MSACsetRange(tSensors link, int range) {
   byte command = 0;
 
   switch (range) {
@@ -150,5 +158,8 @@ bool MSACsetRange(tSensors link, short range) {
 
 #endif //__MSAC_H__
 
+/*
+ * $Id: mindsensors-accelerometer.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */

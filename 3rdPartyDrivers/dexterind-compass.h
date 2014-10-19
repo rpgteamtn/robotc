@@ -5,6 +5,10 @@
 * @{
 */
 
+/*
+* $Id: dexterind-compass.h 133 2013-03-10 15:15:38Z xander $
+*/
+
 #ifndef __DIMC_H__
 #define __DIMC_H__
 /** \file dexterind-compass.h
@@ -20,7 +24,7 @@
 *
 * License: You may use this code as you wish, provided you give credit where its due.
 *
-* THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+* THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
 * \author Xander Soldaat (xander_at_botbench.com)
 * \date 18 March 2012
@@ -36,7 +40,7 @@
 #include "common.h"
 #endif
 
-#define DIMCDAT "dimc%d.dat"
+#define DIMCDAT "dimc.dat"
 
 #define DIMC_I2C_ADDR           0x3C  /*!< Compass I2C address */
 
@@ -59,6 +63,7 @@
 
 #define DIMC_STATUS_LOCK  2           /*!< Data output register lock active */
 #define DIMC_STATUS_RDY   1           /*!< Data is ready for reading */
+
 
 // HMC5883L configuration definitions
 // See pages 12, 13, 14 of HMC5883L.pdf
@@ -116,257 +121,252 @@
 #define DIMC_GAIN_SCALE_5_6   3.03     /*!< Ramge multiplier for ±5.6 Ga */
 #define DIMC_GAIN_SCALE_8_1   4.35     /*!< Ramge multiplier for ±8.1 Ga */
 
-// Sensors with calibration data require a <name>CalData struct
-// to make use of the generic calibration data file writing/reading
-typedef struct
-{
-  short _offsets[3];
-} tDIMCCalData, *tDIMCCalDataptr;
+tByteArray DIMC_I2CRequest;    /*!< Array to hold I2C command data */
+tByteArray DIMC_I2CReply;      /*!< Array to hold I2C reply data */
 
-typedef struct
-{
-  tI2CData I2CData;
-  tDIMCCalData calData;
-  float heading;
-  short axes[3];
-  short _minVals[3];
-  short _maxVals[3];
-  bool _calibrated;
-  bool _calibrating;
-  string _calibrationFile;
-} tDIMC, *tDIMCptr;
+bool DIMCinit(tSensors link, ubyte range, bool lpfenable=true);
+bool DIMCreadAxes(tSensors link, int &_x, int &_y, int &_z);
+float DIMCreadHeading(tSensors link);
+void DIMCstartCal(tSensors link);
+void DIMCstopCal(tSensors link);
+void _DIMCreadCalVals();
+void _DIMCwriteCalVals();
 
-bool initSensor(tDIMCptr dimcPtr, tSensors port);
-bool readSensor(tDIMCptr dimcPtr);
-bool startCal(tDIMCptr dimcPtr);
-bool stopCal(tDIMCptr dimcPtr);
-bool _readCalVals(tDIMCptr dimcPtr);
-bool _writeCalVals(tDIMCptr dimcPtr);
+bool DIMCcalibrating[4] = {false, false, false, false };
+bool DIMCcalibrationDataLoaded = false;
+int DIMCminVals[4][3] = {{32767, 32767, 32767}, {32767, 32767, 32767}, {32767, 32767, 32767}, {32767, 32767, 32767}};
+int DIMCmaxVals[4][3] = {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}};
+int DIMCoffsets[4][3] = {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}};
 
 /**
- * Configure the Compass
- * @param tirPtr pointer to tTIR struct holding sensor info
- * @param port the port number
- * @return true if no error occured, false if it did
- */
-bool initSensor(tDIMCptr dimcPtr, tSensors port)
+* Configure the Compass
+* @param link the port number
+* @return true if no error occured, false if it did
+*/
+bool DIMCinit(tSensors link)
 {
-  memset(dimcPtr, 0, sizeof(tDIMC));
-  dimcPtr->I2CData.address = DIMC_I2C_ADDR;
-  dimcPtr->I2CData.port = port;
-  dimcPtr->I2CData.type = sensorI2CCustomFastSkipStates;
-
-  // Set the file name for the calibration data
-  sprintf(dimcPtr->_calibrationFile, "dimc%d.dat", dimcPtr->I2CData.port);
-
-  // Ensure the sensor is configured correctly
-  if (SensorType[dimcPtr->I2CData.port] != dimcPtr->I2CData.type)
-    SensorType[dimcPtr->I2CData.port] = dimcPtr->I2CData.type;
+  memset(DIMC_I2CRequest, 0, sizeof(DIMC_I2CRequest));
 
   // Setup the size and address, same for all requests.
-  dimcPtr->I2CData.request[0] = 3;    // Sending address, register, value. Optional, defaults to true
-  dimcPtr->I2CData.request[1] = DIMC_I2C_ADDR; // I2C Address of Compass.
-
-  // Not expecting a reply for the next commands
-  dimcPtr->I2CData.replyLen = 0;
+  DIMC_I2CRequest[0] = 3;    // Sending address, register, value. Optional, defaults to true
+  DIMC_I2CRequest[1] = DIMC_I2C_ADDR; // I2C Address of Compass.
 
   // Write CONFIG_A
   // Set to 15Hz sample rate and a 8 sample average.
-  dimcPtr->I2CData.request[2] = DIMC_REG_CONFIG_A;
-  dimcPtr->I2CData.request[3] = DIMC_CONF_A_SAMPLES_8 + DIMC_CONF_A_RATE_15;
-  if (!writeI2C(&dimcPtr->I2CData))
+  DIMC_I2CRequest[2] = DIMC_REG_CONFIG_A;
+  DIMC_I2CRequest[3] = DIMC_CONF_A_SAMPLES_8 + DIMC_CONF_A_RATE_15;
+  if (!writeI2C(link, DIMC_I2CRequest))
     return false;
 
   // Write CONFIG_B
   // Set gain to 1.9
-  dimcPtr->I2CData.request[2] = DIMC_REG_CONFIG_B;
-  dimcPtr->I2CData.request[3] = DIMC_CONF_B_GAIN_1_3;
-  if (!writeI2C(&dimcPtr->I2CData))
+  DIMC_I2CRequest[2] = DIMC_REG_CONFIG_B;
+  DIMC_I2CRequest[3] = DIMC_CONF_B_GAIN_1_3;
+  if (!writeI2C(link, DIMC_I2CRequest))
     return false;
 
   // Write REG_MODE
   // Set to continuous mode
   ////////////////////////////////////////////////////////////////////////////
-  dimcPtr->I2CData.request[2] = DIMC_REG_MODE;           // Register address of CTRL_REG3
-  dimcPtr->I2CData.request[3] = DIMC_MODE_CONTINUOUS;    // No interrupts.  Date ready.
-  if (!writeI2C(&dimcPtr->I2CData))
-    return false;
-
-  return _readCalVals(dimcPtr);
+  DIMC_I2CRequest[2] = DIMC_REG_MODE;           // Register address of CTRL_REG3
+  DIMC_I2CRequest[3] = DIMC_MODE_CONTINUOUS;    // No interrupts.  Date ready.
+  return writeI2C(link, DIMC_I2CRequest);
 }
 
+
 /**
- * Read all three axes of the Compass and calculate the current heading
- * @param tirPtr pointer to tTIR struct holding sensor info
- * @return true if no error occured, false if it did
- */
-bool readSensor(tDIMCptr dimcPtr)
+* Read all three axes of the Compass
+* @param link the port number
+* @param _x data for x axis in degrees per second
+* @param _y data for y axis in degrees per second
+* @param _z data for z axis in degrees per second
+* @return true if no error occured, false if it did
+*/
+bool DIMCreadAxes(tSensors link, int &_x, int &_y, int &_z)
 {
-  float angle;
+  if (!DIMCcalibrationDataLoaded)
+    _DIMCreadCalVals();
 
-  dimcPtr->I2CData.request[0] = 2;                   // Message size
-  dimcPtr->I2CData.request[1] = DIMC_I2C_ADDR;  // I2C Address
-  dimcPtr->I2CData.request[2] = DIMC_REG_X_MSB;            // Register address
-  dimcPtr->I2CData.replyLen = 6;
+  DIMC_I2CRequest[0] = 2;                   // Message size
+  DIMC_I2CRequest[1] = DIMC_I2C_ADDR;  // I2C Address
+  DIMC_I2CRequest[2] = DIMC_REG_X_MSB;            // Register address
 
-  if (!writeI2C(&dimcPtr->I2CData)) {
+  if (!writeI2C(link, DIMC_I2CRequest, DIMC_I2CReply, 6)) {
     writeDebugStreamLine("error write");
     return false;
   }
 
-  dimcPtr->axes[0] = (dimcPtr->I2CData.reply[0]<<8) + dimcPtr->I2CData.reply[1];
-  dimcPtr->axes[1] = (dimcPtr->I2CData.reply[2]<<8) + dimcPtr->I2CData.reply[3];
-  dimcPtr->axes[2] = (dimcPtr->I2CData.reply[4]<<8) + dimcPtr->I2CData.reply[5];
+  _x = (DIMC_I2CReply[0]<<8) + DIMC_I2CReply[1];
+  _z = (DIMC_I2CReply[2]<<8) + DIMC_I2CReply[3];
+  _y = (DIMC_I2CReply[4]<<8) + DIMC_I2CReply[5];
 
-  if (dimcPtr->_calibrating)
+  if (DIMCcalibrating[link])
   {
-    for (short i = 0; i < 3; i++)
-    {
-      dimcPtr->_minVals[i] = min2(dimcPtr->axes[i], dimcPtr->_minVals[i]);
-      dimcPtr->_maxVals[i] = max2(dimcPtr->axes[i], dimcPtr->_maxVals[i]);
-    }
+    DIMCminVals[link][0] = min2(_x, DIMCminVals[link][0]);
+    DIMCminVals[link][1] = min2(_y, DIMCminVals[link][1]);
+    DIMCminVals[link][2] = min2(_z, DIMCminVals[link][2]);
+
+    DIMCmaxVals[link][0] = max2(_x, DIMCmaxVals[link][0]);
+    DIMCmaxVals[link][1] = max2(_y, DIMCmaxVals[link][1]);
+    DIMCmaxVals[link][2] = max2(_z, DIMCmaxVals[link][2]);
   }
 
-  dimcPtr->axes[0] -= dimcPtr->calData._offsets[0];
-  dimcPtr->axes[1] -= dimcPtr->calData._offsets[1];
-  dimcPtr->axes[2] -= dimcPtr->calData._offsets[2];
+  _x -= DIMCoffsets[link][0];
+  _y -= DIMCoffsets[link][1];
+  _z -= DIMCoffsets[link][2];
 
-  angle = atan2(dimcPtr->axes[0], dimcPtr->axes[1]);
+  return true;
+}
+
+
+/**
+* Read the current heading
+* @return the heading in degrees.
+*/
+float DIMCreadHeading(tSensors link)
+{
+  float angle;
+  int fx,fy,fz;
+  DIMCreadAxes(link, fx, fy, fz);
+
+  angle = atan2(fx, fy);
   if (angle < 0) angle += 2*PI;
-  dimcPtr->heading = ((angle * (180/PI)) + 270) % 360;
-
-  return true;
+  return angle * (180/PI);
 }
 
-/**
- * Start calibration.  The robot should be made to rotate
- * about its axis at least twice to get an accurate result.
- * Stop the calibration with stopCal()
- * @param tirPtr pointer to tTIR struct holding sensor info
- * @return true if no error occured, false if it did
- */
-bool startCal(tDIMCptr dimcPtr)
-{
-  dimcPtr->_calibrating = true;
-  return true;
-}
 
 /**
- * Stop calibration.  The appropriate offsets will be calculated for all
- * the axes.
- * @param tirPtr pointer to tTIR struct holding sensor info
- * @return true if no error occured, false if it did
- */
-bool stopCal(tDIMCptr dimcPtr)
+* Start calibration.  The robot should be made to rotate
+* about its axis at least twice to get an accurate result.
+* Stop the calibration with DIMCstopCal()
+*/
+void DIMCstartCal(tSensors link)
 {
-  dimcPtr->_calibrating = false;
-  for (short i = 0; i < 3; i++)
-  {
-    dimcPtr->calData._offsets[i] = ((dimcPtr->_maxVals[i] - dimcPtr->_minVals[i]) / 2) + dimcPtr->_minVals[i];
-  }
-  _writeCalVals(dimcPtr);
-  return true;
+  DIMCcalibrating[link] = true;
 }
+
+
+/**
+* Stop calibration.  The appropriate offsets will be calculated for all
+* the axes.
+*/
+void DIMCstopCal(tSensors link)
+{
+  DIMCcalibrating[link] = false;
+  DIMCoffsets[link][0] = ((DIMCmaxVals[link][0] - DIMCminVals[link][0]) / 2) + DIMCminVals[link][0];
+  DIMCoffsets[link][1] = ((DIMCmaxVals[link][1] - DIMCminVals[link][1]) / 2) + DIMCminVals[link][1];
+  DIMCoffsets[link][2] = ((DIMCmaxVals[link][2] - DIMCminVals[link][2]) / 2) + DIMCminVals[link][2];
+  _DIMCwriteCalVals();
+}
+
 
 /**
  * Write the calibration values to a data file.
  *
  * Note: this is an internal function and should not be called directly
- * @param tirPtr pointer to tTIR struct holding sensor info
- * @return true if no error occured, false if it did
  */
-bool _writeCalVals(tDIMCptr dimcPtr)
+void _DIMCwriteCalVals()
 {
   TFileHandle hFileHandle;
   TFileIOResult nIoResult;
-  short nFileSize = 3*sizeof(short);
+  short nFileSize = sizeof(DIMCoffsets);
 
   // Delete the old data file and open a new one for writing
   Delete(DIMCDAT, nIoResult);
-  OpenWrite(hFileHandle, nIoResult, dimcPtr->_calibrationFile, nFileSize);
+  OpenWrite(hFileHandle, nIoResult, DIMCDAT, nFileSize);
   if (nIoResult != ioRsltSuccess)
   {
     Close(hFileHandle, nIoResult);
     eraseDisplay();
-    displayTextLine(3, "W:can't cal file");
-    playSound(soundException);
-    while(bSoundActive) sleep(1);
-    sleep(5000);
-    stopAllTasks();
+    nxtDisplayTextLine(3, "W:can't cal file");
+    PlaySound(soundException);
+    while(bSoundActive) EndTimeSlice();
+    wait1Msec(5000);
+    StopAllTasks();
   }
 
-  for (short i = 0; i < 3; i++)
-  {
-    WriteShort(hFileHandle, nIoResult, dimcPtr->calData._offsets[i]);
-    if (nIoResult != ioRsltSuccess)
+	for (int i = 0; i < 4; i++)
+	{
+    for (int j = 0; j < 3; j++)
     {
-      eraseDisplay();
-      displayTextLine(3, "can't write offset");
-      playSound(soundException);
-      while(bSoundActive) sleep(1);
-      sleep(5000);
-      stopAllTasks();
-    }
-  }
+		  WriteShort(hFileHandle, nIoResult, DIMCoffsets[i][j]);
+		  if (nIoResult != ioRsltSuccess)
+		  {
+	      eraseDisplay();
+		    nxtDisplayTextLine(3, "can't write lowval");
+		    PlaySound(soundException);
+		    while(bSoundActive) EndTimeSlice();
+		    wait1Msec(5000);
+		    StopAllTasks();
+	    }
+	  }
+	}
 
   // Close the file
   Close(hFileHandle, nIoResult);
   if (nIoResult != ioRsltSuccess)
   {
     eraseDisplay();
-    displayTextLine(3, "Can't close");
-    playSound(soundException);
-    while(bSoundActive) sleep(1);
-    sleep(5000);
-    stopAllTasks();
+    nxtDisplayTextLine(3, "Can't close");
+    PlaySound(soundException);
+    while(bSoundActive) EndTimeSlice();
+    wait1Msec(5000);
+    StopAllTasks();
   }
-  return true;
 }
+
+
 
 /**
  * Read the calibration values from a data file.
  *
  * Note: this is an internal function and should not be called directly
- * @param tirPtr pointer to tTIR struct holding sensor info
- * @return true if no error occured, false if it did
  */
-bool _readCalVals(tDIMCptr dimcPtr)
+void _DIMCreadCalVals()
 {
   TFileHandle hFileHandle;
   TFileIOResult nIoResult;
   short nFileSize;
 
   // Open the data file for reading
-  OpenRead(hFileHandle, nIoResult, dimcPtr->_calibrationFile, nFileSize);
+  DIMCcalibrationDataLoaded = true;
+  OpenRead(hFileHandle, nIoResult, DIMCDAT, nFileSize);
   if (nIoResult != ioRsltSuccess)
   {
     Close(hFileHandle, nIoResult);
-
     // Assign default values
-    memset(dimcPtr->calData._offsets, 0, 3 * sizeof(short));
-    _writeCalVals(dimcPtr);
-    return true;
+		memset(DIMCoffsets, 0, sizeof(DIMCoffsets));
+		_DIMCwriteCalVals();
+    return;
   }
 
-  for (short i = 0; i < 3; i++)
+  for (int i = 0; i < 4; i++)
   {
-    ReadShort(hFileHandle, nIoResult, (short)dimcPtr->calData._offsets[i]);
-    // writeDebugStream("R offsets[%d][%d]:", i, j);
-    // writeDebugStreamLine(" %d", DIMCoffsets[i][j]);
-    if (nIoResult != ioRsltSuccess)
+    for (int j = 0; j < 3; j++)
     {
-      memset(dimcPtr->calData._offsets, 0, 3 * sizeof(short));
-      _writeCalVals(dimcPtr);
-      return true;
-    }
-  }
+		  ReadShort(hFileHandle, nIoResult, DIMCoffsets[i][j]);
+		  // writeDebugStream("R offsets[%d][%d]:", i, j);
+		  // writeDebugStreamLine(" %d", DIMCoffsets[i][j]);
+		  if (nIoResult != ioRsltSuccess)
+		  {
+		    memset(DIMCoffsets, 0, sizeof(DIMCoffsets));
+			  _DIMCwriteCalVals();
+			  return;
+			}
+	  }
+	}
 
   Close(hFileHandle, nIoResult);
-  dimcPtr->_calibrated = true;
-  return true;
 }
+
+
+
+
 
 #endif // __DIMC_H__
 
+/*
+* $Id: dexterind-compass.h 133 2013-03-10 15:15:38Z xander $
+*/
 /* @} */
 /* @} */

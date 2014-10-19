@@ -5,6 +5,10 @@
  * @{
  */
 
+/*
+ * $Id: mindsensors-hid.h 133 2013-03-10 15:15:38Z xander $
+ */
+
 /** \file mindsensors-hid.h
  * \brief Mindsensors HID Sensor driver
  *
@@ -20,7 +24,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 18 December 2010
@@ -63,6 +67,7 @@ bool MSHIDsendString(tSensors link, string data, ubyte address = MSHID_I2C_ADDR)
 
 tByteArray MSHID_I2CRequest;       /*!< Array to hold I2C command data */
 
+
 /**
  * Send a direct command to the HID sensor
  * @param link the HID port number
@@ -79,6 +84,7 @@ bool MSHIDsendCommand(tSensors link, byte command, ubyte address) {
 
   return writeI2C(link, MSHID_I2CRequest);
 }
+
 
 /**
  * Send keyboard data to the HID sensor.  Must be followed by a MSHID_XMIT
@@ -100,6 +106,7 @@ bool MSHIDsendKeyboardData(tSensors link, byte modifier, byte keybdata, ubyte ad
   return writeI2C(link, MSHID_I2CRequest);
 }
 
+
 /**
  * Send a string to the computer.  Can be up to 19 characters long.<br>
  * It recognises the following escaped keys:<br>
@@ -115,52 +122,55 @@ bool MSHIDsendKeyboardData(tSensors link, byte modifier, byte keybdata, ubyte ad
  */
 bool MSHIDsendString(tSensors link, string data, ubyte address) {
   byte buffer[19];
-  short len = strlen(data);
+  int len = strlen(data);
   if (len < 20) {
     memcpy(buffer, data, len);
   } else {
     return false;
   }
 
-  for (short i = 0; i < len; i++) {
-    if (buffer[i] == 0x5C && i < (len - 1)) {
-      switch (buffer[i+1]) {
+  for (int i = 0; i < len; i++) {
+		if (buffer[i] == 0x5C && i < (len - 1)) {
+		  switch (buffer[i+1]) {
         case 'r':
-          if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x0A))
-            return false;
-          break;
+					if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x0A))
+					  return false;
+					break;
         case 'n':
-          if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x0D))
-            return false;
-          break;
-        case 't':
-          if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x09))
-            return false;
-          break;
-        case 0x5C:
-          if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x5C))
-            return false;
-          break;
-        case 0x22:
-          if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x22))
-            return false;
-          break;
+					if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x0D))
+					  return false;
+					break;
+				case 't':
+					if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x09))
+					  return false;
+					break;
+				case 0x5C:
+					if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x5C))
+					  return false;
+					break;
+				case 0x22:
+					if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, 0x22))
+					  return false;
+					break;
         default:
-          break;
-      }
-      i++;
-    } else {
-      if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, buffer[i]))
-        return false;
-    }
-    if (!MSHIDsendCommand(link, MSHID_XMIT))
-      return false;
-    sleep(50);
+					break;
+			}
+			i++;
+		} else {
+			if (!MSHIDsendKeyboardData(link, MSHID_MOD_NONE, buffer[i]))
+			  return false;
+	  }
+		if (!MSHIDsendCommand(link, MSHID_XMIT))
+		  return false;
+    wait1Msec(50);
   }
   return true;
 }
 
 #endif // __MSHID_H__
 
+/*
+ * $Id: mindsensors-hid.h 133 2013-03-10 15:15:38Z xander $
+ */
 /* @} */
 /* @} */
