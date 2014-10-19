@@ -1,4 +1,5 @@
 #pragma config(Sensor, S3,     IR,             sensorHiTechnicIRSeeker1200)
+#pragma config(Sensor, S4,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  motorC,          rightFront,    tmotorNXT, PIDControl, encoder)
@@ -8,7 +9,7 @@
 #include "hitechnic-sensormux.h"     //Drivers for IR Beacon
 #include "IRsensor.c"
 
-void faceIR(tHTIRS2 ir_seeker)
+void faceIR(tSensors ir_seeker)
 {
 	int	ir_value = getIRReading(ir_seeker);
 	do
