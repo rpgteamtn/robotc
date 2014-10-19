@@ -9,7 +9,7 @@
 #include "twoWheelMovement.c"
 #include "hitechnic-sensormux.h"     //Drivers for IR Beacon
 #include "hitechnic-irseeker-v2.h"
-#include "hitechnic-gyro.h"
+#include "gyroSensor.c"
 #include "Common.c"
 #include "IRsensor.c"
 #include "gyroMovement.c"
@@ -35,10 +35,10 @@
 float findIR(tSensors ir_seeker)
 {
 	int	ir_value = getIRReading(ir_seeker);
-	repeatUntil(ir_value == 2)
+	backward(50);
+	repeatUntil(ir_value > 1)
 	{
-		backward(50);
-		wait1Msec(1);
+		//wait1Msec(1);
 		ir_value = getIRReading(ir_seeker);
 	}
 	stopMotors();
@@ -48,34 +48,42 @@ float findIR(tSensors ir_seeker)
 
 void strategyA()
 {
-	leftTurnDegrees(90, 50);
+	leftTurn(50);
+	gyroTurn(90);
 	travelDistance(distanceA1);
-	leftTurnDegrees(90, 50);
+	leftTurn(50);
+	gyroTurn(90);
 	travelDistance(distanceA2);
 }
 
 void strategyB()
 {
-	leftTurnDegrees(90, 50);
+	leftTurn(50);
+	gyroTurn(90);
 	travelDistance(distanceB1);
-	leftTurnDegrees(90, 50);
+	leftTurn(50);
+	gyroTurn(90);
 	travelDistance(distanceB2);
 }
 
 void strategyC()
 {
-	leftTurnDegrees(90, 50);
+	leftTurn(50);
+	gyroTurn(90);
 	travelDistance(distanceC1);
-	rightTurnDegrees(45, 50);
+  rightTurn(50);
+	gyroTurn(45);
 	travelDistance(distanceC2);
 }
 
 void strategyD()
 {
 	travelDistance(distanceD1);
-	leftTurnDegrees(90, 50);
+	leftTurn(50);
+	gyroTurn(90);
 	travelDistance(distanceD2);
-	leftTurnDegrees(90, 50);
+	leftTurn(50);
+	gyroTurn(90);
 	travelDistance(distanceD3);
 }
 
@@ -91,22 +99,22 @@ task main()
 	if(travelled <= pointA)
 	{
 		displayCenteredTextLine(2, "Strategy A");
-		strategyA();
+		//strategyA();
 	}
 	else if(travelled <= pointB)
 	{
 		displayCenteredTextLine(2, "Strategy B");
-		strategyB();
+		//strategyB();
 	}
 
 	else if(travelled <= pointC)
 	{
 		displayCenteredTextLine(2, "Strategy C");
-		strategyC();
+		//strategyC();
 	}
 	else if(travelled <= pointD)
 	{
 		displayCenteredTextLine(2, "Strategy D");
-		strategyD();
+		//strategyD();
 	}
 }

@@ -8,13 +8,13 @@
 #ifndef GYRO_SENSOR
 #define GYRO_SENSOR true
 
-#include "gyro.c"
+#include "hitechnic-gyro.h"
 
 #define MEASUREMENT_MS 25
 
-#ifndef gyro
+/*#ifndef gyro
 #define gyro	1
-#endif
+#endif*/
 
 // Function: gyroTurn
 // Parameters:
@@ -26,7 +26,8 @@ void gyroTurn(float fDegrees)
 	float	fCurrent = 0.0;
 	float fRotSpeed = 0.0;
 
-	do {
+	do
+	{
 		wait1Msec(MEASUREMENT_MS);
 		fRotSpeed = HTGYROreadRot(gyro);
 
