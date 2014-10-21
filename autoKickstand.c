@@ -1,4 +1,4 @@
-#pragma config(Sensor, S3,     IR,             sensorI2CCustom)
+#pragma config(Sensor, S3,     HTIRS2,             sensorI2CCustom)
 #pragma config(Sensor, S4,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl)
@@ -8,9 +8,8 @@
 #include "JoystickDriver.c"
 #include "twoWheelMovement.c"
 #include "hitechnic-sensormux.h"     //Drivers for IR Beacon
-#include "hitechnic-irseeker-v2.h"
 #include "gyroSensor.c"
-#include "Common.c"
+#include "rpgCommon.c"
 #include "IRsensor.c"
 #include "gyroMovement.c"
 #include "MovementCommon.c"
@@ -34,18 +33,21 @@
 
 float findIR(tSensors ir_seeker)
 {
+	resetEncoders();
 	int	ir_value = getIRReading(ir_seeker);
 	backward(50);
-	repeatUntil(ir_value > 1)
+	repeatUntil(ir_value == 2)
 	{
-		//wait1Msec(1);
+		wait1Msec(1);
 		ir_value = getIRReading(ir_seeker);
 	}
 	stopMotors();
-	int encoderValue = (nMotorEncoder[leftFront] + nMotorEncoder[rightFront]) / 2;
+	string text;
+
+	int encoderValue = (abs(nMotorEncoder[leftFront]) + abs(nMotorEncoder[rightFront])) / 2;
 	return calculateDist(encoderValue);
 }
-
+/*
 void strategyA()
 {
 	leftTurn(50);
@@ -86,14 +88,19 @@ void strategyD()
 	gyroTurn(90);
 	travelDistance(distanceD3);
 }
-
+*/
 task main()
 {
 //	waitForStartOrButton();
 	string text;
 	eraseDisplay();
-	float travelled = abs(findIR(IR));
-	sprintf(text, "distance = %f", calculateDist(travelled));
+	float travelled = abs(findIR(HTIRS2));
+	sprintf(text, "left = %i", nMotorEncoder[leftFront]);
+	displayCenteredTextLine(4, text);
+	sprintf(text, "right = %i", nMotorEncoder[rightFront]);
+	displayCenteredTextLine(5, text);
+
+	sprintf(text, "distance = %f", travelled);
 	displayCenteredTextLine(1, text);
 
 	if(travelled <= pointA)

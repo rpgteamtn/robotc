@@ -1,4 +1,3 @@
-
 #include "hitechnic-irseeker-v2.h"
 
 int getIRReading(tSensors ir_seeker)
