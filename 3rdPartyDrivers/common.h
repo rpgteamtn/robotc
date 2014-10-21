@@ -223,18 +223,18 @@ bool writeI2C(tSensors link, tByteArray &request) {
     case sensorI2CCustomFastSkipStates:   break;
     default:
 	    hogCPU();
-	    PlaySound(soundException);
+	    playSound(soundException);
 	    eraseDisplay();
-	    nxtDisplayCenteredTextLine(0, "3rd Party Driver");
-	    nxtDisplayCenteredTextLine(1, "ERROR");
-	    nxtDisplayCenteredTextLine(2, "You have not");
-	    nxtDisplayCenteredTextLine(3, "setup the sensor");
-	    nxtDisplayCenteredTextLine(4, "port correctly. ");
-	    nxtDisplayCenteredTextLine(5, "Please refer to");
-	    nxtDisplayCenteredTextLine(6, "one of the");
-	    nxtDisplayCenteredTextLine(7, "examples.");
+	    displayCenteredTextLine(0, "3rd Party Driver");
+	    displayCenteredTextLine(1, "ERROR");
+	    displayCenteredTextLine(2, "You have not");
+	    displayCenteredTextLine(3, "setup the sensor");
+	    displayCenteredTextLine(4, "port correctly. ");
+	    displayCenteredTextLine(5, "Please refer to");
+	    displayCenteredTextLine(6, "one of the");
+	    displayCenteredTextLine(7, "examples.");
 	    wait1Msec(10000);
-	    StopAllTasks();
+	    stopAllTasks();
   }
 #endif
 
@@ -284,18 +284,18 @@ bool writeI2C(tSensors link, tByteArray &request, tByteArray &reply, int replyle
     case sensorI2CCustomFastSkipStates:   break;
     default:
 	    hogCPU();
-	    PlaySound(soundException);
+	    playSound(soundException);
 	    eraseDisplay();
-	    nxtDisplayCenteredTextLine(0, "3rd Party Driver");
-	    nxtDisplayCenteredTextLine(1, "ERROR");
-	    nxtDisplayCenteredTextLine(2, "You have not");
-	    nxtDisplayCenteredTextLine(3, "setup the sensor");
-	    nxtDisplayCenteredTextLine(4, "port correctly. ");
-	    nxtDisplayCenteredTextLine(5, "Please refer to");
-	    nxtDisplayCenteredTextLine(6, "one of the");
-	    nxtDisplayCenteredTextLine(7, "examples.");
+	    displayCenteredTextLine(0, "3rd Party Driver");
+	    displayCenteredTextLine(1, "ERROR");
+	    displayCenteredTextLine(2, "You have not");
+	    displayCenteredTextLine(3, "setup the sensor");
+	    displayCenteredTextLine(4, "port correctly. ");
+	    displayCenteredTextLine(5, "Please refer to");
+	    displayCenteredTextLine(6, "one of the");
+	    displayCenteredTextLine(7, "examples.");
 	    wait1Msec(10000);
-	    StopAllTasks();
+	    stopAllTasks();
   }
 #endif
 
@@ -415,7 +415,7 @@ long getUID() {
  */
 bool strtok(char *buffer, char *token, char *seperator)
 {
-  int pos = StringFind(buffer, seperator);
+  int pos = stringFind(buffer, seperator);
   char t_buff[STRTOK_MAX_BUFFER_SIZE];
 
   // Make sure we zero out the buffer and token
