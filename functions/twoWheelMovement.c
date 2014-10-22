@@ -16,6 +16,18 @@ int getSingleEncoderValue()
 	return value;
 }
 
+float inchesToClicks(float inches)
+{
+	float clicks = inches * (360/(2.25 * 3.1416));
+	return clicks;
+}
+
+float clicksToInches(float clicks)
+{
+	float inches = clicks * ((2.25 * 3.1416)/360);
+	return inches;
+}
+
 void setMotors(int left, int right)
 {
 	motor[leftFront] = left;

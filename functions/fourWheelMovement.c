@@ -27,6 +27,17 @@ void resetEncoders()
 	nMotorEncoder[leftBack] = 0;
 }
 
+float inchesToClicks(float inches)
+{
+	float clicks = inches * 90.553;
+	return clicks;
+}
+
+float clicksToInches(float clicks)
+{
+	float inches = clicks * 0.01104;
+	return inches;
+}
 
 void leftTurn(const int power);
 {
