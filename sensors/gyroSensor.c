@@ -29,6 +29,5 @@ void gyroTurn(float fDegrees)
 
 		fCurrent += fRotSpeed * (MEASUREMENT_MS / 1000.0);
 	} while (abs(fCurrent) <= fDegrees);
-
 }
 #endif

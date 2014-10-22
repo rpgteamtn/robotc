@@ -14,15 +14,21 @@ float calculateDegrees(const float dist)
 void travelDistance(const float distance)
 {
 	resetEncoders();
+
 	float degreesToTravel = calculateDegrees(distance);
 	int encoderValue = getSingleEncoderValue();
+
+	string text;
+	sprintf(text, "degrees = %f", degreesToTravel);
+	displayCenteredTextLine(3, text);
+	sprintf(text, "encoder = %i", encoderValue);
+	displayCenteredTextLine(4, text);
+	wait1Msec(3000);
+
 	while(degreesToTravel < encoderValue)
 	{
 		forward(100);
 		encoderValue = getSingleEncoderValue();
 	}
 	stopMotors();
-	string text;
-	sprintf(text, "distance = %f", calculateDist(encoderValue));
-	displayCenteredTextLine(3, text);
 }

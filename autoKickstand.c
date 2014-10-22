@@ -15,19 +15,18 @@
 #include "MovementCommon.c"
 //#include "turnFunction.c"
 
-#define pointA 3
-#define pointB 8
-#define pointC 15
-#define pointD 20
+#define pointA 10
+#define pointB 44
+#define pointC 60
+#define pointD 10000
 #define distanceA1 36.0
 #define distanceA2 24.0
-#define distanceB1 23.0
-#define distanceB2 10.0
-#define distanceC1 15.0
-#define distanceC2 13.0
-#define distanceD1 3.0
-#define distanceD2 18.0
-#define distanceD3 13.0
+#define distanceD1 55.0
+#define distanceD2 55.0
+#define distanceC1 100.0
+#define distanceB1 20.0
+#define distanceB2 18.0
+#define distanceB3 13.0
 
 
 
@@ -36,7 +35,7 @@ float findIR(tSensors ir_seeker)
 	resetEncoders();
 	int	ir_value = getIRReading(ir_seeker);
 	backward(50);
-	repeatUntil(ir_value == 2)
+	repeatUntil((ir_value == 2)||(abs(nMotorEncoder(leftFront))> 10000))
 	{
 		wait1Msec(1);
 		ir_value = getIRReading(ir_seeker);
@@ -47,8 +46,8 @@ float findIR(tSensors ir_seeker)
 	int encoderValue = (abs(nMotorEncoder[leftFront]) + abs(nMotorEncoder[rightFront])) / 2;
 	return calculateDist(encoderValue);
 }
-/*
-void strategyA()
+
+void strategyA()//use if in possistion 1
 {
 	leftTurn(50);
 	gyroTurn(90);
@@ -58,37 +57,36 @@ void strategyA()
 	travelDistance(distanceA2);
 }
 
-void strategyB()
+void strategyD()//use if in possistion 1
 {
 	leftTurn(50);
 	gyroTurn(90);
-	travelDistance(distanceB1);
-	leftTurn(50);
-	gyroTurn(90);
-	travelDistance(distanceB2);
-}
-
-void strategyC()
-{
-	leftTurn(50);
-	gyroTurn(90);
-	travelDistance(distanceC1);
-  rightTurn(50);
-	gyroTurn(45);
-	travelDistance(distanceC2);
-}
-
-void strategyD()
-{
 	travelDistance(distanceD1);
 	leftTurn(50);
 	gyroTurn(90);
 	travelDistance(distanceD2);
+}
+
+void strategyC()//use if in possistion 2
+{
+	leftTurn(50);
+	gyroTurn(35);
+	forward(100);
+	wait1Msec(100000)
+	//travelDistance(distanceC1);
+}
+
+void strategyB()//use if in possistion 3
+{
+	travelDistance(distanceB1);
 	leftTurn(50);
 	gyroTurn(90);
-	travelDistance(distanceD3);
+	travelDistance(distanceB2);
+	leftTurn(50);
+	gyroTurn(90);
+	travelDistance(distanceB3);
 }
-*/
+
 task main()
 {
 //	waitForStartOrButton();
@@ -106,22 +104,22 @@ task main()
 	if(travelled <= pointA)
 	{
 		displayCenteredTextLine(2, "Strategy A");
-		//strategyA();
+		strategyA();
 	}
 	else if(travelled <= pointB)
 	{
 		displayCenteredTextLine(2, "Strategy B");
-		//strategyB();
+		strategyB();
 	}
 
 	else if(travelled <= pointC)
 	{
 		displayCenteredTextLine(2, "Strategy C");
-		//strategyC();
+		strategyC();
 	}
 	else if(travelled <= pointD)
 	{
 		displayCenteredTextLine(2, "Strategy D");
-		//strategyD();
+		strategyD();
 	}
 }
