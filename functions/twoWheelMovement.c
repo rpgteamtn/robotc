@@ -7,9 +7,6 @@
 //  lbPower: int for the power of the left back wheel
 //Outputs: none
 
-#define DIAMETER 2.25
-#define CIRCUMFERENCE PI * DIAMETER
-
 int getSingleEncoderValue()
 {
 	int value = (abs(nMotorEncoder[leftFront]) + abs(nMotorEncoder[rightFront])) / 2;

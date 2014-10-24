@@ -1,3 +1,6 @@
+#define DIAMETER 2.25
+#define CIRCUMFERENCE PI * DIAMETER
+
 float calculateDist(const int encoderValue)
 {
 	float dist = encoderValue / 360.0 * CIRCUMFERENCE;
@@ -17,15 +20,15 @@ void travelDistance(const float distance)
 
 	float degreesToTravel = calculateDegrees(distance);
 	int encoderValue = getSingleEncoderValue();
-
+/*
 	string text;
 	sprintf(text, "degrees = %f", degreesToTravel);
 	displayCenteredTextLine(3, text);
 	sprintf(text, "encoder = %i", encoderValue);
 	displayCenteredTextLine(4, text);
 	wait1Msec(3000);
-
-	while(degreesToTravel < encoderValue)
+*/
+	while(degreesToTravel > encoderValue)
 	{
 		forward(100);
 		encoderValue = getSingleEncoderValue();
