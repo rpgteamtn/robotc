@@ -20,7 +20,6 @@ int getSingleEncoderValue()
 }
 
 void setMotors(const int lfPower, const int lbPower, const int rfPower, const int rbPower)
-
 {
 	motor[leftFront] = lfPower;
 	motor[leftBack] = lbPower;
