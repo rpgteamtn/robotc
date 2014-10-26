@@ -8,7 +8,7 @@
 //Outputs: none
 
 #define DIAMETER 10 //centimeters
-#define CIRCUMFERENCE pi * DIAMETER
+#define CIRCUMFERENCE PI * DIAMETER
 
 void setMotors(const int lfPower, const int lbPower, const int rfPower, const int rbPower)
 
