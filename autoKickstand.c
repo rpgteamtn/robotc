@@ -72,7 +72,7 @@ void strategyC()//use if in possistion 2
 	gyroTurn(35);
 	forward(100);
 	wait1Msec(100000);
-	//travelDistance(distanceC1);
+	travelDistance(distanceC1);
 }
 
 void strategyB()//use if in possistion 3
@@ -88,7 +88,7 @@ void strategyB()//use if in possistion 3
 
 task main()
 {
-//	waitForStartOrButton();
+	waitForStartOrButton();
 	string text;
 	eraseDisplay();
 	float travelled = abs(findIR(HTIRS2));

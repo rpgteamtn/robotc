@@ -1,5 +1,5 @@
+// start rpgCommon.c
 #include "JoystickDriver.c"
-
 #define nxtOrange 3
 #define nxtLeft 2
 #define nxtRight 1
@@ -60,3 +60,5 @@ void waitTillNoButton()
 	nMotorEncoder[leftFront] = 0;
 	//nMotorEncoder[leftBack] = 0;
 }*/
+
+// end rpgCommon.c
