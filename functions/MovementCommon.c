@@ -1,6 +1,3 @@
-#define DIAMETER 2.25
-#define CIRCUMFERENCE PI * DIAMETER
-
 float calculateDist(const int encoderValue)
 {
 	float dist = encoderValue / 360.0 * CIRCUMFERENCE;
