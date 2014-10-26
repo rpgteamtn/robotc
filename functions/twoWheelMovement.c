@@ -8,7 +8,7 @@
 //Outputs: none
 
 #define DIAMETER 5.715
-#define CIRCUMFERENCE pi * DIAMETER
+#define CIRCUMFERENCE PI * DIAMETER
 
 int getSingleEncoderValue()
 {
