@@ -7,7 +7,7 @@
 //  lbPower: int for the power of the left back wheel
 //Outputs: none
 
-#define DIAMETER 2.25
+#define DIAMETER 5.715
 #define CIRCUMFERENCE 3.14 * DIAMETER
 
 int getSingleEncoderValue()
@@ -16,16 +16,16 @@ int getSingleEncoderValue()
 	return value;
 }
 
-float inchesToClicks(float inches)
+float cmToClicks(float centimeters)
 {
-	float clicks = inches * (360/(2.25 * 3.1416));
+	float clicks = centimeters * 360 / CIRCUMFERENCE;
 	return clicks;
 }
 
-float clicksToInches(float clicks)
+float clicksToCm(float clicks)
 {
-	float inches = clicks * ((2.25 * 3.1416)/360);
-	return inches;
+	float centimeters = clicks * CIRCUMFERENCE / 360;
+	return centimeters;
 }
 
 void setMotors(int left, int right)

@@ -7,7 +7,7 @@
 //  lbPower: int for the power of the left back wheel
 //Outputs: none
 
-#define DIAMETER 0
+#define DIAMETER 10 //centimeters
 #define CIRCUMFERENCE 3.14 * DIAMETER
 
 void setMotors(const int lfPower, const int lbPower, const int rfPower, const int rbPower)
@@ -27,16 +27,16 @@ void resetEncoders()
 	nMotorEncoder[leftBack] = 0;
 }
 
-float inchesToClicks(float inches)
+float cmToClicks(float centimeters)
 {
-	float clicks = inches * 90.553;
+	float clicks = centimeters * 1120 / CIRCUMFERENCE;
 	return clicks;
 }
 
-float clicksToInches(float clicks)
+float clicksToCm(float clicks)
 {
-	float inches = clicks * 0.01104;
-	return inches;
+	float centimeters = clicks * CIRCUMFERENCE / 1120;
+	return centimeters;
 }
 
 void leftTurn(const int power);
