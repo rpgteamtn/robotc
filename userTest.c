@@ -10,8 +10,10 @@
 
 /*This is a set of movement functions.  Goals: make the robot go forward, backwards, turn,
 and go to the side.  */
-#include "JoystickDriver.c"
-#include "functions\fourWheelMovement.c"
+#include "rpgCommon.c"
+#include "fourWheelMovement.c"
+#include "MovementCommon.c"
+
 #define deadZone 5
 
 task main()

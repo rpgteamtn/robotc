@@ -8,7 +8,16 @@
 //Outputs: none
 
 #define DIAMETER 10 //centimeters
-#define CIRCUMFERENCE pi * DIAMETER
+#define CIRCUMFERENCE PI * DIAMETER
+
+int getSingleEncoderValue()
+{
+	int value = (abs(nMotorEncoder[leftFront]) +
+	             abs(nMotorEncoder[leftBack]) +
+	             abs(nMotorEncoder[rightFront]) +
+	             abs(nMotorEncoder[rightBack])) / 4;
+	return value;
+}
 
 void setMotors(const int lfPower, const int lbPower, const int rfPower, const int rbPower)
 
@@ -39,7 +48,7 @@ float clicksToCm(float clicks)
 	return centimeters;
 }
 
-void leftTurn(const int power);
+void leftTurn(const int power)
 {
 	setMotors(-power, -power, power, power);
 }
