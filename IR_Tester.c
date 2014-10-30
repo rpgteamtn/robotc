@@ -7,7 +7,6 @@
 
 task main()
 {
-
 	eraseDisplay();
 	int ir;
 	while(true)
