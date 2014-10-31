@@ -1,5 +1,6 @@
 // start rpgCommon.c
 #include "JoystickDriver.c"
+
 #define nxtOrange 3
 #define nxtLeft 2
 #define nxtRight 1
@@ -15,10 +16,10 @@ void waitForStartOrButton()
 	while (true)
 	{
 		getJoystickSettings(joystick);
-		if (!joystick.StopPgm)      // normal FCS start condition
+/*		if (!joystick.StopPgm)      // normal FCS start condition
 		{
 			break;
-		}
+		} */
 
 		if (nNxtButtonPressed == nxtOrange)
 		{ // manual bypass start condition
