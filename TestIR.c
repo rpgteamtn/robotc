@@ -14,11 +14,11 @@
 
 /*int getIrReading(tSensors irReceiverPin)
 {
-  // IRLED 38 kHz for at least 2 ms
-  wait1Msec(1);                              // Wait 1 ms
-  int ir = SensorValue[irReceiverPin];      // IR receiver -> ir variable
-  wait1Msec(1);                              // Down time before recheck
-  return ir;
+// IRLED 38 kHz for at least 2 ms
+wait1Msec(1);                              // Wait 1 ms
+int ir = SensorValue[irReceiverPin];      // IR receiver -> ir variable
+wait1Msec(1);                              // Down time before recheck
+return ir;
 }*/
 
 void faceIR(tSensors ir_seeker)
@@ -43,6 +43,6 @@ void faceIR(tSensors ir_seeker)
 
 task main()
 {
-//	faceIR(IR);
+	//	faceIR(IR);
 	stopMotors();
 }

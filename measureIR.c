@@ -8,6 +8,7 @@
 #include "hitechnic-sensormux.h"     //Drivers for IR Beacon
 #include "hitechnic-irseeker-v2.h"
 //#include "programs\functions\Common.c"
+#include "IRsensor.c"
 
 
 #include "JoystickDriver.c"
@@ -47,14 +48,6 @@ void waitForStartOrButton()
 	return;
 }
 
-int getIRReading(tSensors ir_seeker)
-{
-	wait1Msec(1);                              // Wait 1 ms
-	int ir = HTIRS2readACDir(ir_seeker);      // IR receiver -> ir variable
-	wait1Msec(1);                              // Down time before recheck
-	return ir;
-}
-
 void goIR(tSensors ir_seeker)
 {
 	int	ir_value = getIRReading(ir_seeker);
@@ -68,7 +61,7 @@ void goIR(tSensors ir_seeker)
 
 float calculateDist(const int encoderValue)
 {
-	float dist = encoderValue / 360.0 * CIRCUMFERENCE;
+	float dist = encoderValue / CLICKSPERROTATION * CIRCUMFERENCE;
 	return dist;
 }
 

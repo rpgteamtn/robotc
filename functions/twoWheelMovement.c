@@ -9,6 +9,7 @@
 
 #define DIAMETER 5.715
 #define CIRCUMFERENCE PI * DIAMETER
+#define CLICKSPERROTATION 360.0
 
 int getSingleEncoderValue()
 {
@@ -34,14 +35,11 @@ void setMotors(int left, int right)
 	motor[rightFront] = right;
 }
 
-
 void resetEncoders()
 {
 	nMotorEncoder[rightFront] = 0;
 	nMotorEncoder[leftFront] = 0;
 }
-
-
 
 void leftTurn(const int power)
 {
