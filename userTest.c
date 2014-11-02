@@ -18,17 +18,12 @@ and go to the side.  */
 
 task main()
 {
+	eraseDisplay();
 	while(true)
 	{
 		getJoystickSettings(joystick);  // Update Buttons and Joysticks
 
-		string text;
-		sprintf(text, "y1 = %i", joystick.joy2_y1);
-		displayCenteredTextLine(4, text);
-
-		string text2;
-		sprintf(text2, "y2 = %i", joystick.joy2_y2);
-		displayCenteredTextLine(5, text2);
+		wait1Msec(1);
 
 		if((abs(joystick.joy1_y1) >= deadZone) || (abs(joystick.joy1_y2) >= deadZone))
 		{
