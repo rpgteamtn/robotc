@@ -11,14 +11,14 @@
 /*This is a set of movement functions.  Goals: make the robot go forward, backwards, turn,
 and go to the side.  */
 #include "fourWheelMovement.c"
-#include "rpgCommon.c"
-#include "MovementCommon.c"
 
 task main()
 {
-	while(true)
-	{
-		motor[mtr_S1_C1_1] = 100
-		wait1Msec(1000000000000);
-	}
+forward(50);
+wait1Msec(2000);
+stopMotors();
+wait1Msec(500);
+backward(50);
+wait1Msec(2000);
+stopMotors();
 }

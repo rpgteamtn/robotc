@@ -1,4 +1,4 @@
-#pragma config(Sensor, S3,     IR,             sensorHiTechnicIRSeeker1200)
+#pragma config(Sensor, S3,     IR,             sensorI2CCustom)
 #pragma config(Sensor, S4,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl, encoder)
