@@ -7,6 +7,15 @@
 #define nxtGrey 0
 #define noButton -1
 
+#define	JOY_BUTTON_X		01
+#define	JOY_BUTTON_A		02
+#define	JOY_BUTTON_B		03
+#define	JOY_BUTTON_Y		04
+#define	JOY_BUTTON_LB		05
+#define JOY_BUTTON_LT		07
+#define	JOY_BUTTON_RB		06
+#define JOY_BUTTON_RT		08
+
 // Function: waitForStartOrButton
 // Parameters:none
 // this funcation lets you press a button or wait for the start of the program
