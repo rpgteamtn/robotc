@@ -22,7 +22,7 @@ and go to the side.  */
 #include "rpgCommon.c"
 #include "MovementCommon.c"
 
-#define deadZone 5
+#define deadZone 10
 
 task main()
 {
