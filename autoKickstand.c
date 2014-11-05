@@ -11,7 +11,7 @@
 #include "IRsensor.c"
 #include "fourWheelMovement.c"
 #include "hitechnic-sensormux.h"     //Drivers for IR Beacon
-#include "gyroSensor.c"iikikikkk,lk,n +
+#include "gyroSensor.c"
 #include "gyroMovement.c"
 #include "MovementCommon.c"
 //#include "turnFunction.c"
