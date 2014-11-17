@@ -25,6 +25,7 @@
 #include "MovementCommon.c"
 //#include "turnFunction.c"
 
+//distences for finding the kickstand
 #define pointA 10
 #define pointB 44
 #define pointC 60
@@ -39,7 +40,7 @@
 #define distanceB3 13.0
 
 
-
+// Finds the IR and displays the encoders
 float findIR(tSensors ir_seeker)
 {
 	resetEncoders();
