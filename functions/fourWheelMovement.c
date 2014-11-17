@@ -37,13 +37,13 @@ void resetEncoders()
 
 float cmToClicks(float centimeters)
 {
-	float clicks = centimeters * 1120 / CIRCUMFERENCE;
+	float clicks = centimeters * 280 / CIRCUMFERENCE;
 	return clicks;
 }
 
 float clicksToCm(float clicks)
 {
-	float centimeters = clicks * CIRCUMFERENCE / 1120;
+	float centimeters = clicks * CIRCUMFERENCE / 280;
 	return centimeters;
 }
 

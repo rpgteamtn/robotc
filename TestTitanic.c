@@ -20,4 +20,15 @@ task main()
 {
 	motor[leftFront] = 50;
 	wait1Msec(1000);
+	motor[leftFront] = 0;
+	motor[rightFront] = 50;
+	wait1Msec(1000);
+	motor[rightFront] = 0;
+	motor[leftBack] = 50;
+	wait1Msec(1000);
+	motor[leftBack] = 0;
+	motor[rightBack] = 50;
+	wait1Msec(1000);
+	motor[rightBack] = 0;
+
 }

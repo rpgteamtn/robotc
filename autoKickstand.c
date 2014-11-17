@@ -52,13 +52,29 @@ float findIR(tSensors ir_seeker)
 		ir_value = getIRReading(ir_seeker);
 	}
 	stopMotors();
-	string text;
+	int lfEnc = (abs(nMotorEncoder[leftFront]));// + abs(nMotorEncoder[rightFront])) / 2; broken
+	int lbEnc = (abs(nMotorEncoder[leftBack]));// + abs(nMotorEncoder[rightFront])) / 2; brokein
+	int rfEnc = (abs(nMotorEncoder[rightFront]));// + abs(nMotorEncoder[rightFront])) / 2;
+	int rbEnc = abs(nMotorEncoder[rightBack]);// + abs(nMotorEncoder[rightFront])) / 2;
 
-	int encoderValue = (abs(nMotorEncoder[leftFront]) + abs(nMotorEncoder[rightFront])) / 2;
-	return calculateDist(encoderValue);
+	string text;
+	sprintf(text, "lf enc=%i", lfEnc);
+	displayCenteredTextLine(2, text);
+
+	sprintf(text, "lb enc=%i", lbEnc);
+	displayCenteredTextLine(3, text);
+
+	sprintf(text, "rf enc=%i", rfEnc);
+	displayCenteredTextLine(4, text);
+
+	sprintf(text, "rb enc=%i", rbEnc);
+	displayCenteredTextLine(5, text);
+
+	wait1Msec(200000);
+	return 300;//calculateDist(encoderValue);
 }
 
-void strategyA()//use if in 	posistion 1
+void strategyA()//use if in position 1
 {
 	leftTurn(50);
 	gyroTurn(90);
@@ -100,7 +116,9 @@ void strategyB()//use if in possistion 3
 
 task main()
 {
+	disableDiagnosticsDisplay();
 //	waitForStartOrButton();
+	resetEncoders();
 	string text;
 	eraseDisplay();
 	float travelled = abs(findIR(IR));
@@ -110,7 +128,8 @@ task main()
 	displayCenteredTextLine(5, text);
 
 	sprintf(text, "distance = %f", travelled);
-	displayCenteredTextLine(1, text);
+	displayCenteredTextLine(2, text);
+	wait1Msec(30000);
 
 	if(travelled <= pointA)
 	{
@@ -133,4 +152,5 @@ task main()
 		displayCenteredTextLine(2, "Strategy D");
 		strategyD();
 	}
+	wait1Msec(30000);
 }

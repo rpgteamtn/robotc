@@ -1,12 +1,12 @@
 float calculateDist(const int encoderValue)
 {
-	float dist = encoderValue / 360.0 * CIRCUMFERENCE;
+	float dist = encoderValue / 1120.0 * CIRCUMFERENCE;
 	return dist;
 }
 
 float calculateDegrees(const float dist)
 {
-	float degrees = dist / CIRCUMFERENCE * 360.0;
+	float degrees = dist / CIRCUMFERENCE * 1120.0;
 	return degrees;
 }
 
