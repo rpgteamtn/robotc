@@ -22,6 +22,11 @@
 float encoderValue;
 string text;
 
+// Function: waitForStartOrButton
+// Parameters: NONE
+// Outputs: NONE
+// description: Waits till the start of the match or the touch of a button
+
 void waitForStartOrButton()
 {
 	while (true)
@@ -48,6 +53,13 @@ void waitForStartOrButton()
 	return;
 }
 
+
+// Function: goIR
+// Parameters:
+//	Sensor: defines a sensor (AKA IR)
+// Outputs: NONE
+// description: Moves the robot till it is parallel to the IR beacon
+
 void goIR(tSensors ir_seeker)
 {
 	int	ir_value = getIRReading(ir_seeker);
@@ -58,6 +70,12 @@ void goIR(tSensors ir_seeker)
 		ir_value = getIRReading(ir_seeker);
 	}
 }
+
+// Function: calculateDist
+// Parameters:
+//	encodervalue: the value of a encoder
+// Outputs: float
+// description: calucates the of the robot via the encoder value
 
 float calculateDist(const int encoderValue)
 {
