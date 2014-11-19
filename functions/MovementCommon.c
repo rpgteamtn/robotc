@@ -1,12 +1,12 @@
 float calculateDist(const int encoderValue)
 {
-	float dist = encoderValue / 1120.0 * CIRCUMFERENCE;
+	float dist = encoderValue / PPR * CIRCUMFERENCE;
 	return dist;
 }
 
 float calculateDegrees(const float dist)
 {
-	float degrees = dist / CIRCUMFERENCE * 1120.0;
+	float degrees = dist / CIRCUMFERENCE * PPR;
 	return degrees;
 }
 
@@ -15,7 +15,6 @@ void travelDistance(const float distance)
 {
 	resetEncoders();
 
-	float degreesToTravel = calculateDegrees(distance);
 	int encoderValue = getSingleEncoderValue();
 /*
 	string text;
@@ -25,10 +24,11 @@ void travelDistance(const float distance)
 	displayCenteredTextLine(4, text);
 	wait1Msec(3000);
 */
-	while(degreesToTravel > encoderValue)
+	while(distance > calculateDist(encoderValue))
 	{
 		forward(100);
 		encoderValue = getSingleEncoderValue();
+		wait1Msec(1);
 	}
 	stopMotors();
 }

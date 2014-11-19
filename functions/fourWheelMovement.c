@@ -7,15 +7,14 @@
 //  lbPower: int for the power of the left back wheel
 //Outputs: none
 
-#define DIAMETER 10 //centimeters
+#define DIAMETER 10.0 //centimeters
 #define CIRCUMFERENCE PI * DIAMETER
+#define PPR 1120.0
 
 int getSingleEncoderValue()
 {
 	int value = (abs(nMotorEncoder[leftFront]) +
-	             abs(nMotorEncoder[leftBack]) +
-	             abs(nMotorEncoder[rightFront]) +
-	             abs(nMotorEncoder[rightBack])) / 4;
+	             abs(nMotorEncoder[rightFront]) / 2);
 	return value;
 }
 

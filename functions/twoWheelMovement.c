@@ -9,7 +9,7 @@
 
 #define DIAMETER 5.715
 #define CIRCUMFERENCE PI * DIAMETER
-#define CLICKSPERROTATION 360.0
+#define PPR 360.0
 
 int getSingleEncoderValue()
 {
@@ -19,13 +19,13 @@ int getSingleEncoderValue()
 
 float cmToClicks(float centimeters)
 {
-	float clicks = centimeters * 360 / CIRCUMFERENCE;
+	float clicks = centimeters * PPR / CIRCUMFERENCE;
 	return clicks;
 }
 
 float clicksToCm(float clicks)
 {
-	float centimeters = clicks * CIRCUMFERENCE / 360;
+	float centimeters = clicks * CIRCUMFERENCE / PPR;
 	return centimeters;
 }
 
