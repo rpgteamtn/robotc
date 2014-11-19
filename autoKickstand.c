@@ -25,7 +25,7 @@
 #include "MovementCommon.c"
 //#include "turnFunction.c"
 
-//distences for finding the kickstand
+//distances for finding the kickstand
 #define pointA 10
 #define pointB 44
 #define pointC 60
@@ -85,7 +85,7 @@ void strategyA()//use if in position 1
 	travelDistance(distanceA2);
 }
 
-void strategyD()//use if in posistion 1
+void strategyD()//use if in position 1
 {
 	leftTurn(50);
 	gyroTurn(90);
@@ -95,7 +95,7 @@ void strategyD()//use if in posistion 1
 	travelDistance(distanceD2);
 }
 
-void strategyC()//use if in possistion 2
+void strategyC()//use if in position 2
 {
 	leftTurn(50);
 	gyroTurn(35);
@@ -104,7 +104,7 @@ void strategyC()//use if in possistion 2
 	travelDistance(distanceC1);
 }
 
-void strategyB()//use if in possistion 3
+void strategyB()//use if in position 3
 {
 	travelDistance(distanceB1);
 	leftTurn(50);
