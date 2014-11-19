@@ -25,6 +25,11 @@
 #include "MovementCommon.c"
 //#include "turnFunction.c"
 
+// Function: FindIR
+// Parameters: Sensor
+//	Sensor:		what type of sensor(AKA IR)
+// description: Moves the robot till it is parallel to the IR beacon
+
 float findIR(tSensors ir_seeker)
 {
 	resetEncoders();
@@ -42,9 +47,10 @@ float findIR(tSensors ir_seeker)
 	return calculateDist(encoderValue);
 }
 
-	task main()
+
+task main()
 {
-string text;
+	string text;
 	eraseDisplay();
 	float travelled = abs(findIR(IR));
 	stopMotors();

@@ -25,6 +25,7 @@
 #include "MovementCommon.c"
 //#include "turnFunction.c"
 
+//distances for finding the kickstand
 #define pointA 50
 #define pointB 44
 #define pointC 60
@@ -39,7 +40,7 @@
 #define distanceB3 13.0
 
 
-
+// Finds the IR and displays the encoders
 float findIR(tSensors ir_seeker)
 {
 	disableDiagnosticsDisplay();
@@ -96,7 +97,7 @@ void strategyA()//use if in position 1
 	stopMotors();
 }
 
-void strategyD()//use if in posistion 1
+void strategyD()//use if in position 1
 {
 	string text;
 	sprintf(text, "Strategy D");
@@ -110,7 +111,7 @@ void strategyD()//use if in posistion 1
 	travelDistance(distanceD2);
 }
 
-void strategyC()//use if in posistion 2
+void strategyC()//use if in position 2
 {
 	string text;
 	sprintf(text, "Strategy C");
@@ -123,7 +124,7 @@ void strategyC()//use if in posistion 2
 	travelDistance(distanceC1);
 }
 
-void strategyB()//use if in posistion 3
+void strategyB()//use if in position 3
 {
 	string text;
 	sprintf(text, "Strategy B");
