@@ -50,13 +50,6 @@ void leftTurn(const int power)
 {
 	setMotors(-power, -power, power, power);
 }
-void leftTurnDegrees(const int degrees)
-{
-}
-
-void rightTurnDegrees(const int degrees)
-{
-}
 
 void rightTurn(const int power)
 {
