@@ -29,12 +29,9 @@
 #define pointA 50
 #define pointB 120
 #define pointC 150
-/*#define pointD 10000*/
 #define maxDistance 150
 #define distanceA1 45.0
 #define distanceA2 200.0
-#define distanceD1 55.0
-#define distanceD2 55.0
 #define distanceC1 160.0
 #define distanceC2 200.0
 #define distanceB1 230.0
@@ -94,61 +91,41 @@ void strategyA()//use if in position 1
 	travelDistance(distanceA1);
 	leftTurn(50);
 	gyroTurn(90);
-/*	leftTurn(50);
-	wait1Msec(730);*/
 	stopMotors();
 	travelDistance(distanceA2);
 	stopMotors();
 }
 
-void strategyD()//use if in position 1
+void strategyB()//use if in position 2
 {
 	string text;
-	sprintf(text, "Strategy D");
+	sprintf(text, "Strategy B");
 	displayCenteredTextLine(1, text);
-	wait1Msec(200000000);
 	leftTurn(50);
-	gyroTurn(90);
-	travelDistance(distanceD1);
-	leftTurn(50);
-	gyroTurn(90);
-	travelDistance(distanceD2);
+	gyroTurn(40);
+	travelDistance(distanceB1);
+	stopMotors();
 }
 
-void strategyC()//use if in position 2
+void strategyC()//use if in position 3
 {
 	string text;
 	sprintf(text, "Strategy C");
 	displayCenteredTextLine(1, text);
 	leftTurn(50);
 	gyroTurn(90);
-	travelDistance(distanceC1);
 	stopMotors();
-	wait1Msec(500);
+	travelDistance(distanceC1);
 	rightTurn(50);
 	gyroTurn(70);
+	stopMotors();
 	travelDistance(distanceC2);
-	}
-
-void strategyB()//use if in position 3
-{
-	string text;
-	sprintf(text, "Strategy B");
-	displayCenteredTextLine(1, text);
-	/*travelDistance(distanceB1);*/
-	leftTurn(50);
-	gyroTurn(40);
-	travelDistance(distanceB1);
-	stopMotors();/*
-	leftTurn(50);
-	gyroTurn(90);
-	travelDistance(distanceB3);*/
 }
 
 task main()
 {
 	disableDiagnosticsDisplay();
-//	waitForStartOrButton();
+	//	waitForStartOrButton();
 	resetEncoders();
 	string text;
 	eraseDisplay();
@@ -171,10 +148,4 @@ task main()
 		displayCenteredTextLine(2, "Strategy C");
 		strategyC();
 	}
-/*	else if(travelled <= pointD)
-	{
-		displayCenteredTextLine(2, "Strategy D");
-		strategyD();
-	}
-	wait1Msec(30000);*/
 }
