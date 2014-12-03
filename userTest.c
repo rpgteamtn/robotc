@@ -1,4 +1,4 @@
-#pragma config(Hubs,  S1, HTMotor,  HTMotor,  none,     none)
+#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
 #pragma config(Hubs,  S2, HTServo,  none,     none,     none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S2,     ,               sensorI2CMuxController)
@@ -8,6 +8,8 @@
 #pragma config(Motor,  mtr_S1_C1_2,     leftBack,      tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C2_1,     rightFront,    tmotorTetrix, openLoop, reversed, encoder)
 #pragma config(Motor,  mtr_S1_C2_2,     rightBack,     tmotorTetrix, openLoop, reversed, encoder)
+#pragma config(Motor,  mtr_S1_C3_1,     rightCollecter, tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C3_2,     leftCollecter, tmotorTetrix, openLoop)
 #pragma config(Servo,  srvo_S2_C1_1,    goalCapture,          tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S2_C1_3,    servo3,               tServoNone)
@@ -32,6 +34,29 @@ task main()
 
 		wait1Msec(1);
 
+		/*--------------------------
+		controller one
+		-------------------------*/
+		/*-------------------------
+		maping
+		---------------------------
+		up =
+		down =
+		left = strafe left
+		right = strafe right
+		joystick left = left motors
+		joystick right = right motors
+		A = catcher down
+		B =	catcher up
+		X =
+		Y =
+		L1 =
+		L2 =
+		R1 =
+		R2 =
+		---------------------------*/
+
+
 		if((abs(joystick.joy1_y1) >= deadZone) || (abs(joystick.joy1_y2) >= deadZone))
 		{
 			setMotion(joystick.joy1_y1, joystick.joy1_y2);
@@ -48,7 +73,7 @@ task main()
 		{
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 10;					// Set servo position
+			servo[goalCapture] = 66;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
@@ -56,13 +81,60 @@ task main()
 		{
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 255;					// Set servo position
+			servo[goalCapture] = 200;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
 		else
 		{
 			stopMotors();
+		}
+
+		/*--------------------------
+		controller two
+		-------------------------*/
+		/*-------------------------
+		maping
+		---------------------------
+		up =
+		down =
+		left =
+		right =
+		joystick left =
+		joystick right =
+		A =
+		B =
+		X =
+		Y =
+		LB = big backward
+		LT = big forward
+		RB = small backward
+		RT = small forward
+		---------------------------*/
+
+		if(joy2btn(JOY_BUTTON_LB))
+		{
+			motor[leftCollecter] = -100;
+		}
+
+		else if(joy2btn(JOY_BUTTON_LT))
+		{
+			motor[leftCollecter] = 100;
+		}
+
+		else if(joy2btn(JOY_BUTTON_RB))
+		{
+			motor[rightCollecter] = 100;
+		}
+
+		else if(joy2btn(JOY_BUTTON_RT))
+		{
+			motor[rightCollecter] = -100;
+		}
+
+		else
+		{
+			stop2ndMotors();
 		}
 	}
 }
