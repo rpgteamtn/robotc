@@ -32,7 +32,7 @@
 #define pointB 120
 #define pointC 150
 #define maxDistance 150
-#define distanceA1 45.0
+#define distanceA1 60.0
 #define distanceA2 200.0
 #define distanceC1 160.0
 #define distanceC2 200.0
@@ -55,8 +55,8 @@ float findIR(tSensors ir_seeker)
 		ir_value = getIRReading(ir_seeker);
 	}
 	stopMotors();
-	int lfEnc = (abs(nMotorEncoder[leftFront]));// + abs(nMotorEncoder[rightFront])) / 2; broken
-	int lbEnc = (abs(nMotorEncoder[leftBack]));// + abs(nMotorEncoder[rightFront])) / 2; brokein
+	int lfEnc = (abs(nMotorEncoder[leftFront]));// + abs(nMotorEncoder[rightFront])) / 2;
+	int lbEnc = (abs(nMotorEncoder[leftBack]));// + abs(nMotorEncoder[rightFront])) / 2;
 	int rfEnc = (abs(nMotorEncoder[rightFront]));// + abs(nMotorEncoder[rightFront])) / 2;
 	int rbEnc = (abs(nMotorEncoder[rightBack]));// + abs(nMotorEncoder[rightFront])) / 2;
 	float avgEnc = (lfEnc + rfEnc) / 2.0;
@@ -104,7 +104,7 @@ void strategyB()//use if in position 2
 	sprintf(text, "Strategy B");
 	displayCenteredTextLine(1, text);
 	leftTurn(50);
-	gyroTurn(40);
+	gyroTurn(30);
 	travelDistance(distanceB1);
 	stopMotors();
 }

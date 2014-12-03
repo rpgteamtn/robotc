@@ -22,7 +22,7 @@ void gyroTurn(float fDegrees)
 	float	fCurrent = 0.0;
 	float fRotSpeed = 0.0;
 
-	HTGYROstartCal(gyro);
+//	HTGYROstartCal(gyro);
 
 	do
 	{
