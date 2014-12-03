@@ -71,4 +71,11 @@ void waitTillNoButton()
 	//nMotorEncoder[leftBack] = 0;
 }*/
 
+void stop2ndmotors()
+{
+	motor[leftCollecter] = 0;
+	motor[rightCollecter] = 0;
+}
+
+
 // end rpgCommon.c
