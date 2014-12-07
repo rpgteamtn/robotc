@@ -13,8 +13,7 @@
 
 int getSingleEncoderValue()
 {
-	int value = (abs(nMotorEncoder[leftFront]) +
-	             abs(nMotorEncoder[rightFront]) / 2);
+	int value = (abs(nMotorEncoder[leftFront]) + abs(nMotorEncoder[rightFront]) / 2);
 	return value;
 }
 
