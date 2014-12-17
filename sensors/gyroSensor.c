@@ -1,4 +1,3 @@
-
 #pragma systemFile
 
 #ifndef GYRO_SENSOR

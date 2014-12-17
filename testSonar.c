@@ -7,12 +7,13 @@
 #include "rpgCommon.c"
 #include "twoWheelMovement.c"
 #include "gyroSensor.c"
+#include "sonarSensor.c"
 
 task main()
 {
-	gyroLeftTurn(90, 50);
+	wait1Msec(500);
+	findGoal(100);
 	stopMotors();
-	wait1Msec(1000);
-	gyroRightTurn(90, 50);
-	stopMotors();
+	wait1Msec(500);
+	approach(15);
 }
