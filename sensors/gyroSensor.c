@@ -17,12 +17,15 @@
 //	iDegrees:		Number of degrees to turn
 // Monitor the Gyro Sensor and return when the correct number
 // of degrees is reached.
-void gyroTurn(float fDegrees)
+void gyroLeftTurn(float fDegrees, int speed)
 {
+	HTGYROstartCal(gyro);
+	wait1Msec(100);
+
+	leftTurn(speed);
+
 	float	fCurrent = 0.0;
 	float fRotSpeed = 0.0;
-
-//	HTGYROstartCal(gyro);
 
 	do
 	{
@@ -32,4 +35,24 @@ void gyroTurn(float fDegrees)
 		fCurrent += fRotSpeed * (MEASUREMENT_MS / 1000.0);
 	} while (abs(fCurrent) <= fDegrees);
 }
+
+void gyroRightTurn(float fDegrees, int speed)
+{
+	HTGYROstartCal(gyro);
+	wait1Msec(100);
+
+	rightTurn(speed);
+
+	float	fCurrent = 0.0;
+	float fRotSpeed = 0.0;
+
+	do
+	{
+		wait1Msec(MEASUREMENT_MS);
+		fRotSpeed = HTGYROreadRot(gyro);
+
+		fCurrent += fRotSpeed * (MEASUREMENT_MS / 1000.0);
+	} while (abs(fCurrent) <= fDegrees);
+}
+
 #endif

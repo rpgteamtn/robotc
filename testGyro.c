@@ -9,15 +9,9 @@
 
 task main()
 {
-	HTGYROstartCal(gyro);
-	wait1Msec(100);
-	leftTurn(10);
-	gyroTurn(90);
+	gyroLeftTurn(90, 50);
 	stopMotors();
 	wait1Msec(1000);
-	HTGYROstartCal(gyro);
-	wait1Msec(100);
-	rightTurn(10);
-	gyroTurn(90);
+	gyroRightTurn(90, 50);
 	stopMotors();
 }
