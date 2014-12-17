@@ -1,6 +1,6 @@
 void approach(float distance)
 {
-	point = sensorValue[sonar];
+	int point = sensorValue[sonar];
 	while (sensorValue[sonar] > distance)
 	{
 		if (sensorValue[sonar] <= point)
@@ -12,7 +12,7 @@ void approach(float distance)
 			do
 			{
 				rightTurn(50);
-			} while (sensorValue[sonar] > point
+			} while (sensorValue[sonar] > point)
 		}
 		else
 		{
