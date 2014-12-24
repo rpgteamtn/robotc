@@ -12,7 +12,7 @@
 task main()
 {
 	wait1Msec(500);
-	findGoal(100);
-	wait1Msec(500);
+//	findGoal(150);
+//	wait1Msec(500);
 	approach(15);
 }

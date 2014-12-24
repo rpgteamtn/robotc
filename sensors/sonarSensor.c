@@ -20,7 +20,16 @@ void approach(float distance)
 			do
 			{
 				rightTurn(50);
-			} while (sensorValue[sonar] > point)
+				clearTimer(T1);
+			} while ((sensorValue[sonar] > point) && (time1[T1] <= 50))
+				if (sensorValue[sonar] > point)
+			{
+				do
+				{
+					leftTurn(50);
+				}
+				while (sensorValue[sonar] > point)
+			}
 		}
 		/*I don't know what happened, so stop*/
 		else

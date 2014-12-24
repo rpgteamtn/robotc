@@ -88,3 +88,9 @@ void strafe(const int forward)
 	int reverse = -1 * forward;
 	setMotors(reverse, forward, forward, reverse);
 }
+
+void lift(const int power)
+{
+	motor[liftRight] = power;
+	motor[liftLeft] = power;
+}
