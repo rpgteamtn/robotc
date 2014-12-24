@@ -13,7 +13,6 @@ task main()
 {
 	wait1Msec(500);
 	findGoal(100);
-	stopMotors();
 	wait1Msec(500);
 	approach(15);
 }
