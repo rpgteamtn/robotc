@@ -49,7 +49,7 @@
 //Mux
 #include "hitechnic-sensormux.h"
 
-#define MUX1 	 msensor_S4_1
-#define Gyro 	 msensor_S4_2
-#define Sonar  msensor_S4_3
-#define IR     msensor_S4_4
+#define MUX1 		 msensor_S4_1
+#define Sonar 	 msensor_S4_2
+#define Gyro	 	 msensor_S4_3
+#define IR    	 msensor_S4_4
