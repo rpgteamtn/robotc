@@ -18,13 +18,14 @@
 // of degrees is reached.
 void gyroLeftTurn(float fDegrees, int speed)
 {
+//	wait1Msec(1000);
 	HTGYROstartCal(gyro);
 	wait1Msec(100);
 
-	leftTurn(speed);
-
 	float	fCurrent = 0.0;
 	float fRotSpeed = 0.0;
+
+	leftTurn(speed);
 
 	do
 	{
@@ -32,7 +33,7 @@ void gyroLeftTurn(float fDegrees, int speed)
 		fRotSpeed = HTGYROreadRot(gyro);
 
 		fCurrent += fRotSpeed * (MEASUREMENT_MS / 1000.0);
-	} while (abs(fCurrent) <= fDegrees);
+	} while (abs(fCurrent) < fDegrees);
 }
 
 void gyroRightTurn(float fDegrees, int speed)
@@ -40,10 +41,10 @@ void gyroRightTurn(float fDegrees, int speed)
 	HTGYROstartCal(gyro);
 	wait1Msec(100);
 
-	rightTurn(speed);
-
 	float	fCurrent = 0.0;
 	float fRotSpeed = 0.0;
+
+	rightTurn(speed);
 
 	do
 	{
@@ -51,7 +52,7 @@ void gyroRightTurn(float fDegrees, int speed)
 		fRotSpeed = HTGYROreadRot(gyro);
 
 		fCurrent += fRotSpeed * (MEASUREMENT_MS / 1000.0);
-	} while (abs(fCurrent) <= fDegrees);
+	} while (abs(fCurrent) < fDegrees);
 }
 
 #endif
