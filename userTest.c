@@ -1,8 +1,11 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
 #pragma config(Sensor, S3,     touch,          sensorTouch)
-#pragma config(Sensor, S4,     gyro,           sensorNone)
+#pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop, encoder)
+#pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
+#pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_2,     leftBack,      tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_1,     liftRight,     tmotorTetrix, openLoop)
@@ -22,6 +25,14 @@ and go to the side.  */
 #include "fourWheelMovement.c"
 #include "rpgCommon.c"
 #include "MovementCommon.c"
+
+#include "hitechnic-sensormux.h"
+
+#define MUX1 	 msensor_S4_1
+#define gyro 	 msensor_S4_2
+#define sonar  msensor_S4_3
+#define IR     msensor_S4_4
+
 
 #define deadZone 10
 
@@ -68,11 +79,15 @@ task main()
 		{
 			strafe(-50);
 		}
-		else if(joy1Btn(JOY_BUTTON_A))
+		else
+		{
+			stopMotors();
+		}
+		if(joy1Btn(JOY_BUTTON_A))
 		{
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 66;					// Set servo position
+			servo[goalCapture] = 105;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
@@ -84,10 +99,7 @@ task main()
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
-		else
-		{
-			stopMotors();
-		}
+
 
 		/*--------------------------
 		controller two
@@ -114,36 +126,46 @@ task main()
 		if(joy2Btn(JOY_BUTTON_A))
 		{
 			lift(100);
-			wait1Msec(50); //TIME IS OFF - go until 30cm
+			wait1Msec(2000); //TIME IS OFF - go until 30cm
+			lift(0);
 		}
 
 		else if(joy2btn(JOY_BUTTON_B))
 		{
 			lift(100);
-			wait1Msec(100); //TIME IS OFF - go until 60cm
+			wait1Msec(2000); //TIME IS OFF - go until 60cm
+			lift(0);
 		}
 
 		else if(joy2btn(JOY_BUTTON_Y))
 		{
-			motor[spinner] = 100;
-			wait1Msec(30); //TIME IS OFF - go until 90cm
+			lift(100);
+			wait1Msec(2000); //TIME IS OFF - go until 90cm
+			lift(0);
 		}
 
 		else if(joy2btn(JOY_BUTTON_X))
 		{
-			motor[spinner] = 100;
-			wait1Msec(120); //TIME IS OFF - go until the top
+			lift(100);
+			wait1Msec(2000); //TIME IS OFF - go until the top
+			lift(0);
 		}
 
 		else if(joy2btn(JOY_BUTTON_RT))
 		{
 			lift(-100);
-			wait1Msec(50);
+			wait1Msec(2000); //return to the bottom
+			lift(0);
 		}
 
-		/*else
+		if((abs(joystick.joy2_y1) >= deadZone)
 		{
-		stop2ndMotors();
-		}*/
+			spin(rescale(joystick.joy2_y1));
+		}
+
+		else
+		{
+			spin(0);
+		}
 	}
 }
