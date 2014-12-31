@@ -1,17 +1,32 @@
 #include "fourWheelMovement.c"
 
-int target = 00 ;// wanted hight in CM
+int target;// wanted hight in CM
+int liftPower;
 bool bRunning = false;// is running
 bool otherTask = false;
 
 task Lift()
 {
-	resetLiftEncoders();
 	int encoderLift = getEncoder();
+
+	if(encoderLift > target)
+	{
+		liftPower = -70;
+	}
+
+	else if(encoderLift < target)
+	{
+		liftPower = 70;
+	}
+
+	else
+	{
+		stopTask(Lift);
+	}
 
 	while((bRunning == true) &&  (encoderLift != target))
 	{
-		lift(70);
+		lift(liftPower);
 	}
 	bRunning = false;
 }
