@@ -106,3 +106,15 @@ void stopLiftMotors()
 	motor[liftRight] = 0;
 	motor[spinner] = 0;
 }
+
+void resetLiftEncoders()
+{
+	nMotorEncoder[liftRight] = 0;
+	nMotorEncoder[liftLeft] = 0;
+}
+
+int getEncoder()
+{
+	int value = (abs(nMotorEncoder[liftLeft]) + abs(nMotorEncoder[liftRight]) / 2);
+	return value;
+}
