@@ -132,7 +132,7 @@ float HTGYROstartCal(tMUXSensor muxsensor) {
   // Take 5 readings and average them out
   for (int i = 0; i < 50; i++) {
     _avgdata += HTSMUXreadAnalogue(muxsensor);
-    wait1Msec(50);
+    wait1Msec(5);
   }
 
   // Store new offset
