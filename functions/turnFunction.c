@@ -4,7 +4,7 @@
 
 //#include "twoWheelMovement.c"
 
-typedef enum {dRight, dLeft } eDirection;
+
 
 float fWheelCir;
 float fTurnCir;
