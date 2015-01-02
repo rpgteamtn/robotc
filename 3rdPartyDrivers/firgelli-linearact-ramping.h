@@ -1,6 +1,4 @@
-/*
- * $Id: firgelli-linearact-ramping.h 133 2013-03-10 15:15:38Z xander $
- */
+
 
 #ifndef __FLAC_H__
 #define __FLAC_H__
@@ -18,14 +16,13 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (mightor@gmail.com), version 0.1
  * \date 16 february 2010
  * \version 0.1
  * \example firgelli-linearact-test1.c
  */
-
 
 #define STALL_TIME_SLOW   2000             /*!< Counter to check if motor is stalled when motor speeds are < 50 */
 #define STALL_TIME_FAST   1000             /*!< Counter to check if motor is stalled when motor speeds are >= 50 */
@@ -36,28 +33,26 @@ long _motorHighPower[3] = {0, 0, 0};      /*!< High Power - top speed of the mot
 bool _ramping[3] = {true, true, true };   /*!< Are we ramping? - INTERNAL */
 bool _stalled[3] = {false, false, false}; /*!< Are we stalling? - INTERNAL */
 
-
 // tasks
 task _FLACcontrolTaskA();
 task _FLACcontrolTaskB();
 task _FLACcontrolTaskC();
 
 // Functions
-void _FLACcontrolTasks(tMotor _motor, int _highPower, long _encTarget, bool _ramp);
+void _FLACcontrolTasks(tMotor _motor, short _highPower, long _encTarget, bool _ramp);
 
 bool isDone(tMotor _motor);
-void FLACextendLA(tMotor _motor, int _highPower);
-void FLACextendLA(tMotor _motor, int _highPower, int distance);
-void FLACextendLA(tMotor _motor, int _highPower, int distance, bool ramp);
-void FLACtretractLA(tMotor _motor, int _highPower);
-void FLACtretractLA(tMotor _motor, int _highPower, int distance);
-void FLACtretractLA(tMotor _motor, int _highPower, int distance, bool ramp);
-void FLACmoveLA(tMotor _motor, int highpower, int pos);
-
+void FLACextendLA(tMotor _motor, short _highPower);
+void FLACextendLA(tMotor _motor, short _highPower, short distance);
+void FLACextendLA(tMotor _motor, short _highPower, short distance, bool ramp);
+void FLACtretractLA(tMotor _motor, short _highPower);
+void FLACtretractLA(tMotor _motor, short _highPower, short distance);
+void FLACtretractLA(tMotor _motor, short _highPower, short distance, bool ramp);
+void FLACmoveLA(tMotor _motor, short highpower, short pos);
 
 // Task to control motor A
 task _FLACcontrolTaskA() {
-  int _motorPower = 0;                // power
+  short _motorPower = 0;                // power
   long _currentEncVal;                // _currentEncVal encoder value
   long _initialEncVal = 0;
   long _rampDownEncCount = 0;
@@ -66,7 +61,7 @@ task _FLACcontrolTaskA() {
   bool _done = false;
   long _lastEncoderCount = 0;
   long _timerA = 0;
-  int _rampDist = 0;
+  short _rampDist = 0;
 
   bMotorReflected[motorA] = true;
 
@@ -94,12 +89,12 @@ task _FLACcontrolTaskA() {
     if (_rampDist > 10)  _rampDist = 10;
     else if(_rampDist < -10) _rampDist = -10;
 
-		_rampUpEncCount =   _initialEncVal + _rampDist;
-		_rampDownEncCount = _encoderTarget[motorA] - _rampDist;
-	  _ramping[motorA] = true;
-	} else {
-	  _ramping[motorA] = false;
-	}
+    _rampUpEncCount =   _initialEncVal + _rampDist;
+    _rampDownEncCount = _encoderTarget[motorA] - _rampDist;
+    _ramping[motorA] = true;
+  } else {
+    _ramping[motorA] = false;
+  }
 
   while (!_done) {
     _currentEncVal = nMotorEncoder[motorA];
@@ -150,15 +145,14 @@ task _FLACcontrolTaskA() {
       motor[motorA] = (_reverse) ? -_motorPower : _motorPower;
     // update the _lastEncoderCount for the stall detection
     _lastEncoderCount = _currentEncVal;
-    EndTimeSlice();
+    sleep(1);
   }
   motor[motorA] = 0; //turn motor off
 }
 
-
 // Task to control motor B
 task _FLACcontrolTaskB() {
-  int _motorPower = 0;                // power
+  short _motorPower = 0;                // power
   long _currentEncVal;               // _currentEncVal encoder value
   long _initialEncVal = 0;
   long _rampDownEncCount = 0;
@@ -167,7 +161,7 @@ task _FLACcontrolTaskB() {
   bool _done = false;
   long _lastEncoderCount = 0;
   long _timerA = 0;
-  int _rampDist = 0;
+  short _rampDist = 0;
 
   bMotorReflected[motorB] = true;
 
@@ -195,12 +189,12 @@ task _FLACcontrolTaskB() {
     if (_rampDist > 10)  _rampDist = 10;
     else if(_rampDist < -10) _rampDist = -10;
 
-		_rampUpEncCount =   _initialEncVal + _rampDist;
-		_rampDownEncCount = _encoderTarget[motorB] - _rampDist;
-	  _ramping[motorB] = true;
-	} else {
-	  _ramping[motorB] = false;
-	}
+    _rampUpEncCount =   _initialEncVal + _rampDist;
+    _rampDownEncCount = _encoderTarget[motorB] - _rampDist;
+    _ramping[motorB] = true;
+  } else {
+    _ramping[motorB] = false;
+  }
 
   while (!_done) {
     _currentEncVal = nMotorEncoder[motorB];
@@ -251,15 +245,14 @@ task _FLACcontrolTaskB() {
 
     // update the _lastEncoderCount for the stall detection
     _lastEncoderCount = _currentEncVal;
-    EndTimeSlice();
+    sleep(1);
   }
   motor[motorB] = 0; //turn motor off
 }
 
-
 // Task to control motor C
 task _FLACcontrolTaskC() {
-  int _motorPower = 0;                // power
+  short _motorPower = 0;                // power
   long _currentEncVal;               // _currentEncVal encoder value
   long _initialEncVal = 0;
   long _rampDownEncCount = 0;
@@ -268,7 +261,7 @@ task _FLACcontrolTaskC() {
   bool _done = false;
   long _lastEncoderCount = 0;
   long _timerA = 0;
-  int _rampDist = 0;
+  short _rampDist = 0;
 
   bMotorReflected[motorC] = true;
 
@@ -296,12 +289,12 @@ task _FLACcontrolTaskC() {
     if (_rampDist > 10)  _rampDist = 10;
     else if(_rampDist < -10) _rampDist = -10;
 
-		_rampUpEncCount =   _initialEncVal + _rampDist;
-		_rampDownEncCount = _encoderTarget[motorC] - _rampDist;
-	  _ramping[motorC] = true;
-	} else {
-	  _ramping[motorC] = false;
-	}
+    _rampUpEncCount =   _initialEncVal + _rampDist;
+    _rampDownEncCount = _encoderTarget[motorC] - _rampDist;
+    _ramping[motorC] = true;
+  } else {
+    _ramping[motorC] = false;
+  }
 
   while (!_done) {
     _currentEncVal = nMotorEncoder[motorC];
@@ -352,11 +345,10 @@ task _FLACcontrolTaskC() {
 
     // update the _lastEncoderCount for the stall detection
     _lastEncoderCount = _currentEncVal;
-    EndTimeSlice();
+    sleep(1);
   }
   motor[motorC] = 0; //turn motor off
 }
-
 
 /**
  * Stop and start the motor control tasks and set their parameters.
@@ -366,67 +358,66 @@ task _FLACcontrolTaskC() {
  * @param _highPower the highest speed the motor should turn at
  * @param _encTarget the target the motor should move to
  */
-void _FLACcontrolTasks(tMotor _motor, int _highPower, long _encTarget, bool _ramp) {
+void _FLACcontrolTasks(tMotor _motor, short _highPower, long _encTarget, bool _ramp) {
   switch(_motor) {
     case motorA:
-		  if (getTaskState(_FLACcontrolTaskA) == taskStateRunning) {
-		    StopTask(_FLACcontrolTaskA);
-		    while(getTaskState(_FLACcontrolTaskA) != taskStateStopped) EndTimeSlice();
-		    wait1Msec(50);
-		    motor[motorA] = 0;
-		  }
-		  if (_ramp && (_highPower > 30))
-		    _motorLowPower[_motor] = 30;
-		  else
-		    _motorLowPower[_motor] = _highPower;
+      if (getTaskState(_FLACcontrolTaskA) == taskStateRunning) {
+        stopTask(_FLACcontrolTaskA);
+        while(getTaskState(_FLACcontrolTaskA) != taskStateStopped) sleep(1);
+        sleep(50);
+        motor[motorA] = 0;
+      }
+      if (_ramp && (_highPower > 30))
+        _motorLowPower[_motor] = 30;
+      else
+        _motorLowPower[_motor] = _highPower;
 
-		  _motorHighPower[_motor] = _highPower;
-		  _encoderTarget[_motor] = _encTarget;
+      _motorHighPower[_motor] = _highPower;
+      _encoderTarget[_motor] = _encTarget;
 
-		  StartTask(_FLACcontrolTaskA);
-			while(getTaskState(_FLACcontrolTaskA) != taskStateRunning) EndTimeSlice();
-		  break;
+      startTask(_FLACcontrolTaskA);
+      while(getTaskState(_FLACcontrolTaskA) != taskStateRunning) sleep(1);
+      break;
 
     case motorB:
-		  if (getTaskState(_FLACcontrolTaskB) == taskStateRunning) {
-		    StopTask(_FLACcontrolTaskA);
-		    while(getTaskState(_FLACcontrolTaskB) != taskStateStopped) EndTimeSlice();
-		    wait1Msec(50);
-		    motor[motorB] = 0;
-		  }
-		  if (_ramp && (_highPower > 30))
-		    _motorLowPower[_motor] = 30;
-		  else
-		    _motorLowPower[_motor] = _highPower;
+      if (getTaskState(_FLACcontrolTaskB) == taskStateRunning) {
+        stopTask(_FLACcontrolTaskA);
+        while(getTaskState(_FLACcontrolTaskB) != taskStateStopped) sleep(1);
+        sleep(50);
+        motor[motorB] = 0;
+      }
+      if (_ramp && (_highPower > 30))
+        _motorLowPower[_motor] = 30;
+      else
+        _motorLowPower[_motor] = _highPower;
 
-		  _motorHighPower[_motor] = _highPower;
-		  _encoderTarget[_motor] = _encTarget;
+      _motorHighPower[_motor] = _highPower;
+      _encoderTarget[_motor] = _encTarget;
 
-		  StartTask(_FLACcontrolTaskB);
-			while(getTaskState(_FLACcontrolTaskB) != taskStateRunning) EndTimeSlice();
-		  break;
+      startTask(_FLACcontrolTaskB);
+      while(getTaskState(_FLACcontrolTaskB) != taskStateRunning) sleep(1);
+      break;
 
     case motorC:
-		  if (getTaskState(_FLACcontrolTaskC) == taskStateRunning) {
-		    StopTask(_FLACcontrolTaskC);
-		    while(getTaskState(_FLACcontrolTaskC) != taskStateStopped) EndTimeSlice();
-		    wait1Msec(50);
-		    motor[motorC] = 0;
-		  }
-		  if (_ramp && (_highPower > 30))
-		    _motorLowPower[_motor] = 30;
-		  else
-		    _motorLowPower[_motor] = _highPower;
+      if (getTaskState(_FLACcontrolTaskC) == taskStateRunning) {
+        stopTask(_FLACcontrolTaskC);
+        while(getTaskState(_FLACcontrolTaskC) != taskStateStopped) sleep(1);
+        sleep(50);
+        motor[motorC] = 0;
+      }
+      if (_ramp && (_highPower > 30))
+        _motorLowPower[_motor] = 30;
+      else
+        _motorLowPower[_motor] = _highPower;
 
-		  _motorHighPower[_motor] = _highPower;
-		  _encoderTarget[_motor] = _encTarget;
+      _motorHighPower[_motor] = _highPower;
+      _encoderTarget[_motor] = _encTarget;
 
-		  StartTask(_FLACcontrolTaskC);
-			while(getTaskState(_FLACcontrolTaskC) != taskStateRunning) EndTimeSlice();
-		  break;
-	}
+      startTask(_FLACcontrolTaskC);
+      while(getTaskState(_FLACcontrolTaskC) != taskStateRunning) sleep(1);
+      break;
+  }
 }
-
 
 /**
  * Check if the motor is done with the current operation
@@ -442,7 +433,6 @@ bool isDone(tMotor _motor) {
   return false;
 }
 
-
 /**
  * Check if the motor stalled on the last operation
  * @param _motor the motor to be checked
@@ -452,17 +442,15 @@ bool isStalled(tMotor _motor) {
   return _stalled[_motor];
 }
 
-
 /**
  * Extend the Linear Actuator fully until stalled.
  * @param _motor the motor to be controlled
  * @param _highPower the highest speed the motor should turn at
  */
-void FLACextendLA(tMotor _motor, int _highPower) {
+void FLACextendLA(tMotor _motor, short _highPower) {
   _FLACcontrolTasks(_motor, _highPower, 210, false);
   _stalled[_motor] = false;
 }
-
 
 /**
  * Extend the Linear Actuator without ramping.
@@ -470,12 +458,11 @@ void FLACextendLA(tMotor _motor, int _highPower) {
  * @param _highPower the highest speed the motor should turn at
  * @param distance the number of encoder ticks (0.5mm) the actuator should move
  */
-void FLACextendLA(tMotor _motor, int _highPower, int distance) {
+void FLACextendLA(tMotor _motor, short _highPower, short distance) {
   distance += nMotorEncoder[_motor];
   _FLACcontrolTasks(_motor, _highPower, distance, false);
   _stalled[_motor] = false;
 }
-
 
 /**
  * Extend the Linear Actuator.
@@ -484,12 +471,11 @@ void FLACextendLA(tMotor _motor, int _highPower, int distance) {
  * @param distance the number of encoder ticks (0.5mm) the actuator should move
  * @param ramp whether or not the motor should be ramped up and down
  */
-void FLACextendLA(tMotor _motor, int _highPower, int distance, bool ramp) {
+void FLACextendLA(tMotor _motor, short _highPower, short distance, bool ramp) {
   distance += nMotorEncoder[_motor];
   _FLACcontrolTasks(_motor, _highPower, distance, ramp);
   _stalled[_motor] = false;
 }
-
 
 /**
  * Retract the Linear Actuator fully until stalled. It is wise to reset
@@ -497,11 +483,10 @@ void FLACextendLA(tMotor _motor, int _highPower, int distance, bool ramp) {
  * @param _motor the motor to be controlled
  * @param _highPower the highest speed the motor should turn at
  */
-void FLACtretractLA(tMotor _motor, int _highPower) {
+void FLACtretractLA(tMotor _motor, short _highPower) {
   _FLACcontrolTasks(_motor, _highPower, -210, false);
  _stalled[_motor] = false;
 }
-
 
 /**
  * Retract the Linear Actuator without ramping.
@@ -509,12 +494,11 @@ void FLACtretractLA(tMotor _motor, int _highPower) {
  * @param _highPower the highest speed the motor should turn at
  * @param distance the number of encoder ticks (0.5mm) the actuator should move
  */
-void FLACtretractLA(tMotor _motor, int _highPower, int distance) {
+void FLACtretractLA(tMotor _motor, short _highPower, short distance) {
   distance -= nMotorEncoder[_motor];
   _FLACcontrolTasks(_motor, _highPower, distance, false);
   _stalled[_motor] = false;
 }
-
 
 /**
  * Retract the Linear Actuator.
@@ -523,12 +507,11 @@ void FLACtretractLA(tMotor _motor, int _highPower, int distance) {
  * @param distance the number of encoder ticks (0.5mm) the actuator should move
  * @param ramp whether or not the motor should be ramped up and down
  */
-void FLACtretractLA(tMotor _motor, int _highPower, int distance, bool ramp) {
+void FLACtretractLA(tMotor _motor, short _highPower, short distance, bool ramp) {
   distance = nMotorEncoder[_motor] - distance;
   _FLACcontrolTasks(_motor, _highPower, distance, ramp);
   _stalled[_motor] = false;
 }
-
 
 /**
  * Move the Linear Actuator to an absolute position
@@ -537,12 +520,8 @@ void FLACtretractLA(tMotor _motor, int _highPower, int distance, bool ramp) {
  * @param pos the exact encoder count to move to
  * @param ramp whether or not the motor should be ramped up and down
  */
-void FLACmoveLA(tMotor _motor, int highpower, int pos) {
+void FLACmoveLA(tMotor _motor, short highpower, short pos) {
   _FLACcontrolTasks(_motor, highpower, pos, false);
 }
 
 #endif // __FLAC_H__
-
-/*
- * $Id: firgelli-linearact-ramping.h 133 2013-03-10 15:15:38Z xander $
- */

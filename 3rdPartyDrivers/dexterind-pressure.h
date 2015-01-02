@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: dexterind-pressure.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __DPRESS_DRIVER_H__
 #define __DPRESS_DRIVER_H__
 
@@ -25,7 +21,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (mightor@gmail.com)
  * \date 13 June 2010
@@ -55,7 +51,7 @@ bool DPRESSreadPress500PSI(tSensors link, float &pressure);
 bool DPRESSreadPress250kPa(tSensors link, float &pressure) {
   float Vout = 0.0;
 
-  int val = 0;
+  short val = 0;
 
   // dPressure sensor type must absolutely be set to sensorAnalogInactive
   if (SensorType[link] != sensorAnalogInactive)
@@ -75,7 +71,6 @@ bool DPRESSreadPress250kPa(tSensors link, float &pressure) {
   return true;
 }
 
-
 /**
  * Read the pressure in kiloPascals\n
  * Note: This function is for the dPressure 250
@@ -87,7 +82,6 @@ bool DPRESSreadPress250PSI(tSensors link, float &pressure) {
   return true;
 }
 
-
 /**
  * Read the pressure in kiloPascals\n
  * Note: This function is for the dPressure 500
@@ -98,7 +92,7 @@ bool DPRESSreadPress250PSI(tSensors link, float &pressure) {
 bool DPRESSreadPress500kPa(tSensors link, float &pressure) {
   float Vout = 0.0;
 
-  int val = 0;
+  short val = 0;
 
   // dPressure sensor type must absolutely be set to sensorAnalogInactive
   if (SensorType[link] != sensorAnalogInactive)
@@ -118,7 +112,6 @@ bool DPRESSreadPress500kPa(tSensors link, float &pressure) {
   return true;
 }
 
-
 /**
  * Read the pressure in kiloPascals\n
  * Note: This function is for the dPressure 500
@@ -130,11 +123,7 @@ bool DPRESSreadPress500PSI(tSensors link, float &pressure) {
   return true;
 }
 
-
 #endif // __DPRESS_DRIVER_H__
 
-/*
- * $Id: dexterind-pressure.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

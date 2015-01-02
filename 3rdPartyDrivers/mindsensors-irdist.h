@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-irdist.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __MSDIST_H__
 #define __MSDIST_H__
 /** \file mindsensors-irdist.h
@@ -27,7 +23,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 18 December 2010
@@ -57,11 +53,11 @@
 #define MSDIST_GP2YA02    0x34  /*!< Sharp IR module GP2YA02 */
 #define MSDIST_CUSTOM     0x35  /*!< Custom IR module */
 
-int MSDISTreadDist(tSensors link, ubyte address = MSDIST_I2C_ADDR);
-int MSDISTreadVoltage(tSensors link, ubyte address = MSDIST_I2C_ADDR);
-int MSDISTreadMinDist(tSensors link, ubyte address = MSDIST_I2C_ADDR);
-int MSDISTreadMaxDist(tSensors link, ubyte address = MSDIST_I2C_ADDR);
-int MSDISTreadModuleType(tSensors link, ubyte address = MSDIST_I2C_ADDR);
+short MSDISTreadDist(tSensors link, ubyte address = MSDIST_I2C_ADDR);
+short MSDISTreadVoltage(tSensors link, ubyte address = MSDIST_I2C_ADDR);
+short MSDISTreadMinDist(tSensors link, ubyte address = MSDIST_I2C_ADDR);
+short MSDISTreadMaxDist(tSensors link, ubyte address = MSDIST_I2C_ADDR);
+short MSDISTreadModuleType(tSensors link, ubyte address = MSDIST_I2C_ADDR);
 bool MSDISTsendCmd(tSensors link, byte command, ubyte address = MSDIST_I2C_ADDR);
 
 tByteArray MSDIST_I2CRequest;       /*!< Array to hold I2C command data */
@@ -75,7 +71,7 @@ bool MSDISTcalibrated[] = {false, false, false, false};  /*!< Has the sensor bee
  * @param address the I2C address to use, optional, defaults to 0x02
  * @return distance to object or -1 if an error occurred
  */
-int MSDISTreadDist(tSensors link, ubyte address) {
+short MSDISTreadDist(tSensors link, ubyte address) {
 
   // Configure the sensor
   if (!MSDISTcalibrated[link]) {
@@ -98,14 +94,13 @@ int MSDISTreadDist(tSensors link, ubyte address) {
   return (0x00FF & MSDIST_I2CReply[0]) + ((0x00FF & MSDIST_I2CReply[1]) <<8);
 }
 
-
 /**
  * Read tilt data from the sensor
  * @param link the sensor port number
  * @param address the I2C address to use, optional, defaults to 0x02
  * @return voltage reading from IR Sensor -1 if an error occurred
  */
-int MSDISTreadVoltage(tSensors link, ubyte address) {
+short MSDISTreadVoltage(tSensors link, ubyte address) {
   memset(MSDIST_I2CRequest, 0, sizeof(tByteArray));
 
   MSDIST_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -119,14 +114,13 @@ int MSDISTreadVoltage(tSensors link, ubyte address) {
   return (0x00FF & MSDIST_I2CReply[0]) + ((0x00FF & MSDIST_I2CReply[1]) <<8);
 }
 
-
 /**
  * Read minumum measuring distance from the sensor
  * @param link the sensor port number
  * @param address the I2C address to use, optional, defaults to 0x02
  * @return minumum measuring distance from the sensor -1 if an error occurred
  */
-int MSDISTreadMinDist(tSensors link, ubyte address) {
+short MSDISTreadMinDist(tSensors link, ubyte address) {
   memset(MSDIST_I2CRequest, 0, sizeof(tByteArray));
 
   MSDIST_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -140,14 +134,13 @@ int MSDISTreadMinDist(tSensors link, ubyte address) {
   return (0x00FF & MSDIST_I2CReply[0]) + ((0x00FF & MSDIST_I2CReply[1]) <<8);
 }
 
-
 /**
  * Read maximum measuring distance from the sensor
  * @param link the sensor port number
  * @param address the I2C address to use, optional, defaults to 0x02
  * @return maximum measuring distance from the sensor -1 if an error occurred
  */
-int MSDISTreadMaxDist(tSensors link, ubyte address) {
+short MSDISTreadMaxDist(tSensors link, ubyte address) {
   memset(MSDIST_I2CRequest, 0, sizeof(tByteArray));
 
   MSDIST_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -161,14 +154,13 @@ int MSDISTreadMaxDist(tSensors link, ubyte address) {
   return (0x00FF & MSDIST_I2CReply[0]) + ((0x00FF & MSDIST_I2CReply[1]) <<8);
 }
 
-
 /**
  * Read Sharp IR module type from the sensor
  * @param link the sensor port number
  * @param address the I2C address to use, optional, defaults to 0x02
  * @return Sharp IR module type from the sensor -1 if an error occurred
  */
-int MSDISTreadModuleType(tSensors link, ubyte address) {
+short MSDISTreadModuleType(tSensors link, ubyte address) {
   memset(MSDIST_I2CRequest, 0, sizeof(tByteArray));
 
   MSDIST_I2CRequest[0] = 2;               // Number of bytes in I2C command
@@ -180,7 +172,6 @@ int MSDISTreadModuleType(tSensors link, ubyte address) {
 
   return 0x00FF & MSDIST_I2CReply[0];
 }
-
 
 /**
  * Send a command to the sensor
@@ -200,11 +191,7 @@ bool MSDISTsendCmd(tSensors link, byte command, ubyte address) {
   return writeI2C(link, MSDIST_I2CRequest);
 }
 
-
 #endif //__MSDIST_H__
 
-/*
- * $Id: mindsensors-irdist.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

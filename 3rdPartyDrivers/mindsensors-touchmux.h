@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-touchmux.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __MSTMUX_HIGH___
 #define __MSTMUX_HIGH___
 /** \file mindsensors-touchmux.h
@@ -25,7 +21,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 24 March 2009
@@ -70,13 +66,12 @@
 #define MSTMUX_SMUX_LOW_123  603
 #define MSTMUX_SMUX_HIGH_123 643
 
-
-int MSTMUXgetActive(tSensors link);
-bool MSTMUXisActive(tSensors link, int touch);
+short MSTMUXgetActive(tSensors link);
+bool MSTMUXisActive(tSensors link, short touch);
 
 #ifdef __HTSMUX_SUPPORT__
-int MSTMUXgetActive(tMUXSensor muxsensor);
-bool MSTMUXisActive(tMUXSensor muxsensor, int touch);
+short MSTMUXgetActive(tMUXSensor muxsensor);
+bool MSTMUXisActive(tMUXSensor muxsensor, short touch);
 #endif
 
 /**
@@ -86,36 +81,35 @@ bool MSTMUXisActive(tMUXSensor muxsensor, int touch);
  * @param link the MSTMUX port number
  * @return the value of the switches status
  */
-int MSTMUXgetActive(tSensors link) {
+short MSTMUXgetActive(tSensors link) {
 
   // Make sure the sensor is configured as type sensorLightInactive
   if (SensorType[link] != sensorLightInactive) {
-    SetSensorType(link, sensorLightInactive);
-    wait1Msec(10);
+    SensorType[link] = sensorLightInactive;
+    sleep(10);
   }
 
-	int s;
+  short s;
   s = SensorRaw[link];
 
   if ( MSTMUX_LOW_1 < s && s < MSTMUX_HIGH_1 ) {
-	  return 1;
-	} else if ( MSTMUX_LOW_2 < s && s < MSTMUX_HIGH_2 ) {
-	  return 2;
-	} else if ( MSTMUX_LOW_3 < s && s < MSTMUX_HIGH_3 ) {
-	  return 4;
-	} else if ( MSTMUX_LOW_12 < s && s < MSTMUX_HIGH_12 ) {
-	  return 1 + 2;
-	} else if ( MSTMUX_LOW_13 < s && s < MSTMUX_HIGH_13 ) {
-	  return 1 + 4;
-	} else if ( MSTMUX_LOW_23 < s && s < MSTMUX_HIGH_23 ) {
-	  return 2 + 4;
-	} else if ( MSTMUX_LOW_123 < s && s < MSTMUX_HIGH_123 ) {
+    return 1;
+  } else if ( MSTMUX_LOW_2 < s && s < MSTMUX_HIGH_2 ) {
+    return 2;
+  } else if ( MSTMUX_LOW_3 < s && s < MSTMUX_HIGH_3 ) {
+    return 4;
+  } else if ( MSTMUX_LOW_12 < s && s < MSTMUX_HIGH_12 ) {
+    return 1 + 2;
+  } else if ( MSTMUX_LOW_13 < s && s < MSTMUX_HIGH_13 ) {
+    return 1 + 4;
+  } else if ( MSTMUX_LOW_23 < s && s < MSTMUX_HIGH_23 ) {
+    return 2 + 4;
+  } else if ( MSTMUX_LOW_123 < s && s < MSTMUX_HIGH_123 ) {
     return 1 + 2 + 4;
   } else {
     return 0;
   }
 }
-
 
 /**
  * Read the value of all of the currently connected touch sensors.  The status is logically OR'd
@@ -125,24 +119,24 @@ int MSTMUXgetActive(tSensors link) {
  * @return the value of the switches status
  */
 #ifdef __HTSMUX_SUPPORT__
-int MSTMUXgetActive(tMUXSensor muxsensor) {
+short MSTMUXgetActive(tMUXSensor muxsensor) {
 
-	int s;
+  short s;
   s = 1023 - HTSMUXreadAnalogue(muxsensor);
 
   if ( MSTMUX_SMUX_LOW_1 < s && s < MSTMUX_SMUX_HIGH_1 ) {
-	  return 1;
-	} else if ( MSTMUX_SMUX_LOW_2 < s && s < MSTMUX_SMUX_HIGH_2 ) {
-	  return 2;
-	} else if ( MSTMUX_SMUX_LOW_3 < s && s < MSTMUX_SMUX_HIGH_3 ) {
-	  return 4;
-	} else if ( MSTMUX_SMUX_LOW_12 < s && s < MSTMUX_SMUX_HIGH_12 ) {
-	  return 1 + 2;
-	} else if ( MSTMUX_SMUX_LOW_13 < s && s < MSTMUX_SMUX_HIGH_13 ) {
-	  return 1 + 4;
-	} else if ( MSTMUX_SMUX_LOW_23 < s && s < MSTMUX_SMUX_HIGH_23 ) {
-	  return 2 + 4;
-	} else if ( MSTMUX_SMUX_LOW_123 < s && s < MSTMUX_SMUX_HIGH_123 ) {
+    return 1;
+  } else if ( MSTMUX_SMUX_LOW_2 < s && s < MSTMUX_SMUX_HIGH_2 ) {
+    return 2;
+  } else if ( MSTMUX_SMUX_LOW_3 < s && s < MSTMUX_SMUX_HIGH_3 ) {
+    return 4;
+  } else if ( MSTMUX_SMUX_LOW_12 < s && s < MSTMUX_SMUX_HIGH_12 ) {
+    return 1 + 2;
+  } else if ( MSTMUX_SMUX_LOW_13 < s && s < MSTMUX_SMUX_HIGH_13 ) {
+    return 1 + 4;
+  } else if ( MSTMUX_SMUX_LOW_23 < s && s < MSTMUX_SMUX_HIGH_23 ) {
+    return 2 + 4;
+  } else if ( MSTMUX_SMUX_LOW_123 < s && s < MSTMUX_SMUX_HIGH_123 ) {
     return 1 + 2 + 4;
   } else {
     return 0;
@@ -150,20 +144,18 @@ int MSTMUXgetActive(tMUXSensor muxsensor) {
 }
 #endif // __HTSMUX_SUPPORT__
 
-
 /**
  * Read the value of specific touch sensor.
  * @param link the MSTMUX port number
  * @param touch the touch sensor to be checked, numbered 1 to 4.
  * @return the value of the switches status
  */
-bool MSTMUXisActive(tSensors link, int touch) {
+bool MSTMUXisActive(tSensors link, short touch) {
   if (MSTMUXgetActive(link) & (1 << (touch - 1)))
     return true;
   else
     return false;
 }
-
 
 /**
  * Read the value of specific touch sensor.
@@ -172,7 +164,7 @@ bool MSTMUXisActive(tSensors link, int touch) {
  * @return the value of the switches status
  */
 #ifdef __HTSMUX_SUPPORT__
-bool MSTMUXisActive(tMUXSensor muxsensor, int touch) {
+bool MSTMUXisActive(tMUXSensor muxsensor, short touch) {
   if (MSTMUXgetActive(muxsensor) & (1 << (touch - 1)))
     return true;
   else
@@ -180,11 +172,7 @@ bool MSTMUXisActive(tMUXSensor muxsensor, int touch) {
 }
 #endif // __HTSMUX_SUPPORT__
 
-
 #endif // __MSTMUX_HIGH___
 
-/*
- * $Id: mindsensors-touchmux.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

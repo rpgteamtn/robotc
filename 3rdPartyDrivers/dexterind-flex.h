@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: dexterind-flex.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __DFLEX_H__
 #define __DFLEX_H__
 /** \file dexterind-flex.h
@@ -24,7 +20,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 23 June 2010
@@ -41,36 +37,59 @@
 
 #define DFLEXDAT "DFLEX.dat"    /*!< Datafile for dFlex Sensor calibration info */
 
+typedef struct
+{
+  short _offsets[3];
+} tDIMCCalData, *tDIMCCalDataptr;
+
+typedef struct
+{
+  tI2CData I2CData;
+  tDIMCCalData calData;
+  float heading;
+  short axes[3];
+  short _minVals[3];
+  short _maxVals[3];
+  bool _calibrated;
+  bool _calibrating;
+  string _calibrationFile;
+} tDIMC, *tDIMCptr;
+
+bool initSensor(tDIMCptr dimcPtr, tSensors port);
+bool readSensor(tDIMCptr dimcPtr);
+bool startCal(tDIMCptr dimcPtr);
+bool stopCal(tDIMCptr dimcPtr);
+bool _readCalVals(tDIMCptr dimcPtr);
+bool _writeCalVals(tDIMCptr dimcPtr);
+
 // Globals
-int dflexlow = 0;                    /*!< Low calibration value */
-int dflexhigh = 1023;                /*!< High calibration value */
+short dflexlow = 0;                    /*!< Low calibration value */
+short dflexhigh = 1023;                /*!< High calibration value */
 bool DFLEX_calibrated = false;   /*!< Has the sensor been calibrated yet */
 
 // Function prototypes
-int DFLEXvalRaw(tSensors link);
-int DFLEXvalNorm(tSensors link);
+short DFLEXvalRaw(tSensors link);
+short DFLEXvalNorm(tSensors link);
 
 void DFLEXcalLow(tSensors link);
-void DFLEXcalLow(int lowval);
+void DFLEXcalLow(short lowval);
 void DFLEXcalHigh(tSensors link);
-void DFLEXcalHigh(int highval);
+void DFLEXcalHigh(short highval);
 
 void _DFLEXcheckSensor(tSensors link);
-void _DFLEXwriteCalVals(int lowval, int highval);
-void _DFLEXreadCalVals(int &lowval, int &highval);
-
+void _DFLEXwriteCalVals(short lowval, short highval);
+void _DFLEXreadCalVals(short &lowval, short &highval);
 
 /**
  * Read the raw value of the dFlex Sensor.
  * @param link the dFlex Sensor port number
  * @return the raw value of the dFlex Sensor
  */
-int DFLEXvalRaw(tSensors link) {
+short DFLEXvalRaw(tSensors link) {
   _DFLEXcheckSensor(link);
 
   return SensorRaw[link];
 }
-
 
 /**
  * Read the normalised value of the dFlex Sensor, based on the low and high values.
@@ -79,7 +98,7 @@ int DFLEXvalRaw(tSensors link) {
  * @param link the dFlex Sensor port number
  * @return the normalised value (0-100)
  */
-int DFLEXvalNorm(tSensors link) {
+short DFLEXvalNorm(tSensors link) {
   long currval = 0;
 
   _DFLEXcheckSensor(link);
@@ -98,7 +117,6 @@ int DFLEXvalNorm(tSensors link) {
   return ((currval - dflexlow) * 100) / (dflexhigh - dflexlow);
 }
 
-
 /**
  * Calibrate the dFlex Sensor's low calibration value with the current raw sensor reading.
  * @param link the dFlex Sensor port number
@@ -110,16 +128,14 @@ void DFLEXcalLow(tSensors link) {
   _DFLEXwriteCalVals(dflexlow, dflexhigh);
 }
 
-
 /**
  * Calibrate the dFlex Sensor's low calibration value with the supplied value.
  * @param lowval the sensor's low calibration value
  */
-void DFLEXcalLow(int lowval) {
+void DFLEXcalLow(short lowval) {
   dflexlow = lowval;
   _DFLEXwriteCalVals(dflexlow, dflexhigh);
 }
-
 
 /**
  * Calibrate the dFlex Sensor's high calibration value with the current raw sensor reading.
@@ -132,16 +148,14 @@ void DFLEXcalHigh(tSensors link) {
   _DFLEXwriteCalVals(dflexlow, dflexhigh);
 }
 
-
 /**
  * Calibrate the dFlex Sensor's high calibration value with the supplied value.
  * @param highval the sensor's high calibration value
  */
-void DFLEXcalHigh(int highval) {
+void DFLEXcalHigh(short highval) {
   dflexhigh = highval;
   _DFLEXwriteCalVals(dflexlow, dflexhigh);
 }
-
 
 /**
  * Check if the sensor is set to raw and that it's been configured as a
@@ -157,7 +171,6 @@ void _DFLEXcheckSensor(tSensors link) {
     SensorType[link] = sensorAnalogInactive;
 }
 
-
 /**
  * Write the low and high calibration values to a data file.
  *
@@ -165,7 +178,7 @@ void _DFLEXcheckSensor(tSensors link) {
  * @param lowval the low calibration value
  * @param highval the high calibration value
  */
-void _DFLEXwriteCalVals(int lowval, int highval) {
+void _DFLEXwriteCalVals(short lowval, short highval) {
   TFileHandle hFileHandle;
   TFileIOResult nIoResult;
   short nFileSize = 4;
@@ -176,47 +189,46 @@ void _DFLEXwriteCalVals(int lowval, int highval) {
   if (nIoResult != ioRsltSuccess) {
     Close(hFileHandle, nIoResult);
     eraseDisplay();
-    nxtDisplayTextLine(3, "W:can't cal file");
-    PlaySound(soundException);
-    while(bSoundActive) EndTimeSlice();
-    wait1Msec(5000);
-    StopAllTasks();
+    displayTextLine(3, "W:can't cal file");
+    playSound(soundException);
+    while(bSoundActive) sleep(1);
+    sleep(5000);
+    stopAllTasks();
   }
 
   // Write the low calibration value
   WriteShort(hFileHandle, nIoResult, lowval);
   if (nIoResult != ioRsltSuccess) {
     eraseDisplay();
-    nxtDisplayTextLine(3, "can't write lowval");
-    PlaySound(soundException);
-    while(bSoundActive) EndTimeSlice();
-    wait1Msec(5000);
-    StopAllTasks();
+    displayTextLine(3, "can't write lowval");
+    playSound(soundException);
+    while(bSoundActive) sleep(1);
+    sleep(5000);
+    stopAllTasks();
   }
 
   // Write the high calibration value
   WriteShort(hFileHandle, nIoResult, highval);
   if (nIoResult != ioRsltSuccess) {
     eraseDisplay();
-    nxtDisplayTextLine(3, "can't write highval");
-    PlaySound(soundException);
-    while(bSoundActive) EndTimeSlice();
-    wait1Msec(5000);
-    StopAllTasks();
+    displayTextLine(3, "can't write highval");
+    playSound(soundException);
+    while(bSoundActive) sleep(1);
+    sleep(5000);
+    stopAllTasks();
   }
 
   // Close the file
   Close(hFileHandle, nIoResult);
   if (nIoResult != ioRsltSuccess) {
     eraseDisplay();
-    nxtDisplayTextLine(3, "Can't close");
-    PlaySound(soundException);
-    while(bSoundActive) EndTimeSlice();
-    wait1Msec(5000);
-    StopAllTasks();
+    displayTextLine(3, "Can't close");
+    playSound(soundException);
+    while(bSoundActive) sleep(1);
+    sleep(5000);
+    stopAllTasks();
   }
 }
-
 
 /**
  * Read the low and high calibration values from a data file.
@@ -225,7 +237,7 @@ void _DFLEXwriteCalVals(int lowval, int highval) {
  * @param lowval the low calibration value
  * @param highval the high calibration value
  */
-void _DFLEXreadCalVals(int &lowval, int &highval) {
+void _DFLEXreadCalVals(short &lowval, short &highval) {
   TFileHandle hFileHandle;
   TFileIOResult nIoResult;
   short nFileSize;
@@ -263,8 +275,5 @@ void _DFLEXreadCalVals(int &lowval, int &highval) {
 
 #endif // __DFLEX_H__
 
-/*
- * $Id: dexterind-flex.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

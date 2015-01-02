@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: codatech-rfid.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __CTRFID_driver_H__
 #define __CTRFID_driver_H__
 
@@ -31,7 +27,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Sylvain CACHEUX (sylcalego@cacheux.info)
  * \author Xander Soldaat (mightor@gmail.com), version 0.2 and up
@@ -44,7 +40,7 @@
 #pragma systemFile
 
 #ifndef __COMMON_H__
-#include "drivers/common.h"
+#include "common.h"
 #endif
 
 // I2C ADDRESS
@@ -102,7 +98,6 @@ tByteArray CTRFID_I2CReply;      /*!< Array to hold I2C reply data   */
 bool CTRFIDreadContinuous[4] = {false, false, false, false};  /*!< Is the sensor configured for Continuous mode? */
 bool CTRFIDinitialised[4] = {false, false, false, false};     /*!< Has the sensor been initialised? */
 
-
 /**
  * Send a command to the RFID sensor.
  *
@@ -124,7 +119,6 @@ bool _CTRFIDsendCommand(tSensors link, ubyte command) {
 
   return writeI2C(link, CTRFID_I2CRequest);
 }
-
 
 /**
  * Send a dummy I2C packet to the sensor to wake it up
@@ -175,7 +169,6 @@ bool _CTRFIDreadStatus(tSensors link, ubyte &_status) {
   return true;
 }
 
-
 /**
  * Configure the sensor for reading transponders
  * @param link the CTRFID port number,
@@ -189,7 +182,6 @@ bool CTRFIDinit(tSensors link) {
     return false;
   }
 }
-
 
 /**
  * Configure the sensor for reading transponders
@@ -209,7 +201,6 @@ bool CTRFIDsetContinuous(tSensors link) {
   }
 }
 
-
 /**
  * Configure the sensor for reading transponders
  * in single shot mode
@@ -226,7 +217,6 @@ bool CTRFIDsetSingleShot(tSensors link) {
     return false;
   }
 }
-
 
 /**
  * Read transponder ID's bytes. This function needs that a reading mode to be selected before using it.
@@ -245,7 +235,7 @@ bool CTRFIDreadTransponder(tSensors link, string &transponderID) {
   if (!CTRFIDinitialised[link]) {
     CTRFIDinit(link);
     // Wait for the initialisation to be done
-    wait1Msec(100);
+    sleep(100);
   }
 
   if(CTRFIDreadContinuous[link] == false) {
@@ -253,13 +243,13 @@ bool CTRFIDreadTransponder(tSensors link, string &transponderID) {
     CTRFIDsetSingleShot(link);
 
     // Wait for RF setup time.
-    wait1Msec(250);
+    sleep(250);
   } else {
     _CTRFIDreadStatus(link, _status);
     if (_status == 0) {
       CTRFIDsetContinuous(link);
       // Wait for RF setup time.
-      wait1Msec(250);
+      sleep(250);
     }
   }
 
@@ -275,17 +265,14 @@ bool CTRFIDreadTransponder(tSensors link, string &transponderID) {
   // first : clear the current value of TransponderID
   // (if not, the next instructions will concatenate as much IDs as read !)
   strcpy(transponderID, "");
-  for (int i=0;i<5;i++) {
+  for (short i=0;i<5;i++) {
     // "%02x"  will pad the hex number with a zero to make it two digits long at all times.
-    StringFormat(transponderID, "%s%02x", transponderID, CTRFID_I2CReply[i]);
+    stringFormat(transponderID, "%s%02x", transponderID, CTRFID_I2CReply[i]);
   }
   return true;
 }
 
 #endif // __CODATEX_RFID_driver_H__
 
-/*
- * $Id: codatech-rfid.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-numericpad.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __MSNP_H__
 #define __MSNP_H__
 /** \file mindsensors-numericpad.h
@@ -24,7 +20,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 30 October 2010
@@ -44,7 +40,6 @@
 tByteArray MSNP_I2CRequest;     /*!< Array to hold I2C command data */
 tByteArray MSNP_I2CReply;       /*!< Array to hold I2C reply data */
 
-
 #define KEY_STATUS_REG 0x00
 
 const unsigned byte MSNP_KeyMap[] = { '#', '9', '6', '3', '0', '8', '2', '5', '*', '7', '1', '4' };
@@ -58,7 +53,6 @@ const unsigned byte MSNP_ConfigGroup5[] = { 3, MSNP_I2C_ADDR, 0x7B, 0x0B};
 const unsigned byte MSNP_ConfigGroup6[] = { 5, MSNP_I2C_ADDR, 0x7D, 0x9C, 0x65, 0x8C};
 
 bool _MSNPinitialised[] = {false, false, false, false};
-
 
 /**
  * Initialise the numeric pad sensor chip.  This must be done at the beginning
@@ -97,7 +91,6 @@ bool _MSNPinit(tSensors link) {
   return true;
 }
 
-
 /**
  * Scan the keypad for pressed keys.  This returns immediately.
  * @param link the MSNP port number
@@ -106,13 +99,13 @@ bool _MSNPinit(tSensors link) {
  * @param number the numeric equivalent, 0-9 for digits, -1 for # and -2 for *, -255 when nothing is pressed
  * @return true if no error occured, false if it did
  */
-bool MSNPscanKeys(tSensors link, int &pressedKeys, unsigned byte &key, int &number) {
-  //int keyPress = 0;
+bool MSNPscanKeys(tSensors link, short &pressedKeys, unsigned byte &key, short &number) {
+  //short keyPress = 0;
 
   if (!_MSNPinitialised[link]) {
     _MSNPinit(link);
     _MSNPinitialised[link] = true;
-    wait1Msec(10);
+    sleep(10);
   }
 
   key = 'X';
@@ -122,61 +115,55 @@ bool MSNPscanKeys(tSensors link, int &pressedKeys, unsigned byte &key, int &numb
   MSNP_I2CRequest[1] = MSNP_I2C_ADDR;
   MSNP_I2CRequest[2] = MSNP_DATA_REG;
 
-	if (!writeI2C(link, MSNP_I2CRequest, MSNP_I2CReply, 2))
-	  return false;
+  if (!writeI2C(link, MSNP_I2CRequest, MSNP_I2CReply, 2))
+    return false;
 
   pressedKeys = MSNP_I2CReply[0] + (MSNP_I2CReply[1] * 256);
 
-	for (int i=0; i < 12; i++) {
-	  if (pressedKeys & (1<<i)) {
-	    key = MSNP_KeyMap[i];
-	    number = MSNP_NumMap[i];
-	    return true;
-	  }
-	}
+  for (short i=0; i < 12; i++) {
+    if (pressedKeys & (1<<i)) {
+      key = MSNP_KeyMap[i];
+      number = MSNP_NumMap[i];
+      return true;
+    }
+  }
 
-	return true;
+  return true;
 }
-
 
 /**
  * Scan the keypad for pressed keys.  This returns immediately.
  * @param link the MSNP port number
  * @return number the numeric equivalent, 0-9 for digits, -1 for # and -2 for *, -255 when nothing is pressed
  */
-int MSNPscanKeys(tSensors link) {
-  int keyPress = 0;
+short MSNPscanKeys(tSensors link) {
+  short keyPress = 0;
 
   if (!_MSNPinitialised[link]) {
     _MSNPinit(link);
     _MSNPinitialised[link] = true;
-    wait1Msec(10);
+    sleep(10);
   }
-
 
   MSNP_I2CRequest[0] = 2;
   MSNP_I2CRequest[1] = MSNP_I2C_ADDR;
   MSNP_I2CRequest[2] = MSNP_DATA_REG;
 
-	if (!writeI2C(link, MSNP_I2CRequest, MSNP_I2CReply, 2))
-	  return -255;
+  if (!writeI2C(link, MSNP_I2CRequest, MSNP_I2CReply, 2))
+    return -255;
 
   keyPress = MSNP_I2CReply[0] + (MSNP_I2CReply[1] * 256);
 
-	for (int i=0; i < 12; i++) {
-	  if (keyPress & (1<<i)) {
-	    return MSNP_NumMap[i];
-	  }
-	}
+  for (short i=0; i < 12; i++) {
+    if (keyPress & (1<<i)) {
+      return MSNP_NumMap[i];
+    }
+  }
 
-	return -255;
+  return -255;
 }
-
 
 #endif // __MSNP_H__
 
-/*
- * $Id: mindsensors-numericpad.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

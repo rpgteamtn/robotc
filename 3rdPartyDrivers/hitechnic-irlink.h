@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: hitechnic-irlink.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef _HTIRL_H_
 #define _HTIRL_H_
 /** \file hitechnic-irlink.h
@@ -32,7 +28,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 25 May 2010
@@ -50,7 +46,7 @@
 #warn "-----------------------------------------"
 #endif
 
-#ifndef _COMMON_H_
+#ifndef __COMMON_H__
 #include "common.h"
 #endif
 
@@ -68,7 +64,7 @@
 byte toggle[4] = {0, 0, 0, 0};
 
 /*!< Motor connections */
-typedef enum {
+typedef enum tPFmotor {
   pfmotor_S1_C1_A = 0,  /*!< Motor A, Channel 1, IR Link connected to S1 */
   pfmotor_S1_C1_B,      /*!< Motor B, Channel 1, IR Link connected to S1 */
   pfmotor_S1_C2_A,      /*!< Motor A, Channel 2, IR Link connected to S1 */
@@ -103,9 +99,8 @@ typedef enum {
   pfmotor_S4_C4_B,      /*!< Motor B, Channel 4, IR Link connected to S4 */
 } tPFmotor;
 
-
 /*!< PWM Mode commands */
-typedef enum {
+typedef enum ePWMMotorCommand {
   MOTOR_FLOAT = 0,      /*!< Float the motor */
   MOTOR_FWD_PWM_1 = 1,  /*!< Forward speed 1 */
   MOTOR_FWD_PWM_2 = 2,  /*!< Forward speed 2 */
@@ -125,7 +120,7 @@ typedef enum {
 } ePWMMotorCommand;
 
 /*!< Combo Direct Mode commands */
-typedef enum {
+typedef enum eCDMMotorCommand {
   CDM_MOTOR_FLOAT = 0,      /*!< Float the motor */
   CDM_MOTOR_FWD = 1,        /*!< Forward */
   CDM_MOTOR_BAK = 2,        /*!< Reverse */
@@ -135,34 +130,32 @@ typedef enum {
 // Function prototypes
 // inline void addI2CHead(tByteArray &data);
 // inline void addI2CTail(tByteArray &data);
-void PFcomboDirectMode(tSensors link, int channel, eCDMMotorCommand _motorB, eCDMMotorCommand _motorA);
-void PFcomboPwmMode(tSensors link, int channel, ePWMMotorCommand _motorB, ePWMMotorCommand _motorA);
+void PFcomboDirectMode(tSensors link, short channel, eCDMMotorCommand _motorB, eCDMMotorCommand _motorA);
+void PFcomboPwmMode(tSensors link, short channel, ePWMMotorCommand _motorB, ePWMMotorCommand _motorA);
 void encodeBuffer(tByteArray &iBuffer, tByteArray &oBuffer);
-void transmitIR(tSensors link, tByteArray &oBuffer, int channel);
+void transmitIR(tSensors link, tByteArray &oBuffer, short channel);
 
 #ifdef _DEBUG_DRIVER_
-void decToBin(int number, int length, string &output);
+void decToBin(short number, short length, string &output);
 void debugIR(tByteArray &data);
 
-
 /**
- * Returns a binary representation in a string of an int with specified length
+ * Returns a binary representation in a string of an short with specified length
  *
  * Note: this function is only available when driver is compiled with _DEBUG_DRIVER_ defined.
  * @param number the number to be converted to a binary representation
  * @param length number of bits to convert
  * @param output the number converted to binary representation
  */
-void decToBin(int number, int length, string &output) {
+void decToBin(short number, short length, string &output) {
   memset(output, 0, sizeof(output));
   output = "";
 
-  for (int i = 0; i < length; i++) {
+  for (short i = 0; i < length; i++) {
     output += (number & (1<< (length - 1))) >> (length - 1);
     number = number << 1;
   }
 }
-
 
 /**
  * Print out the buffer in question to the screen using the following format:
@@ -178,20 +171,19 @@ void decToBin(int number, int length, string &output) {
  */
 void debugIR(tByteArray &data) {
   string _output;
-  for (int i = 0; i < MAX_ARR_SIZE; i++) {
+  for (short i = 0; i < MAX_ARR_SIZE; i++) {
     if ((i != 0) && (i % 8 == 0)) {
-      wait1Msec(10000);
-      PlaySound(soundBlip);
+      sleep(10000);
+      playSound(soundBlip);
       eraseDisplay();
     }
     decToBin(data[i], 8, _output);
-    StringFormat(_output, "%2d %s", i, _output);
-    nxtDisplayTextLine(i % 8, "%s 0x%02x", _output, ubyteToInt(data[i]));
+    stringFormat(_output, "%2d %s", i, _output);
+    displayTextLine(i % 8, "%s 0x%02x", _output, ubyteToInt(data[i]));
   }
-  wait1Msec(10000);
+  sleep(10000);
 }
 #endif // _DEBUG_DRIVER_
-
 
 /**
  * Control two motors using the ComboDirectMode.  This mode does not allow for fine grained
@@ -201,7 +193,7 @@ void debugIR(tByteArray &data) {
  * @param _motorB the command to be sent to Motor B
  * @param _motorA the command to be sent to Motor A
  */
-void PFcomboDirectMode(tSensors link, int channel, eCDMMotorCommand _motorB, eCDMMotorCommand _motorA) {
+void PFcomboDirectMode(tSensors link, short channel, eCDMMotorCommand _motorB, eCDMMotorCommand _motorA) {
   tByteArray _iBuffer;
   tByteArray _oBuffer;
 
@@ -230,7 +222,6 @@ void PFcomboDirectMode(tSensors link, int channel, eCDMMotorCommand _motorB, eCD
   transmitIR(link, _oBuffer, channel);
 }
 
-
 /*
   =============================================================================
   Combo Direct Mode
@@ -246,7 +237,7 @@ void PFcomboDirectMode(tSensors link, int channel, eCDMMotorCommand _motorB, eCD
  * @param _motorB the command to be sent to Motor B
  * @param _motorA the command to be sent to Motor A
  */
-void PFcomboPwmMode(tSensors link, int channel, ePWMMotorCommand _motorB, ePWMMotorCommand _motorA) {
+void PFcomboPwmMode(tSensors link, short channel, ePWMMotorCommand _motorB, ePWMMotorCommand _motorA) {
   tByteArray _iBuffer;
   tByteArray _oBuffer;
 
@@ -275,7 +266,6 @@ void PFcomboPwmMode(tSensors link, int channel, ePWMMotorCommand _motorB, ePWMMo
 
   transmitIR(link, _oBuffer, channel);
 }
-
 
 /*
   =============================================================================
@@ -322,7 +312,6 @@ void PFsinglePinOutputMode(tSensors link, ubyte channel, ubyte _motor, ePWMMotor
   transmitIR(link, _oBuffer, channel);
 }
 
-
 /**
  * Control one motor with no timeout. This mode allows for fine grained
  * speed control.
@@ -333,7 +322,6 @@ void PFMotor(tPFmotor pfmotor, ePWMMotorCommand _motorCmd) {
   PFsinglePinOutputMode((tSensors)PFSPORT(pfmotor), (ubyte)PFCHAN(pfmotor), (ubyte)PFMOT(pfmotor), _motorCmd);
 }
 
-
 /**
  * Encode the input buffer into a special format for the IRLink.
  *
@@ -342,11 +330,11 @@ void PFMotor(tPFmotor pfmotor, ePWMMotorCommand _motorCmd) {
  * @param oBuffer output buffer for encoded data
  */
 void encodeBuffer(tByteArray &iBuffer, tByteArray &oBuffer) {
-  int _oByteIdx = 0;
-  int _oBitIdx = 0;
-  int _iIndex = 0;              // _iBUffer bit index
-  int _oIndex = 0;              // _oBuffer bit index
-  int _len = 0;
+  short _oByteIdx = 0;
+  short _oBitIdx = 0;
+  short _iIndex = 0;              // _iBUffer bit index
+  short _oIndex = 0;              // _oBuffer bit index
+  short _len = 0;
 
   //debugIR(iBuffer);
   // Calculate the size of the output bit index
@@ -377,7 +365,6 @@ void encodeBuffer(tByteArray &iBuffer, tByteArray &oBuffer) {
 
 }
 
-
 /**
  * Send the command to the IRLink Sensor for transmission.
  *
@@ -388,7 +375,7 @@ void encodeBuffer(tByteArray &iBuffer, tByteArray &oBuffer) {
  * @param oBuffer the data that is be transmitted
  * @param channel the channel number of the receiver
  */
-void transmitIR(tSensors link, tByteArray &oBuffer, int channel) {
+void transmitIR(tSensors link, tByteArray &oBuffer, short channel) {
   long starttime = 0;
 #ifdef _DEBUG_DRIVER_
   debugIR(oBuffer);
@@ -402,34 +389,31 @@ void transmitIR(tSensors link, tByteArray &oBuffer, int channel) {
   // transmitters.
 
   // First transmission
-  wait1Msec((4 - channel) * 16);
+  sleep((4 - channel) * 16);
   starttime = nPgmTime;
   if (!writeI2C(link, oBuffer)) return;
 
   // Second transmission
-  wait1Msec(5 * 16 - (nPgmTime - starttime));
+  sleep(5 * 16 - (nPgmTime - starttime));
   starttime = nPgmTime;
   if (!writeI2C(link, oBuffer)) return;
 
   // Third transmission
-  wait1Msec(5 * 16 - (nPgmTime - starttime));
+  sleep(5 * 16 - (nPgmTime - starttime));
   starttime = nPgmTime;
   if (!writeI2C(link, oBuffer)) return;
 
   // Fourth transmission
-  wait1Msec((6 + (2*channel) * 16) - (nPgmTime - starttime));
+  sleep((6 + (2*channel) * 16) - (nPgmTime - starttime));
   starttime = nPgmTime;
   if (!writeI2C(link, oBuffer)) return;
 
   // Fifth transmission
-  wait1Msec((6 + (2*channel) * 16) - (nPgmTime - starttime));
+  sleep((6 + (2*channel) * 16) - (nPgmTime - starttime));
   if (!writeI2C(link, oBuffer)) return;
 }
 
 #endif // _HTIRL_H_
 
-/*
- * $Id: hitechnic-irlink.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-imu.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __MSIMU_H__
 #define __MSIMU_H__
 /** \file mindsensors-imu.h
@@ -24,7 +20,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 23 August 2012
@@ -68,7 +64,6 @@
 #define MSIMU_GYRO_FILTER_LEVEL_6     6     /*!< Gyro filter level: 6 */
 #define MSIMU_GYRO_FILTER_LEVEL_7     7     /*!< Gyro filter level: 7 (highest) */
 
-
 #define MSIMU_TILT_X_AXIS           MSIMU_REG_TILT_X_AXIS
 #define MSIMU_TILT_Y_AXIS           MSIMU_REG_TILT_Y_AXIS
 #define MSIMU_TILT_Z_AXIS           MSIMU_REG_TILT_Z_AXIS
@@ -85,13 +80,12 @@ tByteArray MSIMU_I2CRequest;    /*!< Array to hold I2C command data */
 tByteArray MSIMU_I2CReply;      /*!< Array to hold I2C reply data */
 
 bool _MSIMUsendCMD(tSensors link, ubyte cmd);
-bool MSIMUreadTiltAxes(tSensors link, int &_x, int &_y, int &_z);
-bool MSIMUreadGyroAxes(tSensors link, int &_x, int &_y, int &_z);
-bool MSIMUreadAccelAxes(tSensors link, int &_x, int &_y, int &_z);
-bool MSIMUreadMagneticFields(tSensors link,  int &_x, int &_y, int &_z);
-int MSIMUreadHeading(tSensors link);
+bool MSIMUreadTiltAxes(tSensors link, short &_x, short &_y, short &_z);
+bool MSIMUreadGyroAxes(tSensors link, short &_x, short &_y, short &_z);
+bool MSIMUreadAccelAxes(tSensors link, short &_x, short &_y, short &_z);
+bool MSIMUreadMagneticFields(tSensors link,  short &_x, short &_y, short &_z);
+short MSIMUreadHeading(tSensors link);
 bool MSIMUsetGyroFilter(tSensors link, ubyte level);
-
 
 /**
  * Send a command to the sensor
@@ -103,14 +97,13 @@ bool MSIMUsetGyroFilter(tSensors link, ubyte level);
  */
 bool _MSIMUsendCMD(tSensors link, ubyte cmd)
 {
-	MSIMU_I2CRequest[0] = 3;                        // Message size
+  MSIMU_I2CRequest[0] = 3;                        // Message size
   MSIMU_I2CRequest[1] = MSIMU_IMU_I2C_ADDR;      // I2C Address
-	MSIMU_I2CRequest[2] = MSIMU_REG_CMD;  // Register address
-	MSIMU_I2CRequest[3] = cmd;  // command
+  MSIMU_I2CRequest[2] = MSIMU_REG_CMD;  // Register address
+  MSIMU_I2CRequest[3] = cmd;  // command
 
   return writeI2C(link, MSIMU_I2CRequest);
 }
-
 
 /**
  * Read all three tilt axes
@@ -120,21 +113,20 @@ bool _MSIMUsendCMD(tSensors link, ubyte cmd)
  * @param _z data for z axis in degrees per second
  * @return true if no error occured, false if it did
  */
-bool MSIMUreadTiltAxes(tSensors link, int &_x, int &_y, int &_z){
-	MSIMU_I2CRequest[0] = 2;                        // Message size
+bool MSIMUreadTiltAxes(tSensors link, short &_x, short &_y, short &_z){
+  MSIMU_I2CRequest[0] = 2;                        // Message size
   MSIMU_I2CRequest[1] = MSIMU_IMU_I2C_ADDR;      // I2C Address
-	MSIMU_I2CRequest[2] = MSIMU_REG_TILT_ALL_AXES;  // Register address
+  MSIMU_I2CRequest[2] = MSIMU_REG_TILT_ALL_AXES;  // Register address
 
   if (!writeI2C(link, MSIMU_I2CRequest, MSIMU_I2CReply, 3))
     return false;
 
-  _x = (MSIMU_I2CReply[0] >= 128) ? (int)MSIMU_I2CReply[0] - 256 : (int)MSIMU_I2CReply[0];
-  _y = (MSIMU_I2CReply[1] >= 128) ? (int)MSIMU_I2CReply[1] - 256 : (int)MSIMU_I2CReply[1];
-  _z = (MSIMU_I2CReply[2] >= 128) ? (int)MSIMU_I2CReply[2] - 256 : (int)MSIMU_I2CReply[2];
+  _x = (MSIMU_I2CReply[0] >= 128) ? (short)MSIMU_I2CReply[0] - 256 : (short)MSIMU_I2CReply[0];
+  _y = (MSIMU_I2CReply[1] >= 128) ? (short)MSIMU_I2CReply[1] - 256 : (short)MSIMU_I2CReply[1];
+  _z = (MSIMU_I2CReply[2] >= 128) ? (short)MSIMU_I2CReply[2] - 256 : (short)MSIMU_I2CReply[2];
 
   return true;
 }
-
 
 /**
  * Read all three axes of the gyro
@@ -144,20 +136,19 @@ bool MSIMUreadTiltAxes(tSensors link, int &_x, int &_y, int &_z){
  * @param _z data for z axis in degrees per second
  * @return true if no error occured, false if it did
  */
-bool MSIMUreadGyroAxes(tSensors link, int &_x, int &_y, int &_z){
-	MSIMU_I2CRequest[0] = 2;                        // Message size
+bool MSIMUreadGyroAxes(tSensors link, short &_x, short &_y, short &_z){
+  MSIMU_I2CRequest[0] = 2;                        // Message size
   MSIMU_I2CRequest[1] = MSIMU_IMU_I2C_ADDR;      // I2C Address
-	MSIMU_I2CRequest[2] = MSIMU_REG_GYRO_ALL_AXES;  // Register address
+  MSIMU_I2CRequest[2] = MSIMU_REG_GYRO_ALL_AXES;  // Register address
 
   if (!writeI2C(link, MSIMU_I2CRequest, MSIMU_I2CReply, 6))
     return false;
 
-  _x = MSIMU_I2CReply[0] + ((int)(MSIMU_I2CReply[1]<<8));
-  _y = MSIMU_I2CReply[2] + ((int)(MSIMU_I2CReply[3]<<8));
-  _z = MSIMU_I2CReply[4] + ((int)(MSIMU_I2CReply[5]<<8));
+  _x = MSIMU_I2CReply[0] + ((short)(MSIMU_I2CReply[1]<<8));
+  _y = MSIMU_I2CReply[2] + ((short)(MSIMU_I2CReply[3]<<8));
+  _z = MSIMU_I2CReply[4] + ((short)(MSIMU_I2CReply[5]<<8));
   return true;
 }
-
 
 /**
  * Read all of the accelerometer axes
@@ -167,21 +158,19 @@ bool MSIMUreadGyroAxes(tSensors link, int &_x, int &_y, int &_z){
  * @param _z variable to hold Z axis data
  * @return true if no error occured, false if it did
  */
-bool MSIMUreadAccelAxes(tSensors link, int &_x, int &_y, int &_z){
-	MSIMU_I2CRequest[0] = 2;                        // Message size
+bool MSIMUreadAccelAxes(tSensors link, short &_x, short &_y, short &_z){
+  MSIMU_I2CRequest[0] = 2;                        // Message size
   MSIMU_I2CRequest[1] = MSIMU_IMU_I2C_ADDR;      // I2C Address
-	MSIMU_I2CRequest[2] = MSIMU_REG_ACC_ALL_AXES;  // Register address
+  MSIMU_I2CRequest[2] = MSIMU_REG_ACC_ALL_AXES;  // Register address
 
   if (!writeI2C(link, MSIMU_I2CRequest, MSIMU_I2CReply, 6))
     return false;
 
-  _x = MSIMU_I2CReply[0] + ((int)(MSIMU_I2CReply[1]<<8));
-  _y = MSIMU_I2CReply[2] + ((int)(MSIMU_I2CReply[3]<<8));
-  _z = MSIMU_I2CReply[4] + ((int)(MSIMU_I2CReply[5]<<8));
+  _x = MSIMU_I2CReply[0] + ((short)(MSIMU_I2CReply[1]<<8));
+  _y = MSIMU_I2CReply[2] + ((short)(MSIMU_I2CReply[3]<<8));
+  _z = MSIMU_I2CReply[4] + ((short)(MSIMU_I2CReply[5]<<8));
   return true;
 }
-
-
 
 /**
  * Read all the magnetic field strengths
@@ -191,39 +180,37 @@ bool MSIMUreadAccelAxes(tSensors link, int &_x, int &_y, int &_z){
  * @param _z variable to hold Z axis data
  * @return true if no error occured, false if it did
  */
-bool MSIMUreadMagneticFields(tSensors link, int &_x, int &_y, int &_z){
-	MSIMU_I2CRequest[0] = 2;                        // Message size
+bool MSIMUreadMagneticFields(tSensors link, short &_x, short &_y, short &_z){
+  MSIMU_I2CRequest[0] = 2;                        // Message size
   MSIMU_I2CRequest[1] = MSIMU_IMU_I2C_ADDR;      // I2C Address
-	MSIMU_I2CRequest[2] = MSIMU_REG_ACC_ALL_AXES;  // Register address
+  MSIMU_I2CRequest[2] = MSIMU_REG_ACC_ALL_AXES;  // Register address
 
   if (!writeI2C(link, MSIMU_I2CRequest, MSIMU_I2CReply, 6))
     return false;
 
-  _x = MSIMU_I2CReply[0] + ((int)(MSIMU_I2CReply[1]<<8));
-  _y = MSIMU_I2CReply[2] + ((int)(MSIMU_I2CReply[3]<<8));
-  _z = MSIMU_I2CReply[4] + ((int)(MSIMU_I2CReply[5]<<8));
+  _x = MSIMU_I2CReply[0] + ((short)(MSIMU_I2CReply[1]<<8));
+  _y = MSIMU_I2CReply[2] + ((short)(MSIMU_I2CReply[3]<<8));
+  _z = MSIMU_I2CReply[4] + ((short)(MSIMU_I2CReply[5]<<8));
 
   return true;
 }
-
 
 /**
  * Read the current magnetic compass heading
  * @param link the port number
  * @return the current heading
  */
-int MSIMUreadHeading(tSensors link)
+short MSIMUreadHeading(tSensors link)
 {
-	MSIMU_I2CRequest[0] = 2;                        // Message size
+  MSIMU_I2CRequest[0] = 2;                        // Message size
   MSIMU_I2CRequest[1] = MSIMU_IMU_I2C_ADDR;      // I2C Address
-	MSIMU_I2CRequest[2] = MSIMU_REG_COMPASS_HEADING;  // Register address
+  MSIMU_I2CRequest[2] = MSIMU_REG_COMPASS_HEADING;  // Register address
 
   if (!writeI2C(link, MSIMU_I2CRequest, MSIMU_I2CReply, 2))
     return 0;
 
-  return MSIMU_I2CReply[0] + ((int)(MSIMU_I2CReply[1]<<8));
+  return MSIMU_I2CReply[0] + ((short)(MSIMU_I2CReply[1]<<8));
 }
-
 
 /**
  * Set the level of filtering of the Gryo readings.
@@ -233,18 +220,15 @@ int MSIMUreadHeading(tSensors link)
  */
 bool MSIMUsetGyroFilter(tSensors link, ubyte level)
 {
-	MSIMU_I2CRequest[0] = 3;                        // Message size
+  MSIMU_I2CRequest[0] = 3;                        // Message size
   MSIMU_I2CRequest[1] = MSIMU_IMU_I2C_ADDR;      // I2C Address
-	MSIMU_I2CRequest[2] = MSIMU_REG_GYRO_FILTER;  // Register address
-	MSIMU_I2CRequest[3] = level;  // filtering level
+  MSIMU_I2CRequest[2] = MSIMU_REG_GYRO_FILTER;  // Register address
+  MSIMU_I2CRequest[3] = level;  // filtering level
 
   return writeI2C(link, MSIMU_I2CRequest);
 }
 
 #endif // __MSIMU_H__
 
-/*
- * $Id: mindsensors-imu.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

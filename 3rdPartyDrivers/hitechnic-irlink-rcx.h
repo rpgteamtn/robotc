@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: hitechnic-irlink-rcx.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef _HTRCX_H_
 #define _HTRCX_H_
 /** \file hitechnic-irlink-rcx.h
@@ -26,7 +22,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 31 October 2010
@@ -59,7 +55,6 @@ bool HTRCXmotorFwd(tSensors link, unsigned byte _motor);
 bool HTRCXmotorRev(tSensors link, unsigned byte _motor);
 bool HTRCXmotorPwr(tSensors link, unsigned byte _motor, unsigned byte power);
 
-
 /**
  * Sends the RCX IR message header with all the trimmings.
  *
@@ -84,7 +79,6 @@ bool HTRCXsendHeader(tSensors link) {
   return writeI2C(link, HTRCXI2CRequest);
 }
 
-
 /**
  * This encodes the message into the standard RCX format with
  * opcodes, data and their complements, followed by a checksum.\n
@@ -97,8 +91,8 @@ bool HTRCXsendHeader(tSensors link) {
  * @param oBuffer the I2C message to be sent to the IR Link
  */
 void HTRCXencode(tSensors link, tByteArray &iBuffer, tByteArray &oBuffer) {
-  int checksum = 0;
-  int msgsize = iBuffer[0];
+  short checksum = 0;
+  short msgsize = iBuffer[0];
 
   // Max size of an RCX message is 5 bytes due to the encoding and additional
   // info needed for the IR Link.
@@ -112,7 +106,7 @@ void HTRCXencode(tSensors link, tByteArray &iBuffer, tByteArray &oBuffer) {
 
   // Build the outgoing IR message and inverse
   // Keep track of checksum
-  for (int i = 0; i < msgsize; i++) {
+  for (short i = 0; i < msgsize; i++) {
     checksum += iBuffer[i + 1];
     oBuffer[3 + (i * 2)] =  iBuffer[i + 1];
     oBuffer[4 + (i * 2)] = ~iBuffer[i + 1];
@@ -128,7 +122,6 @@ void HTRCXencode(tSensors link, tByteArray &iBuffer, tByteArray &oBuffer) {
   oBuffer[4 + (msgsize * 2) + 2] = 0x00;
   oBuffer[5 + (msgsize * 2) + 2] = 0x01;
 }
-
 
 /**
  * Read a message sent by the RCX.  You will need to poll frequently to
@@ -167,7 +160,6 @@ bool HTRCXreadResp(tSensors link, tByteArray &response) {
   return writeI2C(link, HTRCXI2CRequest);
 }
 
-
 /**
  * Tell the RCX to play a sound.  Sounds are numbered 0-5
  *
@@ -183,14 +175,13 @@ bool HTRCXplaySound(tSensors link, unsigned byte sound) {
   HTRCXIRMsg[2] = sound;
 
   HTRCXsendHeader(link);
-  wait1Msec(12);
+  sleep(12);
   HTRCXencode(link, HTRCXIRMsg, HTRCXI2CRequest);
   writeI2C(link, HTRCXI2CRequest);
-  wait1Msec(12);
+  sleep(12);
 
   return true;
 }
-
 
 /**
  * Send a single byte message to the RCX
@@ -205,10 +196,10 @@ bool HTRCXsendByte(tSensors link, unsigned byte data) {
   HTRCXIRMsg[2] = data;
 
   HTRCXsendHeader(link);
-  wait1Msec(12);
+  sleep(12);
   HTRCXencode(link, HTRCXIRMsg, HTRCXI2CRequest);
   writeI2C(link, HTRCXI2CRequest);
-  wait1Msec(12);
+  sleep(12);
 
   return true;
 }
@@ -228,14 +219,13 @@ bool HTRCXsendWord(tSensors link, short data) {
   HTRCXIRMsg[3] = (data >> 8) & 0xFF;
 
   HTRCXsendHeader(link);
-  wait1Msec(12);
+  sleep(12);
   HTRCXencode(link, HTRCXIRMsg, HTRCXI2CRequest);
   writeI2C(link, HTRCXI2CRequest);
-  wait1Msec(12);
+  sleep(12);
 
   return true;
 }
-
 
 /**
  * Turn the specified motor on
@@ -253,14 +243,13 @@ bool HTRCXmotorOn(tSensors link, unsigned byte _motor) {
   HTRCXIRMsg[2] = _motor + 0x80 + 0x40;
 
   HTRCXsendHeader(link);
-  wait1Msec(12);
+  sleep(12);
   HTRCXencode(link, HTRCXIRMsg, HTRCXI2CRequest);
   writeI2C(link, HTRCXI2CRequest);
-  wait1Msec(12);
+  sleep(12);
 
   return true;
 }
-
 
 /**
  * Turn the specified motor off
@@ -278,14 +267,13 @@ bool HTRCXmotorOff(tSensors link, unsigned byte _motor) {
   HTRCXIRMsg[2] = _motor;
 
   HTRCXsendHeader(link);
-  wait1Msec(12);
+  sleep(12);
   HTRCXencode(link, HTRCXIRMsg, HTRCXI2CRequest);
   writeI2C(link, HTRCXI2CRequest);
-  wait1Msec(12);
+  sleep(12);
 
   return true;
 }
-
 
 /**
  * Move the specified motor forward
@@ -303,14 +291,13 @@ bool HTRCXmotorFwd(tSensors link, unsigned byte _motor) {
   HTRCXIRMsg[2] = _motor + 0x80;
 
   HTRCXsendHeader(link);
-  wait1Msec(12);
+  sleep(12);
   HTRCXencode(link, HTRCXIRMsg, HTRCXI2CRequest);
   writeI2C(link, HTRCXI2CRequest);
-  wait1Msec(12);
+  sleep(12);
 
   return true;
 }
-
 
 /**
  * Move the specified motor reverse
@@ -328,14 +315,13 @@ bool HTRCXmotorRev(tSensors link, unsigned byte _motor) {
   HTRCXIRMsg[2] = _motor;
 
   HTRCXsendHeader(link);
-  wait1Msec(12);
+  sleep(12);
   HTRCXencode(link, HTRCXIRMsg, HTRCXI2CRequest);
   writeI2C(link, HTRCXI2CRequest);
-  wait1Msec(12);
+  sleep(12);
 
   return true;
 }
-
 
 /**
  * Set the motor power.
@@ -356,18 +342,15 @@ bool HTRCXmotorPwr(tSensors link, unsigned byte _motor, unsigned byte power) {
   HTRCXIRMsg[4] = power;
 
   HTRCXsendHeader(link);
-  wait1Msec(12);
+  sleep(12);
   HTRCXencode(link, HTRCXIRMsg, HTRCXI2CRequest);
   writeI2C(link, HTRCXI2CRequest);
-  wait1Msec(12);
+  sleep(12);
 
   return true;
 }
 
 #endif // _HTRCX_H_
 
-/*
- * $Id: hitechnic-irlink-rcx.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

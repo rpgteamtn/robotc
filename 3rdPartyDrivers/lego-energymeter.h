@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: lego-energymeter.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __LEGOEM_DRIVER_H__
 #define __LEGOEM_DRIVER_H__
 
@@ -26,7 +22,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (mightor@gmail.com)
  * \date 22 August 2010
@@ -48,10 +44,9 @@
 #define LEGOEM_I2C_REG  0x0A /*!< Start of I2C registers that need to be read */
 #define LEGOEM_I2C_SIZE   14 /*!< Number of registers to read at once */
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function prototypes
-bool LEGOEMreadData(tSensors link, float &voltageIn, float &currentIn, float &voltageOut, float &currentOut, int &joule, float &wattIn, float &wattOut);
+bool LEGOEMreadData(tSensors link, float &voltageIn, float &currentIn, float &voltageOut, float &currentOut, short &joule, float &wattIn, float &wattOut);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // global variables
@@ -59,7 +54,6 @@ tByteArray       LEGOEM_I2CRequest;    /*!< Array to hold I2C command data */
 tByteArray       LEGOEM_I2CReply;      /*!< Array to hold I2C reply data   */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 /**
  * Read a snapshot of the current register values.  They must all be read at once to
@@ -75,7 +69,7 @@ tByteArray       LEGOEM_I2CReply;      /*!< Array to hold I2C reply data   */
  * @param wattOut amount of Watts being consumed
  * @return true if no error occured, false if it did
  */
-bool LEGOEMreadData(tSensors link, float &voltageIn, float &currentIn, float &voltageOut, float &currentOut, int &joule, float &wattIn, float &wattOut) {
+bool LEGOEMreadData(tSensors link, float &voltageIn, float &currentIn, float &voltageOut, float &currentOut, short &joule, float &wattIn, float &wattOut) {
   memset(LEGOEM_I2CRequest, 0, sizeof(tByteArray));
 
   LEGOEM_I2CRequest[0] = 2;                // Message size
@@ -97,8 +91,5 @@ bool LEGOEMreadData(tSensors link, float &voltageIn, float &currentIn, float &vo
 
 #endif // __LEGOEM_DRIVER_H__
 
-/*
- * $Id: lego-energymeter.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

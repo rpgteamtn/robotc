@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: dexterind-imu.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __DIMU_H__
 #define __DIMU_H__
 /** \file dexterind-imu.h
@@ -24,9 +20,8 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
- 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 07 August 2011
  * \version 0.1
@@ -92,17 +87,14 @@
 #ifdef STRUCT_CODE_ENABLED
 typedef struct
 {
-  ubyte I2CAddress;
-  tSensors link;
-  tByteArray I2CRequest;
-  tByteArray I2CReply;
+  tI2CData I2CData;
   float gyroDivisor;
   float accelDivisor;
   float axesAccel8Bit[3];
   float axesAccel10Bit[3];
   float axesGyro8Bit[3];
   float axesGyro10Bit[3];
-} tDIMUdata, *tDIMUdataPtr;
+} tDIMU, *tDIMUptr;
 #endif
 
 float DIMU_Gyro_divisor[4] = {0.0, 0.0, 0.0, 0.0}; /*!< Array to hold divisor data for 8 bit measurements */
@@ -110,7 +102,6 @@ float DIMU_Accel_divisor[4] = {0.0, 0.0, 0.0, 0.0}; /*!< Array to hold divisor d
 
 tByteArray DIMU_I2CRequest;    /*!< Array to hold I2C command data */
 tByteArray DIMU_I2CReply;      /*!< Array to hold I2C reply data */
-
 
 bool DIMUconfigGyro(tSensors link, ubyte range, bool lpfenable=true);
 float DIMUreadGyroAxis(tSensors link, ubyte axis);
@@ -125,13 +116,14 @@ void DIMUcalAccel(tSensors link);
 bool DIMUconfigIMU(tSensors link, ubyte accelRange=DIMU_ACC_RANGE_8G, ubyte gyroRange=DIMU_GYRO_RANGE_250, bool lpfenable=true);
 
 #ifdef STRUCT_CODE_ENABLED
-bool DIMUconfigGyro(tDIMUdataPtr sensor, ubyte range, bool lpfenable=true);
-void DIMUreadGyroAxes(tDIMUdataPtr sensor);
-bool DIMUconfigAccel(tDIMUdataPtr sensor, ubyte range);
-void DIMUreadAccelAxes8Bit(tDIMUdataPtr sensor);
-void DIMUreadAccelAxes10Bit(tDIMUdataPtr sensor);
-void DIMUcalAccel(tDIMUdataPtr sensor);
-bool DIMUconfigIMU(tDIMUdataPtr sensor, ubyte accelRange=DIMU_ACC_RANGE_8G, ubyte gyroRange=DIMU_GYRO_RANGE_250, bool lpfenable=true);
+bool initSensor(tDIMUptr sensor, tSensors link);
+bool configGyro(tDIMUptr sensor, ubyte range, bool lpfenable=true);
+void DIMUreadGyroAxes(tDIMUptr sensor);
+bool DIMUconfigAccel(tDIMUptr sensor, ubyte range);
+void DIMUreadAccelAxes8Bit(tDIMUptr sensor);
+void DIMUreadAccelAxes10Bit(tDIMUptr sensor);
+void DIMUcalAccel(tDIMUptr sensor);
+bool DIMUconfigIMU(tDIMUptr sensor, ubyte accelRange=DIMU_ACC_RANGE_8G, ubyte gyroRange=DIMU_GYRO_RANGE_250, bool lpfenable=true);
 #endif
 
 /**
@@ -142,59 +134,58 @@ bool DIMUconfigIMU(tDIMUdataPtr sensor, ubyte accelRange=DIMU_ACC_RANGE_8G, ubyt
  * @return true if no error occured, false if it did
  */
 bool DIMUconfigGyro(tSensors link, ubyte range, bool lpfenable){
-	memset(DIMU_I2CRequest, 0, sizeof(DIMU_I2CRequest));
+  memset(DIMU_I2CRequest, 0, sizeof(DIMU_I2CRequest));
 
-	// Setup the size and address, same for all requests.
-	DIMU_I2CRequest[0] = 3;    // Sending address, register, value. Optional, defaults to true
-	DIMU_I2CRequest[1] = 0xD2; // I2C Address of gyro.
+  // Setup the size and address, same for all requests.
+  DIMU_I2CRequest[0] = 3;    // Sending address, register, value. Optional, defaults to true
+  DIMU_I2CRequest[1] = 0xD2; // I2C Address of gyro.
 
-	// Write CTRL_REG2
-	// No High Pass Filter
-	DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG2;
-	DIMU_I2CRequest[3] = 0x00;
-	if (!writeI2C(link, DIMU_I2CRequest))
-	  return false;
+  // Write CTRL_REG2
+  // No High Pass Filter
+  DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG2;
+  DIMU_I2CRequest[3] = 0x00;
+  if (!writeI2C(link, DIMU_I2CRequest))
+    return false;
 
-	// Write CTRL_REG3
-	// No interrupts.  Date ready.
-	////////////////////////////////////////////////////////////////////////////
-	DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG3;      // Register address of CTRL_REG3
-	DIMU_I2CRequest[3] = 0x08;      // No interrupts.  Date ready.
-	if(!writeI2C(link, DIMU_I2CRequest))
-	  return false;
+  // Write CTRL_REG3
+  // No interrupts.  Date ready.
+  ////////////////////////////////////////////////////////////////////////////
+  DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG3;      // Register address of CTRL_REG3
+  DIMU_I2CRequest[3] = 0x08;      // No interrupts.  Date ready.
+  if(!writeI2C(link, DIMU_I2CRequest))
+    return false;
 
-	// Write CTRL_REG4
-	// Full scale range.
-	DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG4;
-	DIMU_I2CRequest[3] = range + DIMU_CTRL4_BLOCKDATA;
-	writeI2C(link, DIMU_I2CRequest);
+  // Write CTRL_REG4
+  // Full scale range.
+  DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG4;
+  DIMU_I2CRequest[3] = range + DIMU_CTRL4_BLOCKDATA;
+  writeI2C(link, DIMU_I2CRequest);
 
-	//Write CTRL_REG5
-	DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG5;      // Register address of CTRL_REG5
-	DIMU_I2CRequest[3] = (lpfenable) ? 0x02 : 0x00;      // filtering - low pass
-	if (!writeI2C(link, DIMU_I2CRequest))
-	  return false;
+  //Write CTRL_REG5
+  DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG5;      // Register address of CTRL_REG5
+  DIMU_I2CRequest[3] = (lpfenable) ? 0x02 : 0x00;      // filtering - low pass
+  if (!writeI2C(link, DIMU_I2CRequest))
+    return false;
 
-	// Write CTRL_REG1
-	// Enable all axes. Disable power down.
-	DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG1;
-	DIMU_I2CRequest[3] = 0x0F;
-	if (!writeI2C(link, DIMU_I2CRequest))
-	  return false;
+  // Write CTRL_REG1
+  // Enable all axes. Disable power down.
+  DIMU_I2CRequest[2] = DIMU_GYRO_CTRL_REG1;
+  DIMU_I2CRequest[3] = 0x0F;
+  if (!writeI2C(link, DIMU_I2CRequest))
+    return false;
 
-	// Set DIMU_Gyro_divisor so that the output of our gyro axis readings can be turned
-	// into scaled values.
-	///////////////////////////////////////////////////////////////////////////
-	if(range == 0)
-	  DIMU_Gyro_divisor[link] = 114.28571;      // Full scale range is 250 dps.
+  // Set DIMU_Gyro_divisor so that the output of our gyro axis readings can be turned
+  // into scaled values.
+  ///////////////////////////////////////////////////////////////////////////
+  if(range == 0)
+    DIMU_Gyro_divisor[link] = 114.28571;      // Full scale range is 250 dps.
   else if (range == 0x10)
     DIMU_Gyro_divisor[link] = 57.142857;       // Full scale range is 500 dps.
-	else if (range == 0x30)
-	  DIMU_Gyro_divisor[link] = 14.285714;       // Full scale range is 2000 dps.
+  else if (range == 0x30)
+    DIMU_Gyro_divisor[link] = 14.285714;       // Full scale range is 2000 dps.
 
-	return true;
+  return true;
 }
-
 
 /**
  * Retrieve the axis data
@@ -203,12 +194,12 @@ bool DIMUconfigGyro(tSensors link, ubyte range, bool lpfenable){
  * @return the axis data in degrees per second
  */
 float DIMUreadGyroAxis(tSensors link, ubyte axis){
-	// ubyte _msb = 0;
-	// ubyte _lsb = 0;
+  // ubyte _msb = 0;
+  // ubyte _lsb = 0;
 
-	DIMU_I2CRequest[0] = 2;                   // Message size
+  DIMU_I2CRequest[0] = 2;                   // Message size
   DIMU_I2CRequest[1] = DIMU_GYRO_I2C_ADDR;  // I2C Address
-	DIMU_I2CRequest[2] = axis + 0x80;            // Register address
+  DIMU_I2CRequest[2] = axis + 0x80;            // Register address
 
   if (!writeI2C(link, DIMU_I2CRequest, DIMU_I2CReply, 2)) {
     writeDebugStreamLine("error write");
@@ -217,7 +208,6 @@ float DIMUreadGyroAxis(tSensors link, ubyte axis){
 
   return (DIMU_I2CReply[0]+((long)(DIMU_I2CReply[1]<<8)))/DIMU_Gyro_divisor[link];
 }
-
 
 /**
  * Read all three axes of the gyro
@@ -228,9 +218,9 @@ float DIMUreadGyroAxis(tSensors link, ubyte axis){
  * @return true if no error occured, false if it did
  */
 void DIMUreadGyroAxes(tSensors link, float &_x, float &_y, float &_z){
-	DIMU_I2CRequest[0] = 2;                   // Message size
+  DIMU_I2CRequest[0] = 2;                   // Message size
   DIMU_I2CRequest[1] = DIMU_GYRO_I2C_ADDR;  // I2C Address
-	DIMU_I2CRequest[2] = DIMU_GYRO_ALL_AXES + 0x80;            // Register address
+  DIMU_I2CRequest[2] = DIMU_GYRO_ALL_AXES + 0x80;            // Register address
 
   if (!writeI2C(link, DIMU_I2CRequest, DIMU_I2CReply, 6)) {
     writeDebugStreamLine("error write");
@@ -241,7 +231,6 @@ void DIMUreadGyroAxes(tSensors link, float &_x, float &_y, float &_z){
   _x = (DIMU_I2CReply[2]+((long)(DIMU_I2CReply[3]<<8)))/DIMU_Gyro_divisor[link];
   _z = (DIMU_I2CReply[4]+((long)(DIMU_I2CReply[5]<<8)))/DIMU_Gyro_divisor[link];
 }
-
 
 /**
  * Wait for the I2C bus to be ready for the next message
@@ -256,20 +245,19 @@ bool DIMUconfigAccel(tSensors link, ubyte range) {
     case DIMU_ACC_RANGE_8G: DIMU_Accel_divisor[link] = 16.0; break;
   }
 
-	DIMU_I2CRequest[0] = 3;                 // Sending address, register, value.
-	DIMU_I2CRequest[1] = DIMU_ACC_I2C_ADDR; // I2C Address of Accelerometer.
+  DIMU_I2CRequest[0] = 3;                 // Sending address, register, value.
+  DIMU_I2CRequest[1] = DIMU_ACC_I2C_ADDR; // I2C Address of Accelerometer.
 
-	//Set the Mode Control - P.25 of Documentation
-	////////////////////////////////////////////////////////////////////////////
-	DIMU_I2CRequest[2] = 0x16;                   // Register address of Mode Control
-	DIMU_I2CRequest[3] = range | DIMU_ACC_MODE_MEAS;
-	if (!writeI2C(link, DIMU_I2CRequest))     // (Port 1, Message Array, Reply Size)
-	  return false;
+  //Set the Mode Control - P.25 of Documentation
+  ////////////////////////////////////////////////////////////////////////////
+  DIMU_I2CRequest[2] = 0x16;                   // Register address of Mode Control
+  DIMU_I2CRequest[3] = range | DIMU_ACC_MODE_MEAS;
+  if (!writeI2C(link, DIMU_I2CRequest))     // (Port 1, Message Array, Reply Size)
+    return false;
 
-	DIMUcalAccel(link);
-	return true;
+  DIMUcalAccel(link);
+  return true;
 }
-
 
 /**
  * Read the specified accelerometer axis, returns an 8 bit answer
@@ -278,23 +266,22 @@ bool DIMUconfigAccel(tSensors link, ubyte range) {
  * @return gravity in G with 8 bit accuracy
  */
 float DIMUreadAccelAxis8Bit(tSensors link, ubyte axis){
-  int sensorReading = 0;
-	DIMU_I2CRequest[0] = 2;      // Sending address, register.
-	DIMU_I2CRequest[1] = DIMU_ACC_I2C_ADDR;   // I2C Address of accl.
+  short sensorReading = 0;
+  DIMU_I2CRequest[0] = 2;      // Sending address, register.
+  DIMU_I2CRequest[1] = DIMU_ACC_I2C_ADDR;   // I2C Address of accl.
 
-	switch (axis) {
+  switch (axis) {
     case DIMU_ACC_X_AXIS: DIMU_I2CRequest[2] = 0x06; break;
     case DIMU_ACC_Y_AXIS: DIMU_I2CRequest[2] = 0x07; break;
     case DIMU_ACC_Z_AXIS: DIMU_I2CRequest[2] = 0x08; break;
   }
 
-	if (!writeI2C(link, DIMU_I2CRequest, DIMU_I2CReply, 1))
-	  return 0;
+  if (!writeI2C(link, DIMU_I2CRequest, DIMU_I2CReply, 1))
+    return 0;
 
-	sensorReading = (int)DIMU_I2CReply[0];
-	return ((sensorReading > 128) ? sensorReading - 256 : sensorReading) / DIMU_Accel_divisor[link];
+  sensorReading = (short)DIMU_I2CReply[0];
+  return ((sensorReading > 128) ? sensorReading - 256 : sensorReading) / DIMU_Accel_divisor[link];
 }
-
 
 /**
  * Confgures an offset register for the accelerometer.
@@ -318,7 +305,6 @@ bool DIMUsetAccelAxisOffset(tSensors link, ubyte drift_reg, ubyte drift_LSB, uby
   return writeI2C(link, DIMU_I2CRequest);
 }
 
-
 /**
  * Read the specified accelerometer axis, returns an 10 bit answer
  * @param link the port number
@@ -327,14 +313,14 @@ bool DIMUsetAccelAxisOffset(tSensors link, ubyte drift_reg, ubyte drift_LSB, uby
  * @return gravity in G with 10 bit accuracy
  */
 float DIMUreadAccelAxis10Bit(tSensors link, ubyte axis, bool calibrate){
-  int ureading = 0;  // unsigned sensor data
-  int sreading = 0;  // signed sensor data
-  int drift_offset = 0;
+  short ureading = 0;  // unsigned sensor data
+  short sreading = 0;  // signed sensor data
+  short drift_offset = 0;
 
   if (calibrate == true) {
     writeDebugStreamLine("axis: %d", axis);
     DIMUsetAccelAxisOffset(link, 0x10 + axis, 0x00, 0x00);
-    wait1Msec(50);
+    sleep(50);
   }
 
   DIMU_I2CRequest[0] = 2;          // Sending address, register.
@@ -349,7 +335,7 @@ float DIMUreadAccelAxis10Bit(tSensors link, ubyte axis, bool calibrate){
   //sreading = (ureading & 0x200) ? -(((~ureading) & 0x3FF)+1) : ureading;
 
   if (calibrate == true) {
-    wait1Msec(50);
+    sleep(50);
     switch (axis) {
       case DIMU_ACC_X_AXIS: drift_offset = (  0 - sreading ) * 2; break;
       case DIMU_ACC_Y_AXIS: drift_offset = (  0 - sreading ) * 2; break;
@@ -361,7 +347,6 @@ float DIMUreadAccelAxis10Bit(tSensors link, ubyte axis, bool calibrate){
   return sreading / 64.0;
 }
 
-
 /**
  * Read the specified accelerometer axis, returns an 8 bit answer
  * @param link the port number
@@ -370,11 +355,10 @@ float DIMUreadAccelAxis10Bit(tSensors link, ubyte axis, bool calibrate){
  * @param _z variable to hold Z axis data
  */
 void DIMUreadAccelAxes8Bit(tSensors link, float &_x, float &_y, float &_z){
-	_x = DIMUreadAccelAxis8Bit(link, DIMU_ACC_X_AXIS);
-	_y = DIMUreadAccelAxis8Bit(link, DIMU_ACC_Y_AXIS);
-	_z = DIMUreadAccelAxis8Bit(link, DIMU_ACC_Z_AXIS);
+  _x = DIMUreadAccelAxis8Bit(link, DIMU_ACC_X_AXIS);
+  _y = DIMUreadAccelAxis8Bit(link, DIMU_ACC_Y_AXIS);
+  _z = DIMUreadAccelAxis8Bit(link, DIMU_ACC_Z_AXIS);
 }
-
 
 /**
  * Read the specified accelerometer axis, returns an 10 bit answer
@@ -384,11 +368,10 @@ void DIMUreadAccelAxes8Bit(tSensors link, float &_x, float &_y, float &_z){
  * @param _z variable to hold Z axis data
  */
 void DIMUreadAccelAxes10Bit(tSensors link, float &_x, float &_y, float &_z){
-	_x = DIMUreadAccelAxis10Bit(link, DIMU_ACC_X_AXIS);
-	_y = DIMUreadAccelAxis10Bit(link, DIMU_ACC_Y_AXIS);
-	_z = DIMUreadAccelAxis10Bit(link, DIMU_ACC_Z_AXIS);
+  _x = DIMUreadAccelAxis10Bit(link, DIMU_ACC_X_AXIS);
+  _y = DIMUreadAccelAxis10Bit(link, DIMU_ACC_Y_AXIS);
+  _z = DIMUreadAccelAxis10Bit(link, DIMU_ACC_Z_AXIS);
 }
-
 
 /**
  * Calibrate the Accelerometer.  The sensor must be stationary and assumes the Z axis is facing up.
@@ -396,11 +379,10 @@ void DIMUreadAccelAxes10Bit(tSensors link, float &_x, float &_y, float &_z){
  */
 void DIMUcalAccel(tSensors link){
   DIMUreadAccelAxis10Bit(link, DIMU_ACC_X_AXIS, true);      // Get x axis data.
-	DIMUreadAccelAxis10Bit(link, DIMU_ACC_Y_AXIS, true);      // Get y axis data.
-	DIMUreadAccelAxis10Bit(link, DIMU_ACC_Z_AXIS, true);      // Get z axis data.
-	wait1Msec(100);
+  DIMUreadAccelAxis10Bit(link, DIMU_ACC_Y_AXIS, true);      // Get y axis data.
+  DIMUreadAccelAxis10Bit(link, DIMU_ACC_Z_AXIS, true);      // Get z axis data.
+  sleep(100);
 }
-
 
 bool DIMUconfigIMU(tSensors link, ubyte accelRange, ubyte gyroRange, bool lpfenable)
 {
@@ -410,84 +392,81 @@ bool DIMUconfigIMU(tSensors link, ubyte accelRange, ubyte gyroRange, bool lpfena
   return DIMUconfigAccel(link, accelRange);
 }
 
-
 #ifdef STRUCT_CODE_ENABLED
-bool DIMUconfigGyro(tDIMUdataPtr sensor, ubyte range, bool lpfenable)
+bool DIMUconfigGyro(tDIMUptr sensor, ubyte range, bool lpfenable)
 {
-	memset(sensor->I2CRequest, 0, sizeof(tByteArray));
+  // Setup the size and address, same for all requests.
+  sensor->I2CData.request[0] = 3;    // Sending address, register, value. Optional, defaults to true
+  sensor->I2CData.request[1] = 0xD2; // I2C Address of gyro.
 
-	// Setup the size and address, same for all requests.
-	sensor->I2CRequest[0] = 3;    // Sending address, register, value. Optional, defaults to true
-	sensor->I2CRequest[1] = 0xD2; // I2C Address of gyro.
+  // Write CTRL_REG2
+  // No High Pass Filter
+  sensor->I2CData.request[2] = DIMU_GYRO_CTRL_REG2;
+  sensor->I2CData.request[3] = 0x00;
+  if (!writeI2C(&sensor->I2CData))
+    return false;
 
-	// Write CTRL_REG2
-	// No High Pass Filter
-	sensor->I2CRequest[2] = DIMU_GYRO_CTRL_REG2;
-	sensor->I2CRequest[3] = 0x00;
-	if (!writeI2C(link, sensor->I2CRequest))
-	  return false;
+  // Write CTRL_REG3
+  // No interrupts.  Date ready.
+  ////////////////////////////////////////////////////////////////////////////
+  sensor->I2CData.request[2] = DIMU_GYRO_CTRL_REG3;      // Register address of CTRL_REG3
+  sensor->I2CData.request[3] = 0x08;      // No interrupts.  Date ready.
+  if (!writeI2C(&sensor->I2CData))
+    return false;
 
-	// Write CTRL_REG3
-	// No interrupts.  Date ready.
-	////////////////////////////////////////////////////////////////////////////
-	sensor->I2CRequest[2] = DIMU_GYRO_CTRL_REG3;      // Register address of CTRL_REG3
-	sensor->I2CRequest[3] = 0x08;      // No interrupts.  Date ready.
-	if(!writeI2C(link, sensor->I2CRequest))
-	  return false;
+  // Write CTRL_REG4
+  // Full scale range.
+  sensor->I2CData.request = DIMU_GYRO_CTRL_REG4;
+  sensor->I2CData.request[3] = range + DIMU_CTRL4_BLOCKDATA;
+  if (!writeI2C(&sensor->I2CData))
 
-	// Write CTRL_REG4
-	// Full scale range.
-	sensor->I2CRequest = DIMU_GYRO_CTRL_REG4;
-	sensor->I2CRequest[3] = range + DIMU_CTRL4_BLOCKDATA;
-	writeI2C(link, sensor->I2CRequest);
+  //Write CTRL_REG5
+  sensor->I2CData.request[2] = DIMU_GYRO_CTRL_REG5;      // Register address of CTRL_REG5
+  sensor->I2CData.request[3] = (lpfenable) ? 0x02 : 0x00;      // filtering - low pass
+  if (!writeI2C(&sensor->I2CData))
+    return false;
 
-	//Write CTRL_REG5
-	sensor->I2CRequest[2] = DIMU_GYRO_CTRL_REG5;      // Register address of CTRL_REG5
-	sensor->I2CRequest[3] = (lpfenable) ? 0x02 : 0x00;      // filtering - low pass
-	if (!writeI2C(link, sensor->I2CRequest))
-	  return false;
+  // Write CTRL_REG1
+  // Enable all axes. Disable power down.
+  sensor->I2CData.request[2] = DIMU_GYRO_CTRL_REG1;
+  sensor->I2CData.request[3] = 0x0F;
+  if (!writeI2C(&sensor->I2CData))
+    return false;
 
-	// Write CTRL_REG1
-	// Enable all axes. Disable power down.
-	sensor->I2CRequest[2] = DIMU_GYRO_CTRL_REG1;
-	sensor->I2CRequest[3] = 0x0F;
-	if (!writeI2C(link, sensor->I2CRequest))
-	  return false;
-
-	// Set DIMU_Gyro_divisor so that the output of our gyro axis readings can be turned
-	// into scaled values.
-	///////////////////////////////////////////////////////////////////////////
-	if(range == 0)
-	  DIMU_Gyro_divisor[link] = 114.28571;      // Full scale range is 250 dps.
+  // Set DIMU_Gyro_divisor so that the output of our gyro axis readings can be turned
+  // into scaled values.
+  ///////////////////////////////////////////////////////////////////////////
+  if(range == 0)
+    DIMU_Gyro_divisor[link] = 114.28571;      // Full scale range is 250 dps.
   else if (range == 0x10)
     DIMU_Gyro_divisor[link] = 57.142857;       // Full scale range is 500 dps.
-	else if (range == 0x30)
-	  DIMU_Gyro_divisor[link] = 14.285714;       // Full scale range is 2000 dps.
+  else if (range == 0x30)
+    DIMU_Gyro_divisor[link] = 14.285714;       // Full scale range is 2000 dps.
 
-	return true;
+  return true;
 }
 
-void DIMUreadGyroAxes(tDIMUdataPtr sensor)
+void DIMUreadGyroAxes(tDIMUptr sensor)
 {
 
 }
-bool DIMUconfigAccel(tDIMUdataPtr sensor, ubyte range)
+bool DIMUconfigAccel(tDIMUptr sensor, ubyte range)
 {
 
 }
-void DIMUreadAccelAxes8Bit(tDIMUdataPtr sensor)
+void DIMUreadAccelAxes8Bit(tDIMUptr sensor)
 {
 
 }
-void DIMUreadAccelAxes10Bit(tDIMUdataPtr sensor)
+void DIMUreadAccelAxes10Bit(tDIMUptr sensor)
 {
 
 }
-void DIMUcalAccel(tDIMUdataPtr sensor)
+void DIMUcalAccel(tDIMUptr sensor)
 {
 
 }
-bool DIMUconfigIMU(tDIMUdataPtr sensor, ubyte accelRange, ubyte gyroRange, bool lpfenable)
+bool DIMUconfigIMU(tDIMUptr sensor, ubyte accelRange, ubyte gyroRange, bool lpfenable)
 {
 
 }
@@ -495,8 +474,5 @@ bool DIMUconfigIMU(tDIMUdataPtr sensor, ubyte accelRange, ubyte gyroRange, bool 
 
 #endif // __DIMU_H__
 
-/*
- * $Id: dexterind-imu.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

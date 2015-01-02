@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: lego-temp.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __LEGOTMP_DRIVER_H__
 #define __LEGOTMP_DRIVER_H__
 
@@ -27,7 +23,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Sylvain CACHEUX (sylcalego@cacheux.info)
  * \author Xander Soldaat (mightor@gmail.com), version 0.2
@@ -51,17 +47,14 @@
 #define LEGOTMP_TEMP     0x00 /*!< Temperature value (return on 2 bytes, 1rst : most significant byte, 2nd  byte only half used) */
 #define LEGOTMP_CONFIG   0x01 /*!< Configuration registry (see http://focus.ti.com/lit/ds/symlink/tmp275.pdf)                    */
 
-
-
 // ---------------------------- Definitions --------------------------------------
 /*!< Command modes definition */
-typedef enum {
+typedef enum tLEGOTMPAccuracy {
   A_MIN   = 8, // 0.5,   * 16 (typedef needs integer...)
   A_MEAN1 = 4, // 0.25   * 16 (so *16 here...)
   A_MEAN2 = 2, // 0.125  * 16 (... and /16 in functions)
   A_MAX   = 1  // 0.0625 * 16 (I'll have to improve that later...)
 } tLEGOTMPAccuracy; // The 4 available accuracy of the sensor
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function prototypes
@@ -79,7 +72,6 @@ tByteArray       LEGOTMP_I2CRequest;    /*!< Array to hold I2C command data */
 tByteArray       LEGOTMP_I2CReply;      /*!< Array to hold I2C reply data   */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 /**
  * Read the current configuration register
@@ -104,7 +96,6 @@ bool _LEGOTMPreadConfig(tSensors link, ubyte &config) {
   return true;
 }
 
-
 /**
  * Set the configuration register
  *
@@ -123,7 +114,6 @@ bool _LEGOTMPsetConfig(tSensors link, ubyte &config) {
 
   return writeI2C(link, LEGOTMP_I2CRequest);
 }
-
 
 /**
  * Retrieve the accuracy level from the config bytes
@@ -163,7 +153,6 @@ tLEGOTMPAccuracy _LEGOTMPconvertAccuracy(ubyte config) {
   return A_MIN;
 }
 
-
 /**
  * Read the temperature.
  * @param link the LEGO Temp Sensor port number
@@ -172,7 +161,7 @@ tLEGOTMPAccuracy _LEGOTMPconvertAccuracy(ubyte config) {
  */
 bool LEGOTMPreadTemp(tSensors link, float &temp) {
   memset(LEGOTMP_I2CRequest, 0, sizeof(tByteArray));
-  int b1;
+  short b1;
   float b2;
   ubyte config;
 
@@ -194,19 +183,19 @@ bool LEGOTMPreadTemp(tSensors link, float &temp) {
     switch (_LEGOTMPconvertAccuracy(config)) {
       case A_MIN:
         // conversion takes 27.5ms
-        wait1Msec(28);
+        sleep(28);
         break;
       case A_MEAN1:
         // conversion takes 55ms
-        wait1Msec(55);
+        sleep(55);
         break;
       case A_MEAN2:
         // conversion takes 110ms
-        wait1Msec(110);
+        sleep(110);
         break;
       case A_MAX:
         // conversion takes 220ms
-        wait1Msec(220);
+        sleep(220);
         break;
     }
   }
@@ -220,24 +209,24 @@ bool LEGOTMPreadTemp(tSensors link, float &temp) {
   if (!writeI2C(link, LEGOTMP_I2CRequest, LEGOTMP_I2CReply, 2))
     return false;
 
-  b1 = (int)LEGOTMP_I2CReply[0];
+  b1 = (short)LEGOTMP_I2CReply[0];
 
   switch (_LEGOTMPconvertAccuracy(config)) {
     case A_MIN:
       ///128 to have only the most significant bit (9 bits accuracy - 8 (b1) = 1 bit to keep)
-      b2 = ((int)LEGOTMP_I2CReply[1] >> 7) * 0.5;
+      b2 = ((short)LEGOTMP_I2CReply[1] >> 7) * 0.5;
       break;
     case A_MEAN1:
       ///64 to have only the 2 most significant bits
-      b2 = ((int)LEGOTMP_I2CReply[1] >> 6) * 0.25;
+      b2 = ((short)LEGOTMP_I2CReply[1] >> 6) * 0.25;
       break;
     case A_MEAN2:
       ///32 to have only the 3 most significant bits
-      b2 = ((int)LEGOTMP_I2CReply[1] >> 5) * 0.125;
+      b2 = ((short)LEGOTMP_I2CReply[1] >> 5) * 0.125;
       break;
     case A_MAX:
       ///16 to have only the 4 most significant bits
-      b2 = ((int)LEGOTMP_I2CReply[1] >> 4) * 0.0625;
+      b2 = ((short)LEGOTMP_I2CReply[1] >> 4) * 0.0625;
       break;
   }
 
@@ -246,7 +235,6 @@ bool LEGOTMPreadTemp(tSensors link, float &temp) {
 
   return true;
 }
-
 
 /**
  * Read the temperature sensor's accuracy
@@ -266,7 +254,6 @@ bool LEGOTMPreadAccuracy(tSensors link, tLEGOTMPAccuracy &accuracy) {
   return true;
 }
 
-
 /**
  * Set the temperature sensor's accuracy
  * @param link the LEGO Temp Sensor port number
@@ -282,12 +269,12 @@ bool LEGOTMPsetAccuracy(tSensors link, tLEGOTMPAccuracy accuracy) {
     return false;
 
   // setting the value to be writed in the configuration registry depending on the others bits values
-	/* the accuracy is in bits 6 & 5<br>
-	 * Config registry :<br>
-	 * BYTE D7  <D6 D5> D4 D3 D2  D1 D0<br>
-	 * 1    OS  <R1 R0> F1 F0 POL TM SD<br>
-	 *      128 <64 32> 16 8  4   2  1<br>
-	*/
+  /* the accuracy is in bits 6 & 5<br>
+   * Config registry :<br>
+   * BYTE D7  <D6 D5> D4 D3 D2  D1 D0<br>
+   * 1    OS  <R1 R0> F1 F0 POL TM SD<br>
+   *      128 <64 32> 16 8  4   2  1<br>
+  */
 
   // Clear bits 5 and 6
   config &= 0x9F;
@@ -315,7 +302,6 @@ bool LEGOTMPsetAccuracy(tSensors link, tLEGOTMPAccuracy accuracy) {
   return _LEGOTMPsetConfig(link, config);
 }
 
-
 /**
  * Configure the sensor for Single Shot mode
  * @param link the New LEGO Sensor port number
@@ -331,11 +317,11 @@ bool LEGOTMPsetSingleShot(tSensors link) {
 
   // setting the value to be written in the configuration registry depending on the others bits values
   /* the shutdown mode bit it bit 0<br>
-	 * Config registry :<br>
-	 * BYTE D7  <D6 D5> D4 D3 D2  D1 D0<br>
-	 * 1    OS  <R1 R0> F1 F0 POL TM SD<br>
-	 *      128 <64 32> 16 8  4   2  1<br>
-	*/
+   * Config registry :<br>
+   * BYTE D7  <D6 D5> D4 D3 D2  D1 D0<br>
+   * 1    OS  <R1 R0> F1 F0 POL TM SD<br>
+   *      128 <64 32> 16 8  4   2  1<br>
+  */
 
   // Set bit 0 to 1
   config |= 1;
@@ -343,7 +329,6 @@ bool LEGOTMPsetSingleShot(tSensors link) {
   // Send new configuration to the sensor
   return _LEGOTMPsetConfig(link, config);
 }
-
 
 /**
  * Configure the sensor for Continuous mode
@@ -375,8 +360,5 @@ bool LEGOTMPsetContinuous(tSensors link) {
 
 #endif // __LEGOTMP_DRIVER_H__
 
-/*
- * $Id: lego-temp.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

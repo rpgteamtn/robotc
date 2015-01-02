@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-pressure.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __MSPPS_H__
 #define __MSPPS_H__
 /** \file mindsensors-pressure.h
@@ -24,7 +20,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 01 January 2012
@@ -61,7 +57,7 @@ long MSPPSreadAbsPressure(tSensors link);
 long MSPPSreadGaugePressure(tSensors link);
 long MSPPSreadRefPressure(tSensors link);
 bool MSPPSsetRefPressure(tSensors link);
-bool MSPPSsetRefPressure(tSensors link, int refpressure);
+bool MSPPSsetRefPressure(tSensors link, short refpressure);
 
 // Handy defines to shortcut some actions
 #define MSPPSsetUnitPSI(X)  MSPPSsetUnit(X, MSPPS_UNIT_PSI)
@@ -70,7 +66,6 @@ bool MSPPSsetRefPressure(tSensors link, int refpressure);
 
 tByteArray MSPPS_I2CRequest;       /*!< Array to hold I2C command data */
 tByteArray MSPPS_I2CReply;         /*!< Array to hold I2C reply data */
-
 
 /**
  * Read the pressure from the sensor and return it in the
@@ -95,7 +90,6 @@ long MSPPSreadPressure(tSensors link, ubyte reg)
   return ((long)MSPPS_I2CReply[1] * 256) + MSPPS_I2CReply[0];
 }
 
-
 /**
  * Read the absolute pressure from the sensor and return it in the
  * unit the sensor has been configured for.
@@ -106,7 +100,6 @@ long MSPPSreadAbsPressure(tSensors link)
 {
   return MSPPSreadPressure(link, MSPPS_PRESS_ABS);
 }
-
 
 /**
  * Read the gauge pressure from the sensor and return it in the
@@ -120,7 +113,6 @@ long MSPPSreadGaugePressure(tSensors link)
   return MSPPSreadPressure(link, MSPPS_PRESS_GAUGE);
 }
 
-
 /**
  * Read the reference pressure from the sensor and return it in the
  * unit specified.
@@ -132,14 +124,13 @@ long MSPPSreadRefPressure(tSensors link)
   return MSPPSreadPressure(link, MSPPS_PRESS_REF);
 }
 
-
 /**
  * Set the reference pressure to the value specified.
  * @param link the sensor port number
  * @param refpressure the value the ref pressure register should be set to.
  * @return true if no error occured, false if it did
  */
-bool MSPPSsetRefPressure(tSensors link, int refpressure)
+bool MSPPSsetRefPressure(tSensors link, short refpressure)
 {
   memset(MSPPS_I2CRequest, 0, sizeof(tByteArray));
 
@@ -152,7 +143,6 @@ bool MSPPSsetRefPressure(tSensors link, int refpressure)
   return writeI2C(link, MSPPS_I2CRequest);
 }
 
-
 /**
  * Set the reference pressure to the current absolute pressure value.
  * @param link the sensor port number
@@ -162,7 +152,6 @@ bool MSPPSsetRefPressure(tSensors link)
 {
   return MSPPSsendCmd(link, MSPSS_CMD_SETREF);
 }
-
 
 /**
  * Send a command to the sensor
@@ -180,7 +169,6 @@ bool MSPPSsendCmd(tSensors link, ubyte command) {
 
   return writeI2C(link, MSPPS_I2CRequest);
 }
-
 
 /**
  * Set the unit of measurement to the one specified.
@@ -201,8 +189,5 @@ bool MSPPSsetUnit(tSensors link, ubyte unit) {
 
 #endif //__MSPPS_H__
 
-/*
- * $Id: mindsensors-pressure.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

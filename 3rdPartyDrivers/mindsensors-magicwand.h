@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-magicwand.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __MSMW_H__
 #define __MSMW_H__
 /** \file mindsensors-magicwand.h
@@ -27,7 +23,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Mike Partain a.k.a. Spiked3 (http://www.spiked3.com/)
  * \author Xander Soldaat (xander_at_botbench.com)
@@ -62,7 +58,6 @@ bool MSMWsetLED(tSensors link, ubyte ledToChange, bool on)
   return PCF8574sendBytes(link, (on ? ledState & ~(1 << ledToChange) : ledState | (1 << ledToChange)) );
 }
 
-
 /**
  * Toggle a LED
  * @param link the Magic Wand port
@@ -79,31 +74,30 @@ bool MSMWtoggleLED(tSensors link, ubyte ledToChange)
   return PCF8574sendBytes(link, ledState ^ (1 << ledToChange));
 }
 
-
 /**
  * Flash the LEDs and turn them off again.  Nice effect.
  * @param link the Magic Wand port
  * @param count number of times to flash the LEDs
  * @return true if no error occured, false if it did
  */
-bool MSMWflashAndClear(tSensors link, int count)
+bool MSMWflashAndClear(tSensors link, short count)
 {
   PCF8574sendBytes(link, 0xFF);    // all off
-  for (int i = 0; i < count; i++)
+  for (short i = 0; i < count; i++)
   {
-    for (int j = 0; j < 8; j++) {
+    for (short j = 0; j < 8; j++) {
       if (!MSMWsetLED(link, j, true))
       {
         return false;
       }
-      wait1Msec(30);
+      sleep(30);
     }
-    for (int j = 0; j < 8; j++) {
+    for (short j = 0; j < 8; j++) {
       if (!MSMWsetLED(link, j, false))
       {
         return false;
       }
-      wait1Msec(30);
+      sleep(30);
     }
     if (!PCF8574sendBytes(link, 0xFF))
     {
@@ -116,8 +110,5 @@ bool MSMWflashAndClear(tSensors link, int count)
 
 #endif //  __MSMW_H__
 
-/*
- * $Id: mindsensors-magicwand.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

@@ -5,17 +5,13 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-rcxmotormux.h 133 2013-03-10 15:15:38Z xander $
- */
-
 /** \file mindsensors-rcxmotormux.h
  * \brief RobotC Mindsensors RCX Motor MUX Driver
  *
  * mindsensors-rcxmotormux.h provides an API for the Mindsensors RCX Motor MUX Driver.
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Daniel Playfair Cal (daniel.playfair.cal_at_gmail.com)
  * \date 2011-09-20
@@ -34,7 +30,7 @@
 #define MSMTRMX_MOTOR_REG     0x42      /*!< Motor address */
 
 /*! motor settings struct, each motor can be set to one of these modes */
-typedef enum {
+typedef enum tMSMTRMXSettings {
   MSMTRMX_MODE_FLOAT = 0,
   MSMTRMX_MODE_FORWARD = 1,
   MSMTRMX_MODE_REVERSE = 2,
@@ -42,7 +38,7 @@ typedef enum {
 } tMSMTRMXSettings;
 
 /*! motors struct, these are the four motor channels on the MUX */
-typedef enum {
+typedef enum tMSMTRMXMotors {
   MSMTRMX_M1 = 0,
   MSMTRMX_M2 = 1,
   MSMTRMX_M3 = 2,
@@ -52,9 +48,8 @@ typedef enum {
 tByteArray MSMTRMX_I2CMessage;       /*!< Array to hold I2C command data */
 
 /*! Function prototypes */
-bool MSMTRMX_Control(tSensors link, tMSMTRMXMotors channel, int power, ubyte address = MSMTRMX_I2C_ADDR);
+bool MSMTRMX_Control(tSensors link, tMSMTRMXMotors channel, short power, ubyte address = MSMTRMX_I2C_ADDR);
 bool MSMTRMX_Brake(tSensors link, tMSMTRMXMotors channel, unsigned byte brakeForce, ubyte address = MSMTRMX_I2C_ADDR);
-
 
 /**
  * This function sets the specified motor to the given power level,
@@ -66,7 +61,7 @@ bool MSMTRMX_Brake(tSensors link, tMSMTRMXMotors channel, unsigned byte brakeFor
  * @param address the I2C address to use, optional, defaults to 0xB4
  * @return true if message is sent successfully
  */
-bool MSMTRMX_Control(tSensors link, tMSMTRMXMotors channel, int power, ubyte address) {
+bool MSMTRMX_Control(tSensors link, tMSMTRMXMotors channel, short power, ubyte address) {
   tMSMTRMXSettings dir;
 
   if (power == 0) {
@@ -96,7 +91,6 @@ bool MSMTRMX_Control(tSensors link, tMSMTRMXMotors channel, int power, ubyte add
   return true;
 }
 
-
 /**
  * This function applies the specified braking power to the specified motor
  * @param link port number
@@ -121,10 +115,6 @@ bool MSMTRMX_Brake(tSensors link, tMSMTRMXMotors channel, unsigned byte brakeFor
 
   return true;
 }
-
-/*
- * $Id: mindsensors-rcxmotormux.h 133 2013-03-10 15:15:38Z xander $
- */
 
 /* @} */
 /* @} */

@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-lightsensorarray.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __MSLSA_H__
 #define __MSLSA_H__
 
@@ -18,11 +14,11 @@
  * mindsensors-lightsensorarray.h provides an API for the Mindsensors LightSensorArray
  *
  * Changelog:
- *  - 0.1 Initial	release<br>
+ *  - 0.1 Initial  release<br>
  *
  * License: You may use this code as you wish, provided you give credit where it's due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat
  * \date 29 September 2012
@@ -34,18 +30,18 @@
 #pragma systemFile
 
 #ifndef __COMMON_H__
-	#include "common.h"
+  #include "common.h"
 #endif
 
-#define MSLSA_I2C_ADDR   		    0x14  /*!< I2C address used by the MSLSA */
-#define MSLSA_CMD_REG    		    0x41  /*!< Register used for issuing commands */
+#define MSLSA_I2C_ADDR           0x14  /*!< I2C address used by the MSLSA */
+#define MSLSA_CMD_REG            0x41  /*!< Register used for issuing commands */
 
 #define MSLSA_CALIBRATED        0x42  /*!< Calibrated Sensor reading */
-#define MSLSA_WHITE_LIMIT  	    0x4A  /*!< White Reading Limit */
-#define MSLSA_BLACK LIMIT   	  0x52  /*!< Black Reading Limit */
+#define MSLSA_WHITE_LIMIT        0x4A  /*!< White Reading Limit */
+#define MSLSA_BLACK LIMIT       0x52  /*!< Black Reading Limit */
 #define MSLSA_WHITE_CALIB_DATA  0x5A  /*!< White Calibration data */
 #define MSLSA_BLACK_CALIB_DATA  0x62  /*!< Black Calibration data */
-#define MSLSA_UNCALIBRATED 		  0x6A  /*!< Uncalibrated sensor voltage  */
+#define MSLSA_UNCALIBRATED       0x6A  /*!< Uncalibrated sensor voltage  */
 
 #define MSLSA_CMD_FREQ_US       'A'   /*!< American frequency compensation  */
 #define MSLSA_CMD_CALIB_BLACK   'B'   /*!< Calibrate black values  */
@@ -66,9 +62,8 @@ tByteArray MSLSA_I2CReply;         /*!< Array to hold I2C reply data */
 #define MSLSAsetUS(X)     _MSLSAsendCommand(X, MSLSA_CMD_FREQ_US)     /*!< Calibrate the black value */
 #define MSLSAsetUni(X)    _MSLSAsendCommand(X, MSLSA_CMD_FREQ_UNI)    /*!< Calibrate the black value */
 
-
 bool MSLSAreadSensors(tSensors link, ubyte *values);
-bool MSLSAreadRawSensors(tSensors link, int *values);
+bool MSLSAreadRawSensors(tSensors link, short *values);
 bool _MSLSAsendCommand(tSensors link, ubyte cmd);                      /*!< Send a command to the LightSensorArray */
 
 /**
@@ -97,7 +92,6 @@ bool _MSLSAsendCommand(tSensors link, ubyte cmd) {
   return writeI2C(link, MSLSA_I2CRequest);
 }
 
-
 /**
  * Return the calibrated values from the sensors
  * @param link the Mindsensors LightSensorArray port number
@@ -122,14 +116,13 @@ bool MSLSAreadSensors(tSensors link, ubyte *values)
   return true;
 }
 
-
 /**
  * Return the uncalibrated values from the sensors
  * @param link the Mindsensors LightSensorArray port number
  * @param values pointer to integer array to hold the uncalibrated sensor values
  * @return true if no error occured, false if it did
  */
-bool MSLSAreadRawSensors(tSensors link, int *values)
+bool MSLSAreadRawSensors(tSensors link, short *values)
 {
   MSLSA_I2CRequest[0] = 2;
   MSLSA_I2CRequest[1] = MSLSA_I2C_ADDR;
@@ -141,21 +134,15 @@ bool MSLSAreadRawSensors(tSensors link, int *values)
   // clear out the old values
   memset(values, 0, sizeof(values));
 
-  for (int i = 0; i < 8; i++)
+  for (short i = 0; i < 8; i++)
   {
     values[i] = MSLSA_I2CReply[i * 2] + (MSLSA_I2CReply[(i * 2) + 1] << 8);
   }
-
-  // copy the new values (first 8 bytes)
-  memcpy(values, MSLSA_I2CReply, 8);
 
   return true;
 }
 
 #endif // __MSLSA_H__
 
-/*
- * $Id: mindsensors-lightsensorarray.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

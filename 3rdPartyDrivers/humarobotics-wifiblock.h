@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: humarobotics-wifiblock.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __HRWB_H__
 #define __HRWB_H__
 /** \file humarobotics-wifiblock.h
@@ -25,7 +21,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 02 April 2012
@@ -38,7 +34,6 @@
 #ifndef __COMMON_H__
 #include "common.h"
 #endif
-
 
 #define HRWB_I2C_ADDR               0x20      /*!< WiFiBlock I2C address */
 #define HRWB_SIMPLE_WRITE           0x01      /*!< Command for a simple write */
@@ -159,7 +154,6 @@ tByteArray HRWB_I2CReply;         /*!< Array to hold I2C reply data */
 tByteArray HRWB_scratch;          /*!< Array to hold scratch data */
 tHugeByteArray HRWB_HugeArray;    /*!< Array to hold scratch data, only more of it */
 
-
 typedef struct                    /*!< Struct to hold network config information */
 {
   string wifi_ssid;               /*!< SSID (network name) to connect to */
@@ -179,33 +173,30 @@ typedef struct
 } tSSIDInfo;
 */
 
-
 typedef struct                    /*!< Struct to hold UDP connection info */
 {
   tIPaddr IP;                     /*!< IP address to send request to */
-  int port;                       /*!< port to send request to */
+  short port;                       /*!< port to send request to */
   tHugeByteArray URL;             /*!< URL (everything after the host name) */
   tBigByteArray RXData;           /*!< Received data */
   ubyte RXDataLen;                /*!< Amount of received data */
   ubyte result_code;              /*!< HTTP result code */
 } tGetRequest;
 
-
 typedef struct
 {
   tIPaddr IP;                     /*!< IP address to send request to */
-  int port;                       /*!< port to send request to */
+  short port;                       /*!< port to send request to */
   tHugeByteArray URL;             /*!< URL (everything after the host name) */
   tBigByteArray TXData;           /*!< Data to be transmitted */
   ubyte TXDataLen;                /*!< Amount of data to be transmitted */
   ubyte result_code;              /*!< HTTP result code */
 } tPostRequest;
 
-
 typedef struct
 {
   tIPaddr IP;                     /*!< IP address to send request to */
-  int port;                       /*!< port to send request to */
+  short port;                       /*!< port to send request to */
   tHugeByteArray TXData;          /*!< Data to be transmitted */
   ubyte TXDataLen;                /*!< Amount of data to be transmitted */
   tHugeByteArray RXData;          /*!< Data to be transmitted */
@@ -213,12 +204,11 @@ typedef struct
   ubyte result_code;              /*!< result code: 0 if everything was fine, 1 if there was an error */
 } tTCPRequest;
 
-
 typedef struct
 {
   tIPaddr IP;                     /*!< IP address to send request to */
-  int sport;                      /*!< port to send request from */
-  int dport;                      /*!< port to send request to */
+  short sport;                      /*!< port to send request from */
+  short dport;                      /*!< port to send request to */
   tHugeByteArray TXData;          /*!< Data to be transmitted */
   ubyte TXDataLen;                /*!< Amount of data to be transmitted */
   tHugeByteArray RXData;          /*!< Data to be transmitted */
@@ -233,16 +223,15 @@ typedef struct
  * @param array the array to check the length of
  * @return length of the string in the array
  */
-int strsize(tHugeByteArray &array)
+short strsize(tHugeByteArray &array)
 {
-  for (int i = 0; i < sizeof(tHugeByteArray); i++)
+  for (short i = 0; i < sizeof(tHugeByteArray); i++)
   {
     if((ubyte)array[i] == 0)
       return i;
   }
   return sizeof(tHugeByteArray);
 }
-
 
 /**
  * Convert a string to a tIPaddr struct. This is an IPv4 address.
@@ -254,20 +243,19 @@ void stringToIp(const string address, tIPaddr &addr)
 {
   string octet;
   string copy;
-  int index = 0;
+  short index = 0;
   memcpy(copy, address, 20);
 
-  for (int i = 0; i < 3; i++)
+  for (short i = 0; i < 3; i++)
   {
     octet = "";
-    index = StringFind(copy, ".");
+    index = stringFind(copy, ".");
     memcpy(octet, copy, index);
     addr[i] = atoi(octet);
-    StringDelete(copy, 0, index+1);
+    stringDelete(copy, 0, index+1);
   }
   addr[3] = atoi(copy);
 }
-
 
 /**
  * Perform a masked write, which allows you to select a single bit in a register.
@@ -277,7 +265,7 @@ void stringToIp(const string address, tIPaddr &addr)
  * @param mask to use when writing to the register
  * @return true if no error occured, false if it did
  */
-bool HRWBwriteRegMasked(tSensors link, int reg, ubyte data, ubyte mask)
+bool HRWBwriteRegMasked(tSensors link, short reg, ubyte data, ubyte mask)
 {
   // writeDebugStreamLine("writeRegMasked");
   memset(HRWB_I2CRequest, 0, sizeof(tByteArray));
@@ -293,7 +281,6 @@ bool HRWBwriteRegMasked(tSensors link, int reg, ubyte data, ubyte mask)
   return writeI2C(link, HRWB_I2CRequest);
 }
 
-
 /**
  * Write a single byte to a register
  * @param link the port number
@@ -301,7 +288,7 @@ bool HRWBwriteRegMasked(tSensors link, int reg, ubyte data, ubyte mask)
  * @param data value to write to the register
  * @return true if no error occured, false if it did
  */
-bool HRWBwriteReg(tSensors link, int reg, ubyte data)
+bool HRWBwriteReg(tSensors link, short reg, ubyte data)
 {
   // writeDebugStreamLine("writeReg");
   memset(HRWB_I2CRequest, 0, sizeof(tByteArray));
@@ -316,7 +303,6 @@ bool HRWBwriteReg(tSensors link, int reg, ubyte data)
   return writeI2C(link, HRWB_I2CRequest);
 }
 
-
 /**
  * Write data array to a register
  *
@@ -327,7 +313,7 @@ bool HRWBwriteReg(tSensors link, int reg, ubyte data)
  * @param size amount of data to send
  * @return true if no error occured, false if it did
  */
-bool _HRWBwriteRegPrivate(tSensors link, int reg, tByteArray &data, int size)
+bool _HRWBwriteRegPrivate(tSensors link, short reg, tByteArray &data, short size)
 {
   if (size > 12)
     return false;
@@ -345,7 +331,6 @@ bool _HRWBwriteRegPrivate(tSensors link, int reg, tByteArray &data, int size)
   return writeI2C(link, HRWB_I2CRequest);
 }
 
-
 /**
  * Write a tByteArray struct to a register
  * @param link the port number
@@ -354,26 +339,25 @@ bool _HRWBwriteRegPrivate(tSensors link, int reg, tByteArray &data, int size)
  * @param size amount of data to send
  * @return true if no error occured, false if it did
  */
-bool HRWBwriteReg(tSensors link, int reg, tByteArray &data, int size)
+bool HRWBwriteReg(tSensors link, short reg, tByteArray &data, short size)
 {
   tByteArray tmpBuff;
   // writeDebugStreamLine("writeReg tByteArray");
-  int bytesleft = size;
-  int datalen = 0;
+  short bytesleft = size;
+  short datalen = 0;
 
-  for (int i =  0; i < ((size/12) + 1); i++)
-	{
-	  datalen = (bytesleft > 12) ? 12 : bytesleft;
-	  memset(tmpBuff, 0, sizeof(tmpBuff));
-	  memcpy(tmpBuff, &data[i*12], datalen);
+  for (short i =  0; i < ((size/12) + 1); i++)
+  {
+    datalen = (bytesleft > 12) ? 12 : bytesleft;
+    memset(tmpBuff, 0, sizeof(tmpBuff));
+    memcpy(tmpBuff, &data[i*12], datalen);
 
-	  if (!_HRWBwriteRegPrivate(link, reg + (i*12), tmpBuff, datalen))
-	    return false;
-	  bytesleft -= 12;
-	}
-	return true;
+    if (!_HRWBwriteRegPrivate(link, reg + (i*12), tmpBuff, datalen))
+      return false;
+    bytesleft -= 12;
+  }
+  return true;
 }
-
 
 /**
  * Write a tHugeByteArray struct to a register
@@ -383,25 +367,24 @@ bool HRWBwriteReg(tSensors link, int reg, tByteArray &data, int size)
  * @param size amount of data to send
  * @return true if no error occured, false if it did
  */
-bool HRWBwriteReg(tSensors link, int reg, tHugeByteArray &data, int size)
+bool HRWBwriteReg(tSensors link, short reg, tHugeByteArray &data, short size)
 {
   tByteArray tmpBuff;
-  int bytesleft = size;
-  int datalen = 0;
+  short bytesleft = size;
+  short datalen = 0;
 
-  for (int i =  0; i < ((size/12) + 1); i++)
-	{
-	  datalen = (bytesleft > 12) ? 12 : bytesleft;
-	  memset(tmpBuff, 0, sizeof(tmpBuff));
-	  memcpy(tmpBuff, &data[i*12], datalen);
+  for (short i =  0; i < ((size/12) + 1); i++)
+  {
+    datalen = (bytesleft > 12) ? 12 : bytesleft;
+    memset(tmpBuff, 0, sizeof(tmpBuff));
+    memcpy(tmpBuff, &data[i*12], datalen);
 
-	  if (!_HRWBwriteRegPrivate(link, reg + (i*12), tmpBuff, datalen))
-	    return false;
-	  bytesleft -= 12;
-	}
-	return true;
+    if (!_HRWBwriteRegPrivate(link, reg + (i*12), tmpBuff, datalen))
+      return false;
+    bytesleft -= 12;
+  }
+  return true;
 }
-
 
 /**
  * Write a tBigByteArray struct to a register
@@ -411,25 +394,24 @@ bool HRWBwriteReg(tSensors link, int reg, tHugeByteArray &data, int size)
  * @param size amount of data to send
  * @return true if no error occured, false if it did
  */
-bool HRWBwriteReg(tSensors link, int reg, tBigByteArray &data, int size)
+bool HRWBwriteReg(tSensors link, short reg, tBigByteArray &data, short size)
 {
   tByteArray tmpBuff;
-  int bytesleft = size;
-  int datalen = 0;
+  short bytesleft = size;
+  short datalen = 0;
 
-  for (int i =  0; i < ((size/12) + 1); i++)
-	{
-	  datalen = (bytesleft > 12) ? 12 : bytesleft;
-	  memset(tmpBuff, 0, sizeof(tmpBuff));
-	  memcpy(tmpBuff, &data[i*12], datalen);
+  for (short i =  0; i < ((size/12) + 1); i++)
+  {
+    datalen = (bytesleft > 12) ? 12 : bytesleft;
+    memset(tmpBuff, 0, sizeof(tmpBuff));
+    memcpy(tmpBuff, &data[i*12], datalen);
 
-	  if (!_HRWBwriteRegPrivate(link, reg + (i*12), tmpBuff, datalen))
-	    return false;
-	  bytesleft -= 12;
-	}
-	return true;
+    if (!_HRWBwriteRegPrivate(link, reg + (i*12), tmpBuff, datalen))
+      return false;
+    bytesleft -= 12;
+  }
+  return true;
 }
-
 
 /**
  * Read a register.  Data read is stored in HRWB_I2CReply
@@ -438,7 +420,7 @@ bool HRWBwriteReg(tSensors link, int reg, tBigByteArray &data, int size)
  * @param size amount of data to read
  * @return true if no error occured, false if it did
  */
-bool HRWBreadReg(tSensors link, int reg, int size)
+bool HRWBreadReg(tSensors link, short reg, short size)
 {
   // writeDebugStreamLine("readReg");
   memset(HRWB_I2CRequest, 0, sizeof(tByteArray));
@@ -455,7 +437,6 @@ bool HRWBreadReg(tSensors link, int reg, int size)
   return writeI2C(link, HRWB_I2CRequest, HRWB_I2CReply, size);
 }
 
-
 /**
  * Read a register.  Data read is stored in HRWB_HugeArray
  * @param link the port number
@@ -463,33 +444,32 @@ bool HRWBreadReg(tSensors link, int reg, int size)
  * @param size amount of data to read
  * @return true if no error occured, false if it did
  */
-bool HRWBreadBigReg(tSensors link, int reg, int size)
+bool HRWBreadBigReg(tSensors link, short reg, short size)
 {
   // writeDebugStreamLine("readBigReg");
-  int bytesleft = size;
-  int requestlen = 0;
+  short bytesleft = size;
+  short requestlen = 0;
   memset(HRWB_I2CRequest, 0, sizeof(tByteArray));
   memset(HRWB_HugeArray, 0, sizeof(HRWB_HugeArray));
 
-  for (int i =  0; i < ((size/16) + 1); i++)
-	{
-	  requestlen = (bytesleft > 16) ? 16 : bytesleft;
-	  if (!HRWBreadReg(link, reg + (i*16), requestlen))
-	    return false;
-	  memcpy(&HRWB_HugeArray[16 * i], HRWB_I2CReply, requestlen);
-	  bytesleft -= 16;
-	  wait1Msec(10);
-	}
-	return true;
+  for (short i =  0; i < ((size/16) + 1); i++)
+  {
+    requestlen = (bytesleft > 16) ? 16 : bytesleft;
+    if (!HRWBreadReg(link, reg + (i*16), requestlen))
+      return false;
+    memcpy(&HRWB_HugeArray[16 * i], HRWB_I2CReply, requestlen);
+    bytesleft -= 16;
+    sleep(10);
+  }
+  return true;
 }
-
 
 /**
  * Read the HTTP result code of the last HTTP transaction.
  * @param link the port number
  * @return the HTTP result code
  */
-int HRWBreadHTTPCode(tSensors link)
+short HRWBreadHTTPCode(tSensors link)
 {
   string tmpResultCode;
   HRWBreadReg(WifiBlockPort, HRWB_HTTP_RESULT_CODE, 3);
@@ -497,7 +477,6 @@ int HRWBreadHTTPCode(tSensors link)
   memcpy(tmpResultCode, HRWB_I2CReply, 4);
   return atoi(tmpResultCode);
 }
-
 
 /**
  * Reset the WiFiBlock.
@@ -509,7 +488,6 @@ bool HRWBresetWifiBlock(tSensors link)
   // writeDebugStreamLine("resetWifiBlock");
   return HRWBwriteRegMasked(WifiBlockPort, HRWB_RESET, 1, HRWB_RESET_WIFIBLOCK);
 }
-
 
 /**
  * Read the current voltage level
@@ -523,7 +501,6 @@ float HRWBreadBatt(tSensors link)
 
 }
 
-
 /**
  * Read the type of sensor. Should be WIFI, unless there's
  * something really freaky going on
@@ -536,11 +513,10 @@ bool HRWBreadSensorType (tSensors link, string &sType)
   if (!HRWBreadReg(link, HRWB_SENSORTYPE, 4))
     return false;
 
-  StringFromChars(sType, &HRWB_I2CReply);
+  stringFromChars(sType, &HRWB_I2CReply[0]);
 
   return true;
 }
-
 
 /**
  * Enable the WiFi
@@ -553,7 +529,6 @@ bool HRWBenableWifi(tSensors link)
   return HRWBwriteRegMasked(link, HRWB_WIFI_STATUS, 0x01, HRWB_WIFI_STATUS_ENABLE);
 }
 
-
 /**
  * Disable the WiFi
  * @param link the port number
@@ -565,7 +540,6 @@ bool HRWBdisableWifi(tSensors link)
   return HRWBwriteRegMasked(link, HRWB_WIFI_STATUS, 0x00, HRWB_WIFI_STATUS_ENABLE);
 }
 
-
 /**
  * Save the current network configuration
  * @param link the port number
@@ -576,7 +550,6 @@ bool HRWBsaveConfig(tSensors link)
   //writeDebugStreamLine("saveConfig");
   return HRWBwriteRegMasked(link, HRWB_WIFI_STATUS, 0x02, HRWB_WIFI_STATUS_SAVE_CONF);
 }
-
 
 /**
  * Erase the current network configuration\n
@@ -591,12 +564,11 @@ bool HRWBeraseConfig(tSensors link)
   return HRWBwriteRegMasked(link, HRWB_WIFI_STATUS, 0x80, HRWB_WIFI_STATUS_DEL_CONF);
 }
 
-
 /*
 bool HRWBscanChannel(tSensors link, ubyte channel) {
   string tmpString;
   char tmpCharArray[20];
-  int SSIDcount = 0;
+  short SSIDcount = 0;
   memset(HRWB_I2CRequest, 0, sizeof(tByteArray));
 
   writeDebugStreamLine("channel: %d", channel);
@@ -617,28 +589,25 @@ bool HRWBscanChannel(tSensors link, ubyte channel) {
 
   // Wait for scan to be done
   while (true) {
-	  HRWBreadReg(link, HRWB_WIFI_STATUS, 1);
-	  if ((HRWB_I2CReply[0] & 0x08) == 0x08)
-	    break;
-	  wait1Msec(100);
-	}
+    HRWBreadReg(link, HRWB_WIFI_STATUS, 1);
+    if ((HRWB_I2CReply[0] & 0x08) == 0x08)
+      break;
+    sleep(100);
+  }
 
   HRWBwriteReg(link, HRWB_WIFI_SCANSEL, channel);
-  wait1Msec(10);
+  sleep(10);
   HRWBreadBigReg(link, HRWB_WIFI_SCANSSID, 64);
-  StringFromChars(tmpString, HRWB_HugeArray);
+  stringFromChars(tmpString, HRWB_HugeArray);
   writeDebugStream("Found [%d]: ", channel);
   writeDebugStreamLine(tmpString);
   return true;
 }
 
-
-
-
 bool HRWBscanWifi(tSensors link)
 {
   char tmpCharArray[20];
-  int SSIDcount = 0;
+  short SSIDcount = 0;
   memset(HRWB_I2CRequest, 0, sizeof(tByteArray));
 
   if (!HRWBwriteRegMasked(link, HRWB_WIFI_STATUS, HRWB_WIFI_STATUS_START_SCAN, HRWB_WIFI_STATUS_START_SCAN))
@@ -646,13 +615,13 @@ bool HRWBscanWifi(tSensors link)
 
   // Wait for scan to be done
   while (true) {
-	  HRWBreadReg(link, HRWB_WIFI_STATUS, 1);
-	  if ((HRWB_I2CReply[0] &  HRWB_WIFI_STATUS_SCAN_DONE) == HRWB_WIFI_STATUS_SCAN_DONE)
-	    break;
-	  wait1Msec(100);
-	}
+    HRWBreadReg(link, HRWB_WIFI_STATUS, 1);
+    if ((HRWB_I2CReply[0] &  HRWB_WIFI_STATUS_SCAN_DONE) == HRWB_WIFI_STATUS_SCAN_DONE)
+      break;
+    sleep(100);
+  }
 
-	// Fetch number of SSIDs found.
+  // Fetch number of SSIDs found.
   HRWBreadReg(link, HRWB_WIFI_SCANRESULT, 1);
   SSIDcount = HRWB_I2CReply[0];
   writeDebugStreamLine("SSID count: %d", SSIDcount);
@@ -660,17 +629,15 @@ bool HRWBscanWifi(tSensors link)
     return false;
 
   writeDebugStreamLine("count: %d", SSIDcount);
-  for (int i = 0; i < SSIDcount; i++) {
+  for (short i = 0; i < SSIDcount; i++) {
     if (!HRWBscanChannel(link, i))
       return false;
-    wait1Msec(10);
+    sleep(10);
   }
   return true;
 
-
 }
 */
-
 
 /**
  * Configure the IP and WiFi settings
@@ -689,56 +656,55 @@ bool HRWBconfigNetwork(tSensors link, tNetworkInfo &netInfo) {
 
   if (!HRWBeraseConfig(link))
     return false;
-  wait1Msec(100);
+  sleep(100);
 
-  PlaySound(soundBlip);
+  playSound(soundBlip);
   memcpy(HRWB_scratch, netInfo.IP[0], sizeof(tIPaddr));
   if (!HRWBwriteReg(link, HRWB_WIFI_IP_ADDR, HRWB_scratch, sizeof(tIPaddr)))
     return false;
 
-	memcpy(HRWB_scratch, netInfo.netmask[0], sizeof(tIPaddr));
-	if (!HRWBwriteReg(link, HRWB_WIFI_IP_MASK, HRWB_scratch, sizeof(tIPaddr)))
-	  return false;
+  memcpy(HRWB_scratch, netInfo.netmask[0], sizeof(tIPaddr));
+  if (!HRWBwriteReg(link, HRWB_WIFI_IP_MASK, HRWB_scratch, sizeof(tIPaddr)))
+    return false;
 
-	memcpy(HRWB_scratch, netInfo.gateway[0], sizeof(tIPaddr));
-	if (!HRWBwriteReg(link, HRWB_WIFI_IP_GATEWAY, HRWB_scratch, sizeof(tIPaddr)))
-	  return false;
+  memcpy(HRWB_scratch, netInfo.gateway[0], sizeof(tIPaddr));
+  if (!HRWBwriteReg(link, HRWB_WIFI_IP_GATEWAY, HRWB_scratch, sizeof(tIPaddr)))
+    return false;
 
-	if (!HRWBwriteReg(link, HRWB_WIFI_SECURITY_TYPE, netInfo.wifi_type))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_WIFI_SECURITY_TYPE, netInfo.wifi_type))
+    return false;
 
-	memcpy(HRWB_scratch, netInfo.wifi_ssid, strlen(netInfo.wifi_ssid) + 1);
-	if (!HRWBwriteReg(link, HRWB_WIFI_SSID, HRWB_scratch, strlen(netInfo.wifi_ssid) + 1))
-	  return false;
+  memcpy(HRWB_scratch, netInfo.wifi_ssid, strlen(netInfo.wifi_ssid) + 1);
+  if (!HRWBwriteReg(link, HRWB_WIFI_SSID, HRWB_scratch, strlen(netInfo.wifi_ssid) + 1))
+    return false;
 
   memcpy(HRWB_scratch, netInfo.wifi_pass, strlen(netInfo.wifi_pass) + 1);
-	if (!HRWBwriteReg(link, HRWB_WIFI_SECURITY_KEY, HRWB_scratch, strlen(netInfo.wifi_pass) + 1))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_WIFI_SECURITY_KEY, HRWB_scratch, strlen(netInfo.wifi_pass) + 1))
+    return false;
 
-	if (!HRWBwriteRegMasked(link, HRWB_WIFI_STATUS, HRWB_WIFI_STATUS_RECONN, HRWB_WIFI_STATUS_RECONN))
-	  return false;
+  if (!HRWBwriteRegMasked(link, HRWB_WIFI_STATUS, HRWB_WIFI_STATUS_RECONN, HRWB_WIFI_STATUS_RECONN))
+    return false;
 
-	if (!HRWBsaveConfig(link))
-	  return false;
+  if (!HRWBsaveConfig(link))
+    return false;
 
-	if (!HRWBenableWifi(link))
-	  return false;
+  if (!HRWBenableWifi(link))
+    return false;
 
-	while(!done) {
-	  if (!HRWBreadReg(link, HRWB_WIFI_STATUS, 1))
-	    return false;
-	  status = HRWB_I2CReply[0];
+  while(!done) {
+    if (!HRWBreadReg(link, HRWB_WIFI_STATUS, 1))
+      return false;
+    status = HRWB_I2CReply[0];
 
-	  if ((status & HRWB_WIFI_STATUS_CONN_STAT) == HRWB_WIFI_STATUS_CONN_STAT)
-	  {
-	    done = true;
-	  }
-	  wait1Msec(100);
-	}
+    if ((status & HRWB_WIFI_STATUS_CONN_STAT) == HRWB_WIFI_STATUS_CONN_STAT)
+    {
+      done = true;
+    }
+    sleep(100);
+  }
 
   return true;
 }
-
 
 /**
  * Perform a HTTP GET transaction
@@ -763,46 +729,46 @@ bool HRWBdoGET(tSensors link, tGetRequest &getrequest) {
     return false;
   }
 
-	memcpy(HRWB_scratch, getrequest.IP[0], sizeof(tIPaddr));
-	if (!HRWBwriteReg(link, HRWB_GET_IP_ADDR, HRWB_scratch, sizeof(tIPaddr)))
-	  return false;
+  memcpy(HRWB_scratch, getrequest.IP[0], sizeof(tIPaddr));
+  if (!HRWBwriteReg(link, HRWB_GET_IP_ADDR, HRWB_scratch, sizeof(tIPaddr)))
+    return false;
 
   memcpy(HRWB_scratch, tmpPort, 2);
-	if (!HRWBwriteReg(link, HRWB_GET_PORT, HRWB_scratch, 2))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_GET_PORT, HRWB_scratch, 2))
+    return false;
 
-	if (!HRWBwriteReg(link, HRWB_GET_URL, (tHugeByteArray)getrequest.URL, strsize(getrequest.URL) + 1))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_GET_URL, (tHugeByteArray)getrequest.URL, strsize(getrequest.URL) + 1))
+    return false;
 
-	if (!HRWBwriteRegMasked(link, HRWB_GET_STATUS, HRWB_GET_STATUS_SEND_REQ, HRWB_GET_STATUS_SEND_REQ))
-	  return false;
+  if (!HRWBwriteRegMasked(link, HRWB_GET_STATUS, HRWB_GET_STATUS_SEND_REQ, HRWB_GET_STATUS_SEND_REQ))
+    return false;
 
-	while(!done) {
-	  if (!HRWBreadReg(link, HRWB_GET_STATUS, 1))
-	    return false;
+  while(!done) {
+    if (!HRWBreadReg(link, HRWB_GET_STATUS, 1))
+      return false;
 
-	  status = HRWB_I2CReply[0];
+    status = HRWB_I2CReply[0];
 
-	  if ((status & HRWB_GET_STATUS_REQ_ERROR) == HRWB_GET_STATUS_REQ_ERROR)
-	  {
-	    //writeDebugStreamLine("ERROR GET: %d", status);
-	    getrequest.result_code = HRWBreadHTTPCode(link);
-	    //writeDebugStreamLine("HTTP CODE: %d", getrequest.result_code);
-	    done = true;
-	  }
-	  else if ((status & HRWB_GET_STATUS_REQ_DONE) == HRWB_GET_STATUS_REQ_DONE)
-	  {
-	    //writeDebugStreamLine("SUCCESS GET");
-	    getrequest.result_code = HRWBreadHTTPCode(link);
-	    //writeDebugStreamLine("HTTP CODE: %d", getrequest.result_code);
-	    done = true;
-	  }
-	  wait1Msec(100);
-	}
+    if ((status & HRWB_GET_STATUS_REQ_ERROR) == HRWB_GET_STATUS_REQ_ERROR)
+    {
+      //writeDebugStreamLine("ERROR GET: %d", status);
+      getrequest.result_code = HRWBreadHTTPCode(link);
+      //writeDebugStreamLine("HTTP CODE: %d", getrequest.result_code);
+      done = true;
+    }
+    else if ((status & HRWB_GET_STATUS_REQ_DONE) == HRWB_GET_STATUS_REQ_DONE)
+    {
+      //writeDebugStreamLine("SUCCESS GET");
+      getrequest.result_code = HRWBreadHTTPCode(link);
+      //writeDebugStreamLine("HTTP CODE: %d", getrequest.result_code);
+      done = true;
+    }
+    sleep(100);
+  }
 
-	wait1Msec(1000);
-	if (!HRWBreadReg(link, HRWB_GET_LENGTH, 1))
-	  return false;
+  sleep(1000);
+  if (!HRWBreadReg(link, HRWB_GET_LENGTH, 1))
+    return false;
   getrequest.RXDataLen = HRWB_I2CReply[0];
 
   writeDebugStreamLine("res length: %d", getrequest.RXDataLen);
@@ -810,11 +776,9 @@ bool HRWBdoGET(tSensors link, tGetRequest &getrequest) {
     return false;
 
   memcpy(&getrequest.RXData[0], &HRWB_HugeArray[0], sizeof(tBigByteArray));
-	return true;
-
+  return true;
 
 }
-
 
 /**
  * Perform a HTTP POST transaction
@@ -837,48 +801,46 @@ bool HRWBdoPOST(tSensors link, tPostRequest &postrequest) {
     return false;
     //writeDebugStreamLine("NOT READY");
 
-	memcpy(HRWB_scratch, postrequest.IP[0], sizeof(tIPaddr));
-	if (!HRWBwriteReg(link, HRWB_POST_IP_ADDR, HRWB_scratch, sizeof(tIPaddr)))
-	  return false;
+  memcpy(HRWB_scratch, postrequest.IP[0], sizeof(tIPaddr));
+  if (!HRWBwriteReg(link, HRWB_POST_IP_ADDR, HRWB_scratch, sizeof(tIPaddr)))
+    return false;
 
   memcpy(HRWB_scratch, tmpPort, 2);
-	if (!HRWBwriteReg(link, HRWB_POST_PORT, HRWB_scratch, 2))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_POST_PORT, HRWB_scratch, 2))
+    return false;
 
-	if (!HRWBwriteReg(link, HRWB_POST_URL, (tHugeByteArray)postrequest.URL, strsize(postrequest.URL) + 1))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_POST_URL, (tHugeByteArray)postrequest.URL, strsize(postrequest.URL) + 1))
+    return false;
 
-	if (!HRWBwriteReg(link, HRWB_POST_DATA, (tBigByteArray)postrequest.TXData[0], postrequest.TXDataLen))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_POST_DATA, (tBigByteArray)postrequest.TXData[0], postrequest.TXDataLen))
+    return false;
 
-	if (!HRWBwriteRegMasked(link, HRWB_POST_STATUS, HRWB_POST_STATUS_SEND_REQ, HRWB_POST_STATUS_SEND_REQ))
-	  return false;
+  if (!HRWBwriteRegMasked(link, HRWB_POST_STATUS, HRWB_POST_STATUS_SEND_REQ, HRWB_POST_STATUS_SEND_REQ))
+    return false;
 
-	while(!done) {
-	  if (!HRWBreadReg(link, HRWB_POST_STATUS, 1))
-	    return false;
-	  status = HRWB_I2CReply[0];
+  while(!done) {
+    if (!HRWBreadReg(link, HRWB_POST_STATUS, 1))
+      return false;
+    status = HRWB_I2CReply[0];
 
-
-	  if ((status & HRWB_POST_STATUS_REQ_ERROR) == HRWB_POST_STATUS_REQ_ERROR)
-	  {
-	    //writeDebugStreamLine("ERROR POST: %d", status);
-	    postrequest.result_code = HRWBreadHTTPCode(link);
-	    //writeDebugStreamLine("HTTP CODE: %d", postrequest.result_code);
-	    done = true;
-	  }
-	  else if ((status & HRWB_POST_STATUS_REQ_DONE) == HRWB_POST_STATUS_REQ_DONE)
-	  {
-	    //writeDebugStreamLine("SUCCESS POST");
-	    postrequest.result_code = HRWBreadHTTPCode(link);
-	    //writeDebugStreamLine("HTTP CODE: %d", postrequest.result_code);
-	    done = true;
-	  }
-	  wait1Msec(100);
-	}
-	return true;
+    if ((status & HRWB_POST_STATUS_REQ_ERROR) == HRWB_POST_STATUS_REQ_ERROR)
+    {
+      //writeDebugStreamLine("ERROR POST: %d", status);
+      postrequest.result_code = HRWBreadHTTPCode(link);
+      //writeDebugStreamLine("HTTP CODE: %d", postrequest.result_code);
+      done = true;
+    }
+    else if ((status & HRWB_POST_STATUS_REQ_DONE) == HRWB_POST_STATUS_REQ_DONE)
+    {
+      //writeDebugStreamLine("SUCCESS POST");
+      postrequest.result_code = HRWBreadHTTPCode(link);
+      //writeDebugStreamLine("HTTP CODE: %d", postrequest.result_code);
+      done = true;
+    }
+    sleep(100);
+  }
+  return true;
 }
-
 
 /**
  * Perform a TCP transaction
@@ -900,47 +862,47 @@ bool HRWBdoTCP(tSensors link, tTCPRequest &tcprequest) {
     return false;
     //writeDebugStreamLine("NOT READY");
 
-	memcpy(HRWB_scratch, tcprequest.IP[0], sizeof(tIPaddr));
-	if (!HRWBwriteReg(link, HRWB_TCP_IP_ADDR, HRWB_scratch, sizeof(tIPaddr )))
-	  return false;
+  memcpy(HRWB_scratch, tcprequest.IP[0], sizeof(tIPaddr));
+  if (!HRWBwriteReg(link, HRWB_TCP_IP_ADDR, HRWB_scratch, sizeof(tIPaddr )))
+    return false;
 
   memcpy(HRWB_scratch, tmpPort, 2);
-	if (!HRWBwriteReg(link, HRWB_TCP_PORT, HRWB_scratch, 2))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_TCP_PORT, HRWB_scratch, 2))
+    return false;
 
-	writeDebugStreamLine("port: %2x %2x", HRWB_scratch[0], HRWB_scratch[1]);
+  writeDebugStreamLine("port: %2x %2x", HRWB_scratch[0], HRWB_scratch[1]);
 
-	if (!HRWBwriteReg(link, HRWB_TCP_TX_DATA, (tBigByteArray)tcprequest.TXData[0], tcprequest.TXDataLen))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_TCP_TX_DATA, (tBigByteArray)tcprequest.TXData[0], tcprequest.TXDataLen))
+    return false;
 
-	memcpy(HRWB_scratch, tcprequest.TXDataLen, 1);
-	if (!HRWBwriteReg(link, HRWB_TCP_TX_LENGTH, HRWB_scratch, 1))
-	  return false;
+  memcpy(HRWB_scratch, tcprequest.TXDataLen, 1);
+  if (!HRWBwriteReg(link, HRWB_TCP_TX_LENGTH, HRWB_scratch, 1))
+    return false;
 
-	if (!HRWBwriteRegMasked(link, HRWB_TCP_STATUS, HRWB_TCP_STATUS_SEND_REQ, HRWB_TCP_STATUS_SEND_REQ))
-	  return false;
+  if (!HRWBwriteRegMasked(link, HRWB_TCP_STATUS, HRWB_TCP_STATUS_SEND_REQ, HRWB_TCP_STATUS_SEND_REQ))
+    return false;
 
-	while(!done) {
-	  if (!HRWBreadReg(link, HRWB_TCP_STATUS, 1))
-	    return false;
-	  status = HRWB_I2CReply[0];
+  while(!done) {
+    if (!HRWBreadReg(link, HRWB_TCP_STATUS, 1))
+      return false;
+    status = HRWB_I2CReply[0];
 
-	  if ((status & HRWB_TCP_STATUS_REQ_ERROR) == HRWB_TCP_STATUS_REQ_ERROR)
-	  {
-	    tcprequest.result_code = status;
-	    done = true;
-	  }
-	  else if ((status & HRWB_TCP_STATUS_REQ_DONE) == HRWB_TCP_STATUS_REQ_DONE)
-	  {
-	    tcprequest.result_code = 0;
-	    done = true;
-	  }
-	  wait1Msec(100);
-	}
+    if ((status & HRWB_TCP_STATUS_REQ_ERROR) == HRWB_TCP_STATUS_REQ_ERROR)
+    {
+      tcprequest.result_code = status;
+      done = true;
+    }
+    else if ((status & HRWB_TCP_STATUS_REQ_DONE) == HRWB_TCP_STATUS_REQ_DONE)
+    {
+      tcprequest.result_code = 0;
+      done = true;
+    }
+    sleep(100);
+  }
 
-	wait1Msec(100);
-	if (!HRWBreadReg(link, HRWB_TCP_RX_LENGTH, 1))
-	  return false;
+  sleep(100);
+  if (!HRWBreadReg(link, HRWB_TCP_RX_LENGTH, 1))
+    return false;
   tcprequest.RXDataLen = HRWB_I2CReply[0];
 
   writeDebugStreamLine("res length: %d", tcprequest.RXDataLen);
@@ -950,9 +912,8 @@ bool HRWBdoTCP(tSensors link, tTCPRequest &tcprequest) {
   memcpy(&tcprequest.RXData[0], &HRWB_HugeArray[0], sizeof(tBigByteArray));
 
   //writeDebugStreamLine(" ");
-	return true;
+  return true;
 }
-
 
 /**
  * Perform a UDP transaction
@@ -968,7 +929,6 @@ bool HRWBdoUDP(tSensors link, tUDPRequest &udprequest) {
   ubyte tmpsPort[2];
   ubyte tmpdPort[2];
 
-
   tmpsPort[0] = (udprequest.sport >> 8) & 0xFF;
   tmpsPort[1] = (udprequest.sport >> 0) & 0xFF;
 
@@ -978,51 +938,51 @@ bool HRWBdoUDP(tSensors link, tUDPRequest &udprequest) {
   if (status & HRWB_UDP_STATUS_READY != HRWB_UDP_STATUS_READY)
     writeDebugStreamLine("NOT READY");
 
-	memcpy(HRWB_scratch, udprequest.IP[0], sizeof(tIPaddr));
-	if (!HRWBwriteReg(link, HRWB_UDP_IP_ADDR, HRWB_scratch, sizeof(tIPaddr )))
-	  return false;
+  memcpy(HRWB_scratch, udprequest.IP[0], sizeof(tIPaddr));
+  if (!HRWBwriteReg(link, HRWB_UDP_IP_ADDR, HRWB_scratch, sizeof(tIPaddr )))
+    return false;
 
   memcpy(HRWB_scratch, tmpsPort, 2);
-	if (!HRWBwriteReg(link, HRWB_UDP_SPORT, HRWB_scratch, 2))
-	  return false;
-	//writeDebugStreamLine("sport: %2x %2x", HRWB_scratch[0], HRWB_scratch[1]);
+  if (!HRWBwriteReg(link, HRWB_UDP_SPORT, HRWB_scratch, 2))
+    return false;
+  //writeDebugStreamLine("sport: %2x %2x", HRWB_scratch[0], HRWB_scratch[1]);
 
   memcpy(HRWB_scratch, tmpdPort, 2);
-	if (!HRWBwriteReg(link, HRWB_UDP_DPORT, HRWB_scratch, 2))
-	  return false;
-	//writeDebugStreamLine("dport: %2x %2x", HRWB_scratch[0], HRWB_scratch[1]);
+  if (!HRWBwriteReg(link, HRWB_UDP_DPORT, HRWB_scratch, 2))
+    return false;
+  //writeDebugStreamLine("dport: %2x %2x", HRWB_scratch[0], HRWB_scratch[1]);
 
-	if (!HRWBwriteReg(link, HRWB_UDP_TX_DATA, (tBigByteArray)udprequest.TXData[0], udprequest.TXDataLen))
-	  return false;
+  if (!HRWBwriteReg(link, HRWB_UDP_TX_DATA, (tBigByteArray)udprequest.TXData[0], udprequest.TXDataLen))
+    return false;
 
-	memcpy(HRWB_scratch, udprequest.TXDataLen, 1);
-	if (!HRWBwriteReg(link, HRWB_UDP_TX_LENGTH, HRWB_scratch, 1))
-	  return false;
+  memcpy(HRWB_scratch, udprequest.TXDataLen, 1);
+  if (!HRWBwriteReg(link, HRWB_UDP_TX_LENGTH, HRWB_scratch, 1))
+    return false;
 
-	if (!HRWBwriteRegMasked(link, HRWB_UDP_STATUS, HRWB_UDP_STATUS_SEND_REQ, HRWB_UDP_STATUS_SEND_REQ))
-	  return false;
+  if (!HRWBwriteRegMasked(link, HRWB_UDP_STATUS, HRWB_UDP_STATUS_SEND_REQ, HRWB_UDP_STATUS_SEND_REQ))
+    return false;
 
-	while(!done) {
-	  if (!HRWBreadReg(link, HRWB_UDP_STATUS, 1))
-	    return false;
-	  status = HRWB_I2CReply[0];
+  while(!done) {
+    if (!HRWBreadReg(link, HRWB_UDP_STATUS, 1))
+      return false;
+    status = HRWB_I2CReply[0];
 
-	  if ((status & HRWB_UDP_STATUS_REQ_ERROR) == HRWB_UDP_STATUS_REQ_ERROR)
-	  {
-	    udprequest.result_code = status;
-	    done = true;
-	  }
-	  else if ((status & HRWB_UDP_STATUS_REQ_DONE) == HRWB_UDP_STATUS_REQ_DONE)
-	  {
-	    udprequest.result_code = status;
-	    done = true;
-	  }
-	  wait1Msec(100);
-	}
+    if ((status & HRWB_UDP_STATUS_REQ_ERROR) == HRWB_UDP_STATUS_REQ_ERROR)
+    {
+      udprequest.result_code = status;
+      done = true;
+    }
+    else if ((status & HRWB_UDP_STATUS_REQ_DONE) == HRWB_UDP_STATUS_REQ_DONE)
+    {
+      udprequest.result_code = status;
+      done = true;
+    }
+    sleep(100);
+  }
 
-	wait1Msec(100);
-	if (!HRWBreadReg(link, HRWB_UDP_RX_LENGTH, 1))
-	  return false;
+  sleep(100);
+  if (!HRWBreadReg(link, HRWB_UDP_RX_LENGTH, 1))
+    return false;
   udprequest.RXDataLen = HRWB_I2CReply[0];
 
   //writeDebugStreamLine("res length: %d", udprequest.RXDataLen);
@@ -1032,14 +992,10 @@ bool HRWBdoUDP(tSensors link, tUDPRequest &udprequest) {
   memcpy(&udprequest.RXData[0], &HRWB_HugeArray[0], sizeof(tBigByteArray));
 
   //writeDebugStreamLine(" ");
-	return true;
+  return true;
 }
-
 
 #endif // __HRWB_H__
 
-/*
- * $Id: humarobotics-wifiblock.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

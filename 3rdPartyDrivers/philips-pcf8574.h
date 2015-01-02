@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: philips-pcf8574.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __PCF8574_H__
 #define __PCF8574_H__
 /** \file philips-pcf8574.h
@@ -24,7 +20,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 30 March 2010
@@ -39,7 +35,6 @@
 #endif
 
 #define PCF8574_I2C_ADDR         0x70  /*!< HDMMUX I2C device address */
-
 
 tByteArray PCF8574_I2CRequest;    /*!< Array to hold I2C command data */
 tByteArray PCF8574_I2CReply;      /*!< Array to hold I2C reply data */
@@ -65,7 +60,6 @@ bool PCF8574sendBytes(tSensors link, ubyte _byte) {
   return writeI2C(link, PCF8574_I2CRequest);
 }
 
-
 /**
  * Read the current state of the ports on the PCF8574
  *
@@ -89,11 +83,7 @@ bool PCF8574readBytes(tSensors link, ubyte &_byte) {
 
 }
 
-
 #endif //  __PCF8574_H__
 
-/*
- * $Id: philips-pcf8574.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

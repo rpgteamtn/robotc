@@ -29,7 +29,6 @@
 
 #define DEBUG_WIFI 1
 
-
 long nRcvChars = 0;
 ubyte BytesRead[8];
 char linefeed[] = {0x0A};
@@ -40,7 +39,6 @@ long DWIFI_baudRates[] = {9600, 19200, 38400, 57600, 115200, 230400,460800, 9216
 string DWIFIscratchString;
 tMassiveArray DWIFIscratchArray;
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  Setup High Speed on Port 4.
@@ -48,7 +46,7 @@ tMassiveArray DWIFIscratchArray;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool DWIFIcheckResult(tMassiveArray &readdata, char * caller = NULL)
 {
-  int len;
+  short len;
   // Read the RX buffer, but only wait 50ms max.
   if (!RS485read(readdata, len, 50))
     return false;
@@ -56,7 +54,7 @@ bool DWIFIcheckResult(tMassiveArray &readdata, char * caller = NULL)
   if (len < 1)
     return false;
 
-  if ((StringFind((char *)readdata, "OK") > -1) || (StringFind((char *)readdata, "0") > -1))
+  if ((stringFind((char *)readdata, "OK") > -1) || (stringFind((char *)readdata, "0") > -1))
   {
     if (caller != NULL)
       writeDebugStreamLine("DWIFIcheckResult %s SUCCESS", caller);
@@ -74,10 +72,9 @@ bool DWIFIcheckResult(tMassiveArray &readdata, char * caller = NULL)
   }
 }
 
-
-bool DWIFIcheckResult(tMassiveArray &readdata, int timeout, char * caller = NULL)
+bool DWIFIcheckResult(tMassiveArray &readdata, short timeout, char * caller = NULL)
 {
-  int len;
+  short len;
   // Read the RX buffer, but only wait 50ms max.
 
   // writeDebugStreamLine("DWIFIcheckResult with extra timeout");
@@ -88,7 +85,7 @@ bool DWIFIcheckResult(tMassiveArray &readdata, int timeout, char * caller = NULL
   if (len < 1)
     return false;
 
-  if ((StringFind((char *)readdata, "OK") > -1) || (StringFind((char *)readdata, "0") > -1))
+  if ((stringFind((char *)readdata, "OK") > -1) || (stringFind((char *)readdata, "0") > -1))
   {
     if (caller != NULL)
       writeDebugStreamLine("DWIFIcheckResult %s SUCCESS", caller);
@@ -106,12 +103,11 @@ bool DWIFIcheckResult(tMassiveArray &readdata, int timeout, char * caller = NULL
   }
 }
 
-
-int checkFailure() {
+short checkFailure() {
   ubyte currByte[] = {0};
   ubyte prevByte[] = {0};
 
-  while (nxtGetAvailHSBytes() == 0) wait1Msec(5);
+  while (nxtGetAvailHSBytes() == 0) sleep(5);
 
   while (nxtGetAvailHSBytes() > 0) {
     nxtReadRawHS(&currByte[0], 1);
@@ -124,7 +120,6 @@ int checkFailure() {
   }
   return 0;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -145,14 +140,13 @@ void DWIFIsetEcho(bool on)
     nData[3] = '1';
   }
 
-  for(int i = 0; i < 5; i++){
+  for(short i = 0; i < 5; i++){
     nxtWriteRawHS(&nData[i], 1);            // Send the command, byte by byte.
     nxtReadRawHS(&BytesRead[0], 8);         // Clear out the echo.
-    wait1Msec(100);
+    sleep(100);
   }
   RS485clearRead();
 }
-
 
 bool DWIFIsetVerbose(bool on)
 {
@@ -169,7 +163,6 @@ bool DWIFIsetVerbose(bool on)
 
   return DWIFIcheckResult(RS485rxbuffer, "DWIFIsetVerbose");
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -216,14 +209,13 @@ bool DWIFIscanNetworks()
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool DWIFIsetAuthMode(int state)
+bool DWIFIsetAuthMode(short state)
 {
   if (state == 0)
     return RS485sendString("AT+WAUTH=0\n");
   else
     return RS485sendString("AT+WAUTH=1\n");
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -248,8 +240,7 @@ bool DWIFIsetSSID(char *_ssid)
   return DWIFIcheckResult(RS485rxbuffer, 500, "DWIFIsetSSID");
 }
 
-
-bool DWIFIsetWEPKey(int keyindex, char *_wep_key)
+bool DWIFIsetWEPKey(short keyindex, char *_wep_key)
 {
   writeDebugStreamLine("DWIFIsetWEPKey");
   char *set_wep_psk_cmd = &DWIFIscratchArray;
@@ -258,10 +249,9 @@ bool DWIFIsetWEPKey(int keyindex, char *_wep_key)
   return RS485sendString(set_wep_psk_cmd);
 }
 
-
 bool DWIFIsetWPAPSK(char *ssid, char *_wpa_key)
 {
-  int len;
+  short len;
   writeDebugStreamLine("DWIFIsetWPAPSK");
 
   char *set_wpa_psk_cmd = &DWIFIscratchArray;
@@ -270,7 +260,7 @@ bool DWIFIsetWPAPSK(char *ssid, char *_wpa_key)
   if (!RS485sendString(set_wpa_psk_cmd))
     return false;
   //RS485read(RS485rxbuffer, len, 50);
-  wait1Msec(100);
+  sleep(100);
   RS485clearRead();
   return DWIFIcheckResult(RS485rxbuffer, 30000, "DWIFIsetWPAPSK");
 }
@@ -291,7 +281,6 @@ bool getFW()
   return RS485sendString("AT+VER=?\n");
 }
 
-
 bool getInfo() {
   writeDebugStreamLine("getInfo");
   return RS485sendString("AT+NSTAT=?\n");
@@ -302,8 +291,8 @@ bool getInfoWLAN() {
   return RS485sendString("AT+WSTATUS\n");
 }
 
-bool DWIFIClose(int cid = -1) {
-  int len;
+bool DWIFIClose(short cid = -1) {
+  short len;
   bool res;
 
   writeDebugStreamLine("DWIFIClose");
@@ -312,7 +301,7 @@ bool DWIFIClose(int cid = -1) {
     res = RS485sendString("AT+NCLOSEALL\n");
   else
   {
-    StringFormat(DWIFIscratchString, "AT+NCLOSE=%d\n", cid);
+    stringFormat(DWIFIscratchString, "AT+NCLOSE=%d\n", cid);
     res = RS485sendString(DWIFIscratchString);
   }
 
@@ -324,63 +313,62 @@ bool DWIFIClose(int cid = -1) {
   //return RS485sendString("AT+NCLOSEALL\n");
 }
 
-//bool closeConn(int cid) {
+//bool closeConn(short cid) {
 //  writeDebugStreamLine("closeConn");
-//  StringFormat(DWIFIscratchString, "AT+NCLOSE=%d\n", cid);
+//  stringFormat(DWIFIscratchString, "AT+NCLOSE=%d\n", cid);
 //  return RS485sendString(DWIFIscratchString);
 //}
 
 bool DWIFIsaveConfig() {
-  int len;
+  short len;
   writeDebugStreamLine("save config");
   RS485sendString("AT&W0\n");
   DWIFIcheckResult(RS485rxbuffer, "DWIFIsaveConfig W0");
-  wait1Msec(500);
+  sleep(500);
   RS485sendString("AT&Y0\n");
   return DWIFIcheckResult(RS485rxbuffer, "DWIFIsaveConfig Y0");
 }
 
-
 void DWIFIresetConfig()
 {
   RS485sendString("AT&F\n");
-  wait1Msec(100);
+  sleep(100);
   RS485clearRead();
 }
 
 void DWIFITCPOpenServer(long port) {
-  int index = 0;
-  int len = 0;
+  short index = 0;
+  short len = 0;
 
   string listen_cmd;
-  StringFormat(listen_cmd, "AT+NSTCP=%d\n", port);
+  stringFormat(listen_cmd, "AT+NSTCP=%d\n", port);
   RS485sendString(listen_cmd);
   RS485read(RS485rxbuffer, len, 100);
 }
 
 bool checkBaudRate(long baudrate)
 {
-  //int len = 0;
+  //short len = 0;
   //char *tmpbuff;
   string tmpString;
   writeDebugStreamLine("testing baudrate: %d", baudrate);
   nxtDisableHSPort();
-  wait1Msec(10);
+  sleep(10);
   nxtEnableHSPort();
   nxtSetHSBaudRate(baudrate);
   nxtHS_Mode = hsRawMode;
   RS485clearRead();
-  wait1Msec(100);
+  sleep(100);
   RS485sendString("+++\n");
-  wait1Msec(1000);
+  sleep(1000);
   RS485clearRead();
-  wait1Msec(100);
+  sleep(100);
   RS485sendString("AT\n");
   return DWIFIcheckResult(RS485rxbuffer, "checkBaudRate");
 }
 
 long DWIFIscanBaudRate() {
-  for (int i = 0; i < 8; i++) {
+  for (short i = 0; i < 8; i++) {
     if (checkBaudRate(DWIFI_baudRates[i]))
     {
       RS485clearRead();
@@ -391,9 +379,8 @@ long DWIFIscanBaudRate() {
   return 0;
 }
 
-
 void DWIFIsetBAUDRate(long baudrate) {
-  int index = 0;
+  short index = 0;
   long current_baudrate = 0;
 
   string baud_cmd;
@@ -411,18 +398,18 @@ void DWIFIsetBAUDRate(long baudrate) {
     return;
   }
 
-  StringFormat(baud_cmd, "ATB=%d\n", baudrate);
+  stringFormat(baud_cmd, "ATB=%d\n", baudrate);
   RS485sendString(baud_cmd);
 
-  wait1Msec(100);
+  sleep(100);
   nxtDisableHSPort();
-  wait1Msec(10);
+  sleep(10);
   nxtEnableHSPort();
   nxtSetHSBaudRate(baudrate);
   nxtHS_Mode = hsRawMode;
-  wait1Msec(10);
+  sleep(10);
   RS485clearRead();
-  wait1Msec(10);
+  sleep(10);
 
   // Verify the speed to ensure everything went OK
   if (checkBaudRate(baudrate))
@@ -447,15 +434,15 @@ void DWIFIwaitForIP()
   char *token_end = ":";
 
   tMassiveArray tmp_array;
-  int len;
-  int bpos;
-  int epos;
+  short len;
+  short bpos;
+  short epos;
   bool parsed = true;
-  int startIPinfo = 0;
-  int nextTokenStart = 0;
+  short startIPinfo = 0;
+  short nextTokenStart = 0;
   writeDebugStreamLine("Beging parsing...");
   ubyte conn[] = {0};
-  int index = 0;
+  short index = 0;
   memset(&tmp_array[0], 0, sizeof(tMassiveArray));
   while (true)
   {
@@ -472,25 +459,25 @@ void DWIFIwaitForIP()
     else if ((parsed == false) && (len == 0))
     {
       writeDebugStreamLine("Parsing buffer: %s", &tmp_array[0]);
-      epos = StringFind((char *)&tmp_array[0], &e_marker[0]);
+      epos = stringFind((char *)&tmp_array[0], &e_marker[0]);
       // we've found a start and end marker
 
       if (epos > -1)
       {
         writeDebugStreamLine("end marker found: %d", epos);
-        for (int i = 0; i < 3; i++)
+        for (short i = 0; i < 3; i++)
         {
           writeDebugStreamLine("nextTokenStart: %d", nextTokenStart);
           nextTokenStart = epos;
           memmove((char *)&tmp_array[0], (char *)&tmp_array[nextTokenStart], sizeof(tMassiveArray) - nextTokenStart);
-          bpos = StringFind((char *)&tmp_array[0], token_begin);
-          epos = StringFind((char *)&tmp_array[0], token_end);
+          bpos = stringFind((char *)&tmp_array[0], token_begin);
+          epos = stringFind((char *)&tmp_array[0], token_end);
           if (bpos > -1 && epos > -1)
-		      {
-		        writeDebugStreamLine("IP bpos: %d, epos: %d", bpos, epos);
-		        memcpy(IPscratch, (char *)&tmp_array[bpos], epos - bpos);
-		        writeDebugStreamLine("IPinfo: %s", IPscratch);
-		      }
+          {
+            writeDebugStreamLine("IP bpos: %d, epos: %d", bpos, epos);
+            memcpy(IPscratch, (char *)&tmp_array[bpos], epos - bpos);
+            writeDebugStreamLine("IPinfo: %s", IPscratch);
+          }
         }
       }
       else
@@ -499,8 +486,8 @@ void DWIFIwaitForIP()
       }
       parsed = true;
       index = 0;
-      wait1Msec(2000);
-      PlaySound(soundBeepBeep);
+      sleep(2000);
+      playSound(soundBeepBeep);
     }
-	}
+  }
 }

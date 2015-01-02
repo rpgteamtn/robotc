@@ -5,11 +5,6 @@
  * @{
  */
 
-
-/*
- * $Id: common-mmux.h 133 2013-03-10 15:15:38Z xander $
- */
-
 /** \file common-MMUX.h
  * \brief Commonly used types and defines used by Motor MUX drivers.
  *
@@ -18,7 +13,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  *
  * Changelog:
@@ -52,15 +47,14 @@ typedef struct {
   bool brake[4];        /*!< Whether or not to use braking or floating to stop motor */
   bool pidcontrol[4];   /*!< Use constant speed or just power control */
   byte ramping[4];      /*!< Ramp the motors, can be up, down, both */
-} mmuxDataT;
-
+} mmuxDataT, tMMUXData;
 
 /*!< MUXmotor type, one for each permutation
  *
  * - mmotor_S1_1 means motor 1 connected to MMUX attached to sensor port 1
  * - mmotor_S4_2 means motor 2 connedted to MMUX attached to sensor port 4
  */
-typedef enum {
+typedef enum tMUXmotor {
   mmotor_S1_1 = 0,
   mmotor_S1_2 = 1,
   mmotor_S1_3 = 2,
@@ -83,8 +77,5 @@ mmuxDataT mmuxData[4];  /*!< Holds all the MMUX info, one for each sensor port *
 
 #endif // __MMUX_H__
 
-/*
- * $Id: common-mmux.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

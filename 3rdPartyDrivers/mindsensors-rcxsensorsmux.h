@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-rcxsensorsmux.h 133 2013-03-10 15:15:38Z xander $
- */
-
 /** \file mindsensors-rcxsensorsmux.h
  * \brief Mindsensors MSRXMUX RCX Sensor MUX Sensor driver
  *
@@ -22,7 +18,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 30 August 2009
@@ -78,10 +74,10 @@ void MSRXMUXsetupChan(tSensors link, ubyte chan, TSensorTypes chantype, TSensorM
   RCXSensorDelays[link][chan-1] = delay;
 }
 
-int MSRXMUXreadChan(tSensors link, byte chan) {
+short MSRXMUXreadChan(tSensors link, byte chan) {
   if (SensorType[link] != sensorI2CCustom9V) {
     SensorType[link] = sensorI2CCustom9V;
-    wait1Msec(3);
+    sleep(3);
   }
 
   MSRXMUX_I2CRequest[0] = 2;
@@ -98,7 +94,7 @@ int MSRXMUXreadChan(tSensors link, byte chan) {
   if (!writeI2C(link, MSRXMUX_I2CRequest))
     return -1;
 
-  wait10Msec(3+RCXSensorDelays[link][chan-1]);
+  sleep((3+RCXSensorDelays[link][chan-1]) * 10);
   SensorType[link] = RCXSensorTypes[link][chan-1];
   SensorMode[link] = RCXSensorModes[link][chan-1];
   return(SensorValue[link]);
@@ -106,8 +102,5 @@ int MSRXMUXreadChan(tSensors link, byte chan) {
 
 #endif // __MSRXMUX_H__
 
-/*
- * $Id: mindsensors-rcxsensorsmux.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

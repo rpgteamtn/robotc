@@ -4,9 +4,6 @@
  * HiTechnic Prototype Board
  * @{
  */
-/*
- * $Id: hitechnic-protoboard.h 133 2013-03-10 15:15:38Z xander $
- */
 
 #ifndef __HTPB_H__
 #define __HTPB_H__
@@ -35,7 +32,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 24 September 2009
@@ -77,14 +74,14 @@ tByteArray HTPB_I2CReply;      /*!< Array to hold I2C reply data */
 ubyte HTPBreadIO(tSensors link, ubyte mask);
 bool HTPBwriteIO(tSensors link, ubyte mask);
 bool HTPBsetupIO(tSensors link, ubyte mask);
-int HTPBreadADC(tSensors link, byte channel, byte width);
-bool HTPBreadAllADC(tSensors link, int &adch0, int &adch1, int &adch2, int &adch3, int &adch4, byte width);
+short HTPBreadADC(tSensors link, byte channel, byte width);
+bool HTPBreadAllADC(tSensors link, short &adch0, short &adch1, short &adch2, short &adch3, short &adch4, byte width);
 bool HTPBsetSamplingTime(tSensors link, byte interval);
 
 #ifdef __HTSMUX_SUPPORT__
 ubyte HTPBreadIO(tMUXSensor muxsensor, ubyte mask);
-int HTPBreadADC(tMUXSensor muxsensor, byte channel, byte width);
-bool HTPBreadAllADC(tMUXSensor muxsensor, int &adch0, int &adch1, int &adch2, int &adch3, int &adch4, byte width);
+short HTPBreadADC(tMUXSensor muxsensor, byte channel, byte width);
+bool HTPBreadAllADC(tMUXSensor muxsensor, short &adch0, short &adch1, short &adch2, short &adch3, short &adch4, byte width);
 
 tConfigParams HTPB_config = {HTSMUX_CHAN_I2C + HTSMUX_CHAN_9V, 14, 0x02, 0x42}; /*!< Array to hold SMUX config data for sensor */
 #endif // __HTSMUX_SUPPORT__
@@ -106,7 +103,6 @@ ubyte HTPBreadIO(tSensors link, ubyte mask) {
   return HTPB_I2CReply[0] & mask;
 }
 
-
 /**
  * Read the values of the digital inputs as specified by the mask.
  * @param muxsensor the SMUX sensor port number
@@ -114,7 +110,7 @@ ubyte HTPBreadIO(tSensors link, ubyte mask) {
  */
 #ifdef __HTSMUX_SUPPORT__
 ubyte HTPBreadIO(tMUXSensor muxsensor, ubyte mask) {
-	memset(HTPB_I2CReply, 0, sizeof(tByteArray));
+  memset(HTPB_I2CReply, 0, sizeof(tByteArray));
 
   if (HTSMUXSensorTypes[muxsensor] != HTSMUXSensorCustom)
     HTSMUXconfigChannel(muxsensor, HTPB_config);
@@ -125,7 +121,6 @@ ubyte HTPBreadIO(tMUXSensor muxsensor, ubyte mask) {
   return HTPB_I2CReply[0] & mask;
 }
 #endif // __HTSMUX_SUPPORT__
-
 
 /**
  * Write the values the digital outpus as specified by the mask.
@@ -141,10 +136,8 @@ bool HTPBwriteIO(tSensors link, ubyte mask) {
   HTPB_I2CRequest[2] = HTPB_OFFSET + HTPB_DIGOUT; // Start digital output read address
   HTPB_I2CRequest[3] = mask;                      // The specified digital ports
 
-
   return writeI2C(link, HTPB_I2CRequest);
 }
-
 
 /**
  * Configure the ports for input or output according to the mask.
@@ -163,7 +156,6 @@ bool HTPBsetupIO(tSensors link, ubyte mask) {
   return writeI2C(link, HTPB_I2CRequest);
 }
 
-
 /**
  * Read the value of the specified analogue channel.
  * @param link the HTPB port number
@@ -171,10 +163,10 @@ bool HTPBsetupIO(tSensors link, ubyte mask) {
  * @param width the bit width of the result, can be either 8 or 10
  * @return the value of the ADC channel, or -1 if an error occurred
  */
-int HTPBreadADC(tSensors link, byte channel, byte width) {
+short HTPBreadADC(tSensors link, byte channel, byte width) {
   memset(HTPB_I2CRequest, 0, sizeof(tByteArray));
 
-  int _adcVal = 0;
+  short _adcVal = 0;
   HTPB_I2CRequest[0] = 2;                                       // Message size
   HTPB_I2CRequest[1] = HTPB_I2C_ADDR;                           // I2C Address
   HTPB_I2CRequest[2] = HTPB_OFFSET + HTPB_A0_U + (channel * 2); // Start digital output read address
@@ -182,7 +174,7 @@ int HTPBreadADC(tSensors link, byte channel, byte width) {
   if (!writeI2C(link, HTPB_I2CRequest, HTPB_I2CReply, 2))
     return -1;
 
-  // Convert the bytes into and int
+  // Convert the bytes into and short
   // 1st byte contains bits 9-2 of the channel's value
   // 2nd byte contains bits 1-0 of the channel's value
   // We'll need to shift the 1st byte left by 2 and or 2nd byte onto it.
@@ -195,7 +187,6 @@ int HTPBreadADC(tSensors link, byte channel, byte width) {
   return _adcVal;
 }
 
-
 /**
  * Read the value of the specified analogue channel.
  * @param muxsensor the SMUX sensor port number
@@ -204,9 +195,9 @@ int HTPBreadADC(tSensors link, byte channel, byte width) {
  * @return the value of the ADC channel, or -1 if an error occurred
  */
 #ifdef __HTSMUX_SUPPORT__
-int HTPBreadADC(tMUXSensor muxsensor, byte channel, byte width) {
-  int _adcVal = 0;
-	memset(HTPB_I2CReply, 0, sizeof(tByteArray));
+short HTPBreadADC(tMUXSensor muxsensor, byte channel, byte width) {
+  short _adcVal = 0;
+  memset(HTPB_I2CReply, 0, sizeof(tByteArray));
 
   if (HTSMUXSensorTypes[muxsensor] != HTSMUXSensorCustom)
     HTSMUXconfigChannel(muxsensor, HTPB_config);
@@ -214,7 +205,7 @@ int HTPBreadADC(tMUXSensor muxsensor, byte channel, byte width) {
   if (!HTSMUXreadPort(muxsensor, HTPB_I2CReply, 2, HTPB_A0_U + (channel * 2)))
     return -1;
 
-  // Convert the bytes into and int
+  // Convert the bytes into and short
   // 1st byte contains bits 9-2 of the channel's value
   // 2nd byte contains bits 1-0 of the channel's value
   // We'll need to shift the 1st byte left by 2 and or 2nd byte onto it.
@@ -228,7 +219,6 @@ int HTPBreadADC(tMUXSensor muxsensor, byte channel, byte width) {
 }
 #endif // __HTSMUX_SUPPORT__
 
-
 /**
  * This function read the value of all of the analogue channels.
  * @param link the HTPB port number
@@ -240,7 +230,7 @@ int HTPBreadADC(tMUXSensor muxsensor, byte channel, byte width) {
  * @param width the bit width of the result, can be either 8 or 10
  * @return true if no error occured, false if it did
  */
-bool HTPBreadAllADC(tSensors link, int &adch0, int &adch1, int &adch2, int &adch3, int &adch4, byte width) {
+bool HTPBreadAllADC(tSensors link, short &adch0, short &adch1, short &adch2, short &adch3, short &adch4, byte width) {
   memset(HTPB_I2CRequest, 0, sizeof(tByteArray));
 
   HTPB_I2CRequest[0] = 2;                       // Message size
@@ -250,27 +240,26 @@ bool HTPBreadAllADC(tSensors link, int &adch0, int &adch1, int &adch2, int &adch
   if (!writeI2C(link, HTPB_I2CRequest, HTPB_I2CReply, 10))
     return false;
 
-  // Convert the bytes into and int
+  // Convert the bytes into and short
   // 1st byte contains bits 9-2 of the channel's value
   // 2nd byte contains bits 1-0 of the channel's value
   // We'll need to shift the 1st byte left by 2 and or 2nd byte onto it.
   // If 8 bits is all we want, we just return the first byte and be done with it.
   if (width == 8) {
-    adch0 = (int)HTPB_I2CReply[0];
-    adch1 = (int)HTPB_I2CReply[2];
-    adch2 = (int)HTPB_I2CReply[4];
-    adch3 = (int)HTPB_I2CReply[6];
-    adch4 = (int)HTPB_I2CReply[8];
+    adch0 = (short)HTPB_I2CReply[0];
+    adch1 = (short)HTPB_I2CReply[2];
+    adch2 = (short)HTPB_I2CReply[4];
+    adch3 = (short)HTPB_I2CReply[6];
+    adch4 = (short)HTPB_I2CReply[8];
   } else {
-    adch0 = ((int)HTPB_I2CReply[0] << 2) + (int)HTPB_I2CReply[1];
-    adch1 = ((int)HTPB_I2CReply[2] << 2) + (int)HTPB_I2CReply[3];
-    adch2 = ((int)HTPB_I2CReply[4] << 2) + (int)HTPB_I2CReply[5];
-    adch3 = ((int)HTPB_I2CReply[6] << 2) + (int)HTPB_I2CReply[7];
-    adch4 = ((int)HTPB_I2CReply[8] << 2) + (int)HTPB_I2CReply[9];
+    adch0 = ((short)HTPB_I2CReply[0] << 2) + (short)HTPB_I2CReply[1];
+    adch1 = ((short)HTPB_I2CReply[2] << 2) + (short)HTPB_I2CReply[3];
+    adch2 = ((short)HTPB_I2CReply[4] << 2) + (short)HTPB_I2CReply[5];
+    adch3 = ((short)HTPB_I2CReply[6] << 2) + (short)HTPB_I2CReply[7];
+    adch4 = ((short)HTPB_I2CReply[8] << 2) + (short)HTPB_I2CReply[9];
   }
   return true;
 }
-
 
 /**
  * This function read the value of all of the analogue channels.
@@ -284,8 +273,8 @@ bool HTPBreadAllADC(tSensors link, int &adch0, int &adch1, int &adch2, int &adch
  * @return true if no error occured, false if it did
  */
 #ifdef __HTSMUX_SUPPORT__
-bool HTPBreadAllADC(tMUXSensor muxsensor, int &adch0, int &adch1, int &adch2, int &adch3, int &adch4, byte width) {
-	memset(HTPB_I2CReply, 0, sizeof(tByteArray));
+bool HTPBreadAllADC(tMUXSensor muxsensor, short &adch0, short &adch1, short &adch2, short &adch3, short &adch4, byte width) {
+  memset(HTPB_I2CReply, 0, sizeof(tByteArray));
 
   if (HTSMUXSensorTypes[muxsensor] != HTSMUXSensorCustom)
     HTSMUXconfigChannel(muxsensor, HTPB_config);
@@ -293,28 +282,27 @@ bool HTPBreadAllADC(tMUXSensor muxsensor, int &adch0, int &adch1, int &adch2, in
   if (!HTSMUXreadPort(muxsensor, HTPB_I2CReply, 10, HTPB_A0_U))
     return false;
 
-  // Convert the bytes into and int
+  // Convert the bytes into and short
   // 1st byte contains bits 9-2 of the channel's value
   // 2nd byte contains bits 1-0 of the channel's value
   // We'll need to shift the 1st byte left by 2 and or 2nd byte onto it.
   // If 8 bits is all we want, we just return the first byte and be done with it.
   if (width == 8) {
-    adch0 = (int)HTPB_I2CReply[0];
-    adch1 = (int)HTPB_I2CReply[2];
-    adch2 = (int)HTPB_I2CReply[4];
-    adch3 = (int)HTPB_I2CReply[6];
-    adch4 = (int)HTPB_I2CReply[8];
+    adch0 = (short)HTPB_I2CReply[0];
+    adch1 = (short)HTPB_I2CReply[2];
+    adch2 = (short)HTPB_I2CReply[4];
+    adch3 = (short)HTPB_I2CReply[6];
+    adch4 = (short)HTPB_I2CReply[8];
   } else {
-    adch0 = ((int)HTPB_I2CReply[0] << 2) + (int)HTPB_I2CReply[1];
-    adch1 = ((int)HTPB_I2CReply[2] << 2) + (int)HTPB_I2CReply[3];
-    adch2 = ((int)HTPB_I2CReply[4] << 2) + (int)HTPB_I2CReply[5];
-    adch3 = ((int)HTPB_I2CReply[6] << 2) + (int)HTPB_I2CReply[7];
-    adch4 = ((int)HTPB_I2CReply[8] << 2) + (int)HTPB_I2CReply[9];
+    adch0 = ((short)HTPB_I2CReply[0] << 2) + (short)HTPB_I2CReply[1];
+    adch1 = ((short)HTPB_I2CReply[2] << 2) + (short)HTPB_I2CReply[3];
+    adch2 = ((short)HTPB_I2CReply[4] << 2) + (short)HTPB_I2CReply[5];
+    adch3 = ((short)HTPB_I2CReply[6] << 2) + (short)HTPB_I2CReply[7];
+    adch4 = ((short)HTPB_I2CReply[8] << 2) + (short)HTPB_I2CReply[9];
   }
   return true;
 }
 #endif // __HTSMUX_SUPPORT__
-
 
 /**
  * This function configured the time between samples. This value is not stored permanently.
@@ -346,8 +334,5 @@ bool HTPBsetSamplingTime(tSensors link, byte interval) {
 
 #endif // __HTPB_H__
 
-/*
- * $Id: hitechnic-protoboard.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

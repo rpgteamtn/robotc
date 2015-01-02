@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindensors-servo.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __NXTSERVO_H__
 #define __NXTSERVO_H__
 /** \file mindensors-servo.h
@@ -24,7 +20,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 30 September 2009
@@ -82,13 +78,12 @@
 <function prototypes>
 */
 bool NXTServoSetSpeed(tSensors link, ubyte servochan, ubyte speed, ubyte address);
-bool NXTServoSetPos(tSensors link, ubyte servochan, int position, ubyte speed, ubyte address = NXTSERVO_I2C_ADDR);
+bool NXTServoSetPos(tSensors link, ubyte servochan, short position, ubyte speed, ubyte address = NXTSERVO_I2C_ADDR);
 bool NXTServoQSetPos(tSensors link, ubyte servochan, ubyte position, byte speed, ubyte address = NXTSERVO_I2C_ADDR);
-int NXTServoReadVoltage(tSensors link, ubyte address = NXTSERVO_I2C_ADDR);
+short NXTServoReadVoltage(tSensors link, ubyte address = NXTSERVO_I2C_ADDR);
 
 tByteArray NXTSERVO_I2CRequest;         /*!< Array to hold I2C command data */
 tByteArray NXTSERVO_I2CReply;           /*!< Array to hold I2C reply data */
-
 
 /**
  * Set the speed register for the specified servo.  This is the amount to increase
@@ -111,7 +106,6 @@ bool NXTServoSetSpeed(tSensors link, ubyte servochan, ubyte speed, ubyte address
   return writeI2C(link, NXTSERVO_I2CRequest);
 }
 
-
 /**
  * Tell the servo to move to the specified position using the specified speed.
  * @param link the NXTServo port number
@@ -121,7 +115,7 @@ bool NXTServoSetSpeed(tSensors link, ubyte servochan, ubyte speed, ubyte address
  * @param address the I2C address to use, optional, defaults to 0xB0
  * @return true if no error occured, false if it did
  */
-bool NXTServoSetPos(tSensors link, ubyte servochan, int position, ubyte speed, ubyte address) {
+bool NXTServoSetPos(tSensors link, ubyte servochan, short position, ubyte speed, ubyte address) {
   memset(NXTSERVO_I2CRequest, 0, sizeof(tByteArray));
   if (!NXTServoSetSpeed(link, servochan, speed, address))
     return false;
@@ -138,8 +132,6 @@ bool NXTServoSetPos(tSensors link, ubyte servochan, int position, ubyte speed, u
 
   return writeI2C(link, NXTSERVO_I2CRequest);
 }
-
-
 
 /**
  * Tell the servo to move to the specified position using the specified speed.
@@ -170,14 +162,13 @@ bool NXTServoQSetPos(tSensors link, ubyte servochan, ubyte position, byte speed,
   return writeI2C(link, NXTSERVO_I2CRequest);
 }
 
-
 /**
  * Get the voltage level of the battery pack.
  * @param link the NXTServo port number
  * @param address the I2C address to use, optional, defaults to 0xB0
  * @return the voltage of the battery pack or -1 if an error occurred
  */
-int NXTServoReadVoltage(tSensors link, ubyte address) {
+short NXTServoReadVoltage(tSensors link, ubyte address) {
   long mvs = 0;
 
   memset(NXTSERVO_I2CRequest, 0, sizeof(tByteArray));
@@ -195,8 +186,6 @@ int NXTServoReadVoltage(tSensors link, ubyte address) {
 }
 
 #endif // __NXTSERVO_H__
-/*
- * $Id: mindensors-servo.h 133 2013-03-10 15:15:38Z xander $
- */
+
 /* @} */
 /* @} */

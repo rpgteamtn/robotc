@@ -4,9 +4,6 @@
 * Dexter Industries NXTChuck Sensor driver
 * @{
 */
-/*
- * $Id: dexterind-nxtchuck.h 133 2013-03-10 15:15:38Z xander $
- */
 
 #ifndef __NXTCHUCK_H__
 #define __NXTCHUCK_H__
@@ -23,7 +20,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 02 November 2012
@@ -87,14 +84,13 @@ typedef struct
   ubyte ident;
   ubyte stickX;
   ubyte stickY;
-  int accelX;
-  int accelY;
-  int accelZ;
+  short accelX;
+  short accelY;
+  short accelZ;
   bool buttonC;
   bool buttonZ;
   ubyte buttons;
 } tNunchuck;
-
 
 typedef struct
 {
@@ -119,9 +115,8 @@ typedef struct
   bool buttonStart;
   bool buttonZL;
   bool buttonZR;
-  unsigned int buttons;
+  unsigned short buttons;
 } tClassicCtrl;
-
 
 ubyte NXTChuckIdentLookup[][] = {
   {0x00,0x00,0xA4,0x20,0x00,0x00}, // Nunchuk
@@ -191,7 +186,6 @@ bool __NXTChuckReadRaw(tSensors link, ubyte _reg, tByteArray &data){
   return writeI2C(link, NXTCHUCK_I2CRequest, data, 6);
 }
 
-
 /**
  * Identify the type of nunchuck sensor connected to the NXT.
  * @param link the nunchuck port number
@@ -202,7 +196,7 @@ bool NXTChuckreadIdent(tSensors link, tNunchuck &nunchuck){
   if(__NXTChuckReadRaw(link, 0xFA, NXTCHUCK_I2CReply)){
 
 #ifdef __NUNHUCK__DEBUG__
-    for (int i = 0; i < 6; i++)
+    for (short i = 0; i < 6; i++)
     {
       writeDebugStream("0x%02X ", NXTCHUCK_I2CReply[i]);
     }
@@ -214,12 +208,12 @@ bool NXTChuckreadIdent(tSensors link, tNunchuck &nunchuck){
 
 #ifdef __NUNHUCK__DEBUG__
       writeDebugStream("Comparing: ");
-      for (int j = 0; j < 6; j++)
+      for (short j = 0; j < 6; j++)
       {
         writeDebugStream("0x%02X ", NXTCHUCK_I2CReply[j]);
       }
       writeDebugStream("   and   ");
-      for (int j = 0; j < 6; j++)
+      for (short j = 0; j < 6; j++)
       {
         writeDebugStream("0x%02X ", NXTChuckIdentLookup[i][j]);
       }
@@ -237,7 +231,6 @@ bool NXTChuckreadIdent(tSensors link, tNunchuck &nunchuck){
   }
   return false;                                                    // Communication error
 }
-
 
 /**
  * Read the data from the nunchuck.
@@ -263,7 +256,6 @@ bool NXTChuckreadSensor(tSensors link, tNunchuck &nunchuck){
   }
   return false;                                                  // Return error
 }
-
 
 /**
  * Read the data from the classic controller.
@@ -309,11 +301,7 @@ bool NXTChuckReadClassicController(tSensors link, tClassicCtrl &controller){
   return false;
 }
 
-
 #endif // __NXTCHUCK_H__
 
-/*
- * $Id: dexterind-nxtchuck.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */

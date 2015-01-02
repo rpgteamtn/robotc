@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: mindsensors-sensormux.h 136 2013-03-13 18:52:29Z xander $
- */
-
 #ifndef __MSSMUX_H__
 #define __MSSMUX_H__
 /** \file mindsensors-sensormux.h
@@ -24,7 +20,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER.
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 02 March 2013
@@ -43,24 +39,22 @@
 #define MSMX_REG_CHANSEL  0x42
 #define MSMX_REG_VOLTAGE  0x43
 
-
 tByteArray MSMX_I2CRequest;    /*!< Array to hold I2C command data */
 tByteArray MSMX_I2CReply;      /*!< Array to hold I2C reply data */
 
-void MSSMUXsetChan(tSensors link, int channel);
-int MSSMUXreadBattery(tSensors link);
-
+void MSSMUXsetChan(tSensors link, short channel);
+short MSSMUXreadBattery(tSensors link);
 
 /**
  * Read the voltage level of the external battery.
  * @param link the port number
  * @return the battery voltage in mV
  */
-int MSSMUXreadBattery(tSensors link)
+short MSSMUXreadBattery(tSensors link)
 {
   // Switch to the virtual channel (0)
   MSSMUXsetChan(link, 0);
-  wait1Msec(50);
+  sleep(50);
 
   SensorType[link] = sensorI2CCustomFastSkipStates;
   memset(MSMX_I2CRequest, 0, sizeof(tByteArray));
@@ -83,9 +77,9 @@ int MSSMUXreadBattery(tSensors link)
  * @param link the port number
  * @param channel the sensor mux channel number
  */
-void MSSMUXsetChan(tSensors link, int channel)
+void MSSMUXsetChan(tSensors link, short channel)
 {
-  static int currChannel[4] = {-1, -1, -1, -1};
+  static short currChannel[4] = {-1, -1, -1, -1};
 
   // Message to send to SMUX
   ubyte MUXmsg[] = {0x55, 0xAA, 0x30 + (channel & 0xFF)};
@@ -107,38 +101,35 @@ void MSSMUXsetChan(tSensors link, int channel)
   // give it a little time
   switch (previous)
   {
-    case sensorCOLORFULL:
-    case sensorCOLORRED:
-    case sensorCOLORGREEN:
-    case sensorCOLORBLUE:
-    case sensorCOLORNONE: wait1Msec(12); break;
+    case sensorColorNxtFULL:
+    case sensorColorNxtRED:
+    case sensorColorNxtGREEN:
+    case sensorColorNxtBLUE:
+    case sensorColorNxtNONE: sleep(12); break;
   }
 
   // Set both pins as output
   DigitalPinDirection[link] = 0x03;
-  wait1Msec(1);
+  sleep(1);
 
-  for (int i = 0; i < 3; i++)
+  for (short i = 0; i < 3; i++)
   {
     DigitalPinValue[link] = 0x00;
-    wait1Msec(1);
+    sleep(1);
 
-    for (int j = 0; j < 8; j++) {
+    for (short j = 0; j < 8; j++) {
       if ((MUXmsg[i] >> j) & 0x01)
         DigitalPinValue[link] = 0x00;
       else
         DigitalPinValue[link] = 0x01;
-      wait1Msec(1);
+      sleep(1);
     }
     DigitalPinValue[link] = 0x01;
-    wait1Msec(1);
+    sleep(1);
   }
 }
 
 #endif // __MSSMUX_H__
 
-/*
- * $Id: mindsensors-sensormux.h 136 2013-03-13 18:52:29Z xander $
- */
 /* @} */
 /* @} */

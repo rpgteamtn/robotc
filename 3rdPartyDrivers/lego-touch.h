@@ -5,10 +5,6 @@
  * @{
  */
 
-/*
- * $Id: lego-touch.h 133 2013-03-10 15:15:38Z xander $
- */
-
 #ifndef __LEGOTS_H__
 #define __LEGOTS_H__
 /** \file lego-touch.h
@@ -21,7 +17,7 @@
  *
  * License: You may use this code as you wish, provided you give credit where its due.
  *
- * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 3.59 AND HIGHER. 
+ * THIS CODE WILL ONLY WORK WITH ROBOTC VERSION 4.10 AND HIGHER
 
  * \author Xander Soldaat (xander_at_botbench.com)
  * \date 08 December 2009
@@ -43,7 +39,6 @@ bool TSreadState(tSensors link);
 bool TSreadState(tMUXSensor muxsensor);
 #endif
 
-
 /**
  * Read the state of the touch sensor
  * @param link the Touch Sensor port number
@@ -51,14 +46,13 @@ bool TSreadState(tMUXSensor muxsensor);
  */
 bool TSreadState(tSensors link) {
   if ((SensorType[link] !=  sensorTouch) && SensorMode[link] != modeBoolean) {
-    SetSensorType(link, sensorTouch);
-    SetSensorMode(link, modeBoolean);
-    wait1Msec(10);
+    SensorType[link] = sensorTouch ;
+    SensorMode[link] = modeBoolean;
+    sleep(10);
   }
 
   return (SensorRaw[link] < 500) ? true : false;
 }
-
 
 /**
  * Read the state of the touch sensor
@@ -71,11 +65,7 @@ bool TSreadState(tMUXSensor muxsensor) {
 }
 #endif
 
-
 #endif // __LEGOTS_H__
 
-/*
- * $Id: lego-touch.h 133 2013-03-10 15:15:38Z xander $
- */
 /* @} */
 /* @} */
