@@ -13,8 +13,7 @@
 
 int getSingleEncoderValue()
 {
-	int value = (abs(nMotorEncoder[leftFront]) +
-	             abs(nMotorEncoder[rightFront]) / 2);
+	int value = (abs(nMotorEncoder[leftFront]) + abs(nMotorEncoder[rightFront]) / 2);
 	return value;
 }
 
@@ -88,4 +87,34 @@ void strafe(const int forward)
 {
 	int reverse = -1 * forward;
 	setMotors(reverse, forward, forward, reverse);
+}
+
+void lift(const int power)
+{
+	motor[liftRight] = power;
+	motor[liftLeft] = power;
+}
+
+void spin(const int power)
+{
+	motor[spinner] = power;
+}
+
+void stopLiftMotors()
+{
+	motor[liftLeft] = 0;
+	motor[liftRight] = 0;
+	motor[spinner] = 0;
+}
+
+void resetLiftEncoders()
+{
+	nMotorEncoder[liftRight] = 0;
+	nMotorEncoder[liftLeft] = 0;
+}
+
+int getEncoder()
+{
+	int value = (abs(nMotorEncoder[liftLeft]) + abs(nMotorEncoder[liftRight]) / 2);
+	return value;
 }

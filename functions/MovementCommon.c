@@ -26,7 +26,7 @@ void travelDistance(const float distance)
 */
 	while(distance > calculateDist(encoderValue))
 	{
-		forward(100);
+		backward(100);
 		encoderValue = getSingleEncoderValue();
 		wait1Msec(1);
 	}

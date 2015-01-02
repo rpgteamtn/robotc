@@ -19,6 +19,7 @@
 void gyroTurn(float power, float fDegrees, eDirection direct)
 {
 	HTGYROstartCal(gyro);
+	wait1Msec(100);
 
 	float	fCurrent = 0.0;
 	float fRotSpeed = 0.0;
@@ -31,19 +32,15 @@ void gyroTurn(float power, float fDegrees, eDirection direct)
 	{
 		rightTurn(power);
 	}
+
 	do
 	{
-
 		wait1Msec(MEASUREMENT_MS);
-		string text;
 		fRotSpeed = HTGYROreadRot(gyro);
-		sprintf(text, "rot = %f", fRotSpeed);
-		displayCenteredTextLine(4, text);
-		fCurrent += fRotSpeed * (MEASUREMENT_MS / 1000.0);
 
-		sprintf(text, "current = %f", fCurrent);
-		displayCenteredTextLine(5, text);
-	} while (abs(fCurrent) <= fDegrees);
+		fCurrent += fRotSpeed * (MEASUREMENT_MS / 1000.0);
+	} while (abs(fCurrent) < fDegrees);
 	stopMotors();
 }
+
 #endif
