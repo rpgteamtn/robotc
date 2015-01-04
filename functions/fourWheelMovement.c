@@ -113,7 +113,7 @@ void resetLiftEncoders()
 	nMotorEncoder[liftLeft] = 0;
 }
 
-int getEncoder()
+int getLiftEncoder()
 {
 	int value = (abs(nMotorEncoder[liftLeft]) + abs(nMotorEncoder[liftRight]) / 2);
 	return value;

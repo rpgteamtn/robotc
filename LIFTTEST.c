@@ -30,44 +30,44 @@ task main
 		{
 			if(otherTask == true)
 			{
-				stopTask(Lift);
+				stopTask(liftTask);
 				otherTask = false;
 			}
 
-			FOO(30);
+			FOO(32);
 		}
 
 		if(joy1Btn(JOY_BUTTON_B))
 		{
 			if(otherTask == true)
 			{
-				stopTask(Lift);
+				stopTask(liftTask);
 				otherTask = false;
 			}
 
-			FOO(60);
+			FOO(62);
 		}
 
 		if(joy1Btn(JOY_BUTTON_X))
 		{
 			if(otherTask == true)
 			{
-				stopTask(Lift);
+				stopTask(liftTask);
 				otherTask = false;
 			}
 
-			FOO(90);
+			FOO(92);
 		}
 
 		if(joy1Btn(JOY_BUTTON_Y))
 		{
 			if(otherTask == true)
 			{
-				stopTask(Lift);
+				stopTask(liftTask);
 				otherTask = false;
 			}
 
-			FOO(122);
+			FOO(124);
 		}
 	}
 }

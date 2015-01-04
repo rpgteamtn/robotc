@@ -5,13 +5,13 @@ int liftPower;
 bool bRunning = false;// is running
 bool otherTask = false;
 
-task Lift()
+task liftTask()
 {
-	int encoderLift = getEncoder();
+	int encoderLift = getLiftEncoder();
 
 	if(encoderLift > target)
 	{
-		liftPower = -70;
+		liftPower = -30;
 	}
 
 	else if(encoderLift < target)
@@ -21,7 +21,7 @@ task Lift()
 
 	else
 	{
-		stopTask(Lift);
+		stopTask(liftTask);
 	}
 
 	while((bRunning == true) &&  (encoderLift != target))
@@ -36,10 +36,10 @@ void FOO(int TARGET)// Target in CM
 	target = cmToClicks(TARGET);
 
 	bRunning = true;
-	startTask(Lift);
+	startTask(liftTask);
 
 	if(bRunning == false)
 	{
-		stopTask(Lift);
+		stopTask(liftTask);
 	}
 }
