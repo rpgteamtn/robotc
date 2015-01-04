@@ -1,9 +1,6 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
-#pragma config(Sensor, S3,     touch,          sensorTouch)
-#pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop, encoder)
-#pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
-#pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop, encoder)
+#pragma config(Sensor, S3,     sonar,          sensorSONAR)
 #pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, openLoop)
@@ -22,17 +19,13 @@
 
 /*This is a set of movement functions.  Goals: make the robot go forward, backwards, turn,
 and go to the side.  */
+#include "hitechnic-sensormux.h"
+
 #include "fourWheelMovement.c"
 #include "rpgCommon.c"
 #include "MovementCommon.c"
 
-#include "hitechnic-sensormux.h"
-
-#define MUX1 	 msensor_S4_1
-#define gyro 	 msensor_S4_2
-#define sonar  msensor_S4_3
-#define IR     msensor_S4_4
-
+#define touch	 msensor_S4_2
 
 #define deadZone 10
 
@@ -123,6 +116,16 @@ task main()
 		RT = small forward
 		---------------------------*/
 
+		if(abs(joystick.joy2_y2) > 	deadZone)
+		{
+			if(joystick.joy2_y2 > 0)
+			{
+				lift(rescale(joystick.joy2_y2));
+			}
+			else if(joystick.joy2_y2 < 0)
+			{
+				lift(
+
 		if(joy2Btn(JOY_BUTTON_A))
 		{
 			lift(100);
@@ -153,8 +156,8 @@ task main()
 
 		else if(joy2btn(JOY_BUTTON_RT))
 		{
-			lift(-100);
-			wait1Msec(2000); //return to the bottom
+			lift(-30);
+			wait1Msec(500); //return to the bottom
 			lift(0);
 		}
 

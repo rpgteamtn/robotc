@@ -1,9 +1,11 @@
 #include "hitechnic-irseeker-v2.h"
+#include "rpgCommon.c"
 
-int getIRReading(tMUXSensor ir_seeker)
+int getIRReading()
 {
-	wait1Msec(1);                              // Wait 1 ms
-	int ir = HTIRS2readDCDir(ir_seeker);      // IR receiver -> ir variable
-	wait1Msec(1);                              // Down time before recheck
+	tHTIRS2 irSeeker;
+	initSensor(&irSeeker, msensor_S4_4);
+	readSensor(&irSeeker);
+	int ir = irSeeker.acDirection;
 	return ir;
 }

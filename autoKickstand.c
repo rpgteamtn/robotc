@@ -98,8 +98,7 @@ void strategyA()//use if in position 1
 	displayCenteredTextLine(1, text);
 	travelDistance(distanceA1);
 	stopMotors();
-	gyroLeftTurn(60, 30);
-	stopMotors();
+	gyroTurn(60, 30, dLeft);
 	travelDistance(distanceA2);
 	stopMotors();
 }
@@ -109,7 +108,7 @@ void strategyB()//use if in position 2
 	string text;
 	sprintf(text, "Strategy B");
 	displayCenteredTextLine(1, text);
-	gyroLeftTurn(30, 50);
+	gyroTurn(30, 50, dLeft);
 	travelDistance(distanceB1);
 	stopMotors();
 }
@@ -119,11 +118,9 @@ void strategyC()//use if in position 3
 	string text;
 	sprintf(text, "Strategy C");
 	displayCenteredTextLine(1, text);
-	gyroLeftTurn(90.0, 30);
-	stopMotors();
+	gyroTurn(90.0, 30, dLeft);
 	travelDistance(distanceC1);
-	gyroRightTurn(90, 50);
-	stopMotors();
+	gyroTurn(90, 50, dRight);
 	travelDistance(distanceC2);
 }
 
