@@ -124,7 +124,7 @@ void strategyC()//use if in position 3
 	travelDistance(distanceC2);
 }
 
-task main()
+void autoKickstand();
 {
 	disableDiagnosticsDisplay();
 	//	waitForStartOrButton();
@@ -150,4 +150,9 @@ task main()
 		displayCenteredTextLine(2, "Strategy C");
 		strategyC();
 	}
+}
+
+task main()
+{
+	autoKickstand();
 }

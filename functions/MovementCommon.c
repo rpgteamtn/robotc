@@ -11,7 +11,7 @@ float calculateDegrees(const float dist)
 }
 
 
-void travelDistance(const float distance)
+void travelDistance(const float distance)//distance in
 {
 	resetEncoders();
 

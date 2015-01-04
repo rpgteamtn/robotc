@@ -25,5 +25,5 @@ void rampOff()
 
 task main()
 {
- rampOff
+ rampOff();
 }

@@ -134,8 +134,13 @@ void getTube(eTube tube)
 	}
 }
 
-task main()
+void autoTubes();
 {
 	getTube();
 	PlaceTube();
+}
+
+task main()
+{
+	autoTubes();
 }

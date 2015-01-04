@@ -6,7 +6,7 @@ void main()
 1=1
 }
 #enddef*/
-#include "common.c"
+#include "rpgCommon.c"
 
 int questionInt(const string squestionText, const string sleftText, const string srightText, const int min, const int max)
 {
@@ -19,8 +19,7 @@ int questionInt(const string squestionText, const string sleftText, const string
 	repeatUntil(nNxtButtonPressed == nxtOrange)
 	{
 
-		while(nNxtButtonPressed == noButton)
-		{	}
+	waitTillNoButton();
 
 		if(nNxtButtonPressed == nxtRight)
 		{

@@ -27,6 +27,11 @@ task liftTask()
 	while((bRunning == true) &&  (encoderLift != target))
 	{
 		lift(liftPower);
+		if(touch == 1)
+		{
+			stopLiftMotors();
+			bRunning = false;
+		}
 	}
 	bRunning = false;
 }
