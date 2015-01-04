@@ -116,15 +116,33 @@ task main()
 		RT = small forward
 		---------------------------*/
 
-		if(abs(joystick.joy2_y2) > 	deadZone)
+		if(sensorValue(touch) == 0)
 		{
-			if(joystick.joy2_y2 > 0)
+			if(abs(joystick.joy2_y2) > 	deadZone)
 			{
-				lift(rescale(joystick.joy2_y2));
+				if(joystick.joy2_y2 > 0)
+				{
+					lift(rescale(joystick.joy2_y2));
+				}
+				else if(joystick.joy2_y2 < 0)
+				{
+					power = (rescale(joystick.joy2_y1) / 2);
+					lift(power);
+				}
+				else
+				{
+					lift(0);
+				}
 			}
-			else if(joystick.joy2_y2 < 0)
+		}
+
+		else if (sensorValue(touch) == 1)
+		{
+			if ((joystick.joy2_y2 > 0) && (joystick.joy2_y2 > deadZone))
 			{
-				lift(
+
+
+
 
 		if(joy2Btn(JOY_BUTTON_A))
 		{
