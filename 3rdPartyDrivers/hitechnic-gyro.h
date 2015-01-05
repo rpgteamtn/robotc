@@ -140,7 +140,7 @@ float HTGYROstartCal(tMUXSensor muxsensor) {
   // Take 5 readings and average them out
   for (short i = 0; i < 50; i++) {
     _avgdata += HTSMUXreadAnalogue(muxsensor);
-    sleep(50);
+    sleep(5);
   }
 
   // Store new offset
@@ -266,7 +266,7 @@ bool sensorCalibrate(tHTGYROPtr htgyroPtr)
     else
       avgdata += SensorValue[htgyroPtr->I2CData.port];
 
-    sleep(50);
+    sleep(5);
   }
   htgyroPtr->offset = avgdata / 50;
 

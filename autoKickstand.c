@@ -1,10 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
-#pragma config(Sensor, S3,     touch,          sensorTouch)
+#pragma config(Sensor, S3,     sonar,          sensorSONAR)
 #pragma config(Sensor, S4,     smux,           sensorI2CCustom)
-#pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop, encoder)
-#pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop, encoder)
-#pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, openLoop)
@@ -23,8 +20,6 @@
 
 #define MUX1 	   msensor_S4_1
 #define sonar 	 msensor_S4_2
-#define gyro     msensor_S4_3
-#define IR       msensor_S4_4
 
 #include "rpgCommon.c"
 #include "hitechnic-sensormux.h"     //Drivers for IR Beacon
@@ -49,7 +44,7 @@
 
 
 // Finds the IR and displays the encoders
-float findIR(tMUXSensor ir_seeker)
+/*float findIR(tMUXSensor ir_seeker)
 {
 	resetEncoders();
 	int	ir_value = getIRReading(ir_seeker);
@@ -122,11 +117,11 @@ void strategyC()//use if in position 3
 	travelDistance(distanceC1);
 	gyroTurn(90, 50, dRight);
 	travelDistance(distanceC2);
-}
+}*/
 
 void autoKickstand();
 {
-	disableDiagnosticsDisplay();
+/*	disableDiagnosticsDisplay();
 	//	waitForStartOrButton();
 	resetEncoders();
 	string text;
@@ -149,7 +144,11 @@ void autoKickstand();
 	{
 		displayCenteredTextLine(2, "Strategy C");
 		strategyC();
-	}
+	}*/
+
+	leftTurn(100);
+	wait1Msec(200);
+	stopMotors();
 }
 
 task main()
