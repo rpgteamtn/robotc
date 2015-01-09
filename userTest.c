@@ -81,7 +81,7 @@ task main()
 		{
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 105;					// Set servo position
+			servo[goalCapture] = 0;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
@@ -89,7 +89,7 @@ task main()
 		{
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 200;					// Set servo position
+			servo[goalCapture] = 255;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
@@ -120,6 +120,7 @@ task main()
 		{
 			if(TSreadState(LTOUCH)/* == 1*/)
 			{
+				nMotorEncoder[liftRight] = 0;
 				if(joystick.joy2_y2 <= (deadZone * -1))
 				{
 					lift(0);
