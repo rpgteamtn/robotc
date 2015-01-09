@@ -136,9 +136,12 @@ task main()
 			{
 				lift(rescale(joystick.joy2_y2));
 			}
-
 		}
-	}
+
+		else
+		{
+			lift(0)
+		}
 
 	if(joy2Btn(JOY_BUTTON_A))
 	{
@@ -166,13 +169,14 @@ task main()
 		nMotorEncoder[liftRight] = 0;
 	}
 
-	/*	if((abs(joystick.joy2_y1) >= deadZone)
-	{
-	spin(rescale(joystick.joy2_y1));
-	}
+		/*	if((abs(joystick.joy2_y1) >= deadZone)
+		{
+		spin(rescale(joystick.joy2_y1));
+		}
 
-	else
-	{
-	spin(0);
-	}*/
+		else
+		{
+		spin(0);
+		}*/
+	}
 }
