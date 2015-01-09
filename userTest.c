@@ -26,14 +26,14 @@
 /*This is a set of movement functions.  Goals: make the robot go forward, backwards, turn,
 and go to the side.  */
 #include "hitechnic-sensormux.h"
-
 #include "fourWheelMovement.c"
 #include "rpgCommon.c"
 #include "MovementCommon.c"
-
-#define touch	 msensor_S4_2
+#include "lego-touch.h"
 
 #define deadZone 20
+
+const tMUXSensor LTOUCH = msensor_S4_1;
 
 task main()
 {
@@ -122,90 +122,73 @@ task main()
 		RB = small backward
 		RT = small forward
 		---------------------------*/
-
-	/*	if(sensorValue(touch) == 0)
-		{*/
-			if(abs(joystick.joy2_y2) > 	deadZone)
+		if(abs(joystick.joy2_y2) > deadZone)
+		{
+			if(TSreadState(LTOUCH)/* == 1*/)
 			{
-				if(joystick.joy2_y2 > 0)
+				if(joystick.joy2_y2 <= (deadZone * -1))
 				{
-				lift(rescale(joystick.joy2_y2));
-				}
-
-				else if (joystick.joy2_y2 < 0)
-				{
-					lift(rescale(joystick.joy2_y2));
+					lift(0);
 				}
 
 				else
 				{
-					lift(0)	;
+					lift(rescale(joystick.joy2_y2));
 				}
 
 			}
+
 			else
-				{
-					lift(0)	;
-				}
-		//}
-
-		/*else if (sensorValue(touch) == 1)
-		{
-			if ((joystick.joy2_y2 > 0) && (joystick.joy2_y2 > deadZone))
 			{
-				lift(rescale(joystick.joy1_y1));
+				lift(rescale(joystick.joy2_y2));
 			}
 
-			else if (joystick.joy2_y1 < 0 && joystick.joy2_y2 > deadZone)
-			{
-				lift(0);
-			}
-		}*/
-
-
-		if(joy2Btn(JOY_BUTTON_A))
-		{
-			lift(100);
-			wait1Msec(2000); //TIME IS OFF - go until 30cm
-			lift(0);
 		}
+	}
 
-		else if(joy2btn(JOY_BUTTON_B))
-		{
-			lift(100);
-			wait1Msec(2000); //TIME IS OFF - go until 60cm
-			lift(0);
-		}
+	if(joy2Btn(JOY_BUTTON_A))
+	{
+		lift(100);
+		wait1Msec(2000); //TIME IS OFF - go until 30cm
+		lift(0);
+	}
 
-		else if(joy2btn(JOY_BUTTON_Y))
-		{
-			lift(100);
-			wait1Msec(2000); //TIME IS OFF - go until 90cm
-			lift(0);
-		}
+	else if(joy2btn(JOY_BUTTON_B))
+	{
+		lift(100);
+		wait1Msec(2000); //TIME IS OFF - go until 60cm
+		lift(0);
+	}
 
-		else if(joy2btn(JOY_BUTTON_X))
-		{
-			lift(100);
-			wait1Msec(2000); //TIME IS OFF - go until the top
-			lift(0);
-		}
+	else if(joy2btn(JOY_BUTTON_Y))
+	{
+		lift(100);
+		wait1Msec(2000); //TIME IS OFF - go until 90cm
+		lift(0);
+	}
 
-		else if(joy2btn(JOY_BUTTON_RT))
-		{
-			lift(-30);
-			wait1Msec(500); //return to the bottom
-			lift(0);
-		}
+	else if(joy2btn(JOY_BUTTON_X))
+	{
+		lift(100);
+		wait1Msec(2000); //TIME IS OFF - go until the top
+		lift(0);
+	}
+
+	else if(joy2btn(JOY_BUTTON_RT))
+	{
+		lift(-30);
+		wait1Msec(500); //return to the bottom
+		lift(0);
+	}
 
 	/*	if((abs(joystick.joy2_y1) >= deadZone)
-		{
-			spin(rescale(joystick.joy2_y1));
-		}
-
-		else
-		{
-			spin(0);
-		}*/
+	{
+	spin(rescale(joystick.joy2_y1));
 	}
+
+	else
+	{
+	spin(0);
+	}*/
+}
 }
