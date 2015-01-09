@@ -142,37 +142,28 @@ task main()
 
 	if(joy2Btn(JOY_BUTTON_A))
 	{
-		lift(100);
-		wait1Msec(2000); //TIME IS OFF - go until 30cm
-		lift(0);
+		liftHeight(35);
 	}
 
 	else if(joy2btn(JOY_BUTTON_B))
 	{
-		lift(100);
-		wait1Msec(2000); //TIME IS OFF - go until 60cm
-		lift(0);
+		liftHeight(65);
 	}
 
 	else if(joy2btn(JOY_BUTTON_Y))
 	{
-		lift(100);
-		wait1Msec(2000); //TIME IS OFF - go until 90cm
-		lift(0);
+		liftHeight(95);
 	}
 
 	else if(joy2btn(JOY_BUTTON_X))
 	{
-		lift(100);
-		wait1Msec(2000); //TIME IS OFF - go until the top
-		lift(0);
+		liftHeight(115);
 	}
 
 	else if(joy2btn(JOY_BUTTON_RT))
 	{
-		lift(-30);
-		wait1Msec(500); //return to the bottom
-		lift(0);
+		liftHeight(0);
+		nMotorEncoder[liftRight] = 0;
 	}
 
 	/*	if((abs(joystick.joy2_y1) >= deadZone)
