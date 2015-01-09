@@ -7,9 +7,9 @@
 #pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C1_2,     none,          tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_2,     leftBack,      tmotorTetrix, openLoop, reversed)
-#pragma config(Motor,  mtr_S1_C3_1,     liftRight,     tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C3_2,     liftLeft,      tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_2,     leftBack,      tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C3_1,     liftRight,     tmotorTetrix, openLoop, encoder)
+#pragma config(Motor,  mtr_S1_C3_2,     liftLeft,      tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S2_C2_1,     rightFront,    tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S2_C2_2,     rightBack,     tmotorTetrix, openLoop, reversed)
 #pragma config(Servo,  srvo_S2_C1_1,    servo1,               tServoNone)
@@ -129,17 +129,21 @@ task main()
 			{
 				if(joystick.joy2_y2 > 0)
 				{
-					lift(rescale(joystick.joy2_y2));
+				//	lift(rescale(joystick.joy2_y2));
+				lift(10)
 				}
-				else if(joystick.joy2_y2 < 0)
+
+				else if (joystick.joy2_y2 < 0)
 				{
 					//int power = (rescale(joystick.joy2_y1) / 2);
 					lift(-10);
 				}
-				else
+
+				else if(joystick.joy2_y2 = 0)
 				{
-					lift(0);
+					lift(0)
 				}
+
 			}
 		//}
 
