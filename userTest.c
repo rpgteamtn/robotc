@@ -33,7 +33,7 @@ and go to the side.  */
 
 #define touch	 msensor_S4_2
 
-#define deadZone 10
+#define deadZone 20
 
 task main()
 {
@@ -129,22 +129,24 @@ task main()
 			{
 				if(joystick.joy2_y2 > 0)
 				{
-				//	lift(rescale(joystick.joy2_y2));
-				lift(10)
+				lift(rescale(joystick.joy2_y2));
 				}
 
 				else if (joystick.joy2_y2 < 0)
 				{
-					//int power = (rescale(joystick.joy2_y1) / 2);
-					lift(-10);
+					lift(rescale(joystick.joy2_y2));
 				}
 
-				else if(joystick.joy2_y2 = 0)
+				else
 				{
-					lift(0)
+					lift(0)	;
 				}
 
 			}
+			else
+				{
+					lift(0)	;
+				}
 		//}
 
 		/*else if (sensorValue(touch) == 1)
