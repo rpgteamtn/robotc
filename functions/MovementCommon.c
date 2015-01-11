@@ -1,3 +1,8 @@
+// Setup a global variable to control lift tasks
+bool	bTaskRunning = false;
+bool	bStop = false;
+int		iHeight = 0;
+
 float calculateDist(const int encoderValue)
 {
 	float dist = encoderValue / PPR * CIRCUMFERENCE;
@@ -33,20 +38,45 @@ void travelDistance(const float distance)//distance in
 	stopMotors();
 }
 
-void liftHeight(const int height)//height in clicks
+// Set the lift to a predetermined height
+task taskSetLiftHeight()
 {
-	int lrEnc = (nMotorEncoder[liftRight]);
+	bTaskRunning = true;
+	bStop = false;
 
-	while(lrEnc != height)
-	{
-		if(lrEnc > height)
-		{
+	int lrEnc = (nMotorEncoder[liftRight]);
+	int height = iHeight;
+
+	// Go until height is set or we need to stop
+	while((bStop == false) && lrEnc != height) {
+		if(lrEnc > height) {
 			lift(-30);
-		}
-		else if(lrEnc < height)
-		{
+		} else if(lrEnc < height) {
 			lift(30);
 		}
+		// Let main task run
+		wait1Msec(100);
+		lrEnc = (nMotorEncoder[liftRight]);
 	}
 	stopLiftMotors();
+	bTaskRunning = false;
+}
+
+void stopLiftTask()
+{
+	// Task already running - stop it
+	if(bTaskRunning) {
+		bStop = true;
+		do {
+			wait1Msec(100);
+		} while(bTaskRunning);
+	}
+}
+
+// set the lift to a specific height
+void liftHeight(const int height)//height in clicks
+{
+	stopLiftTask();
+	iHeight = height;
+	startTask(taskSetLiftHeight);
 }

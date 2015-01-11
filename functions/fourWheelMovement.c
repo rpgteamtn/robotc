@@ -11,6 +11,7 @@
 #define CIRCUMFERENCE PI * DIAMETER
 #define PPR 1120.0
 
+
 int getSingleEncoderValue()
 {
 	int value = (abs(nMotorEncoder[leftFront]) + abs(nMotorEncoder[rightFront]) / 2);
@@ -93,24 +94,27 @@ void lift(const int power)
 {
 	motor[liftRight] = power;
 	motor[liftLeft] = power;
+	delay(10);
 }
 
-/*void spin(const int power)
+void spin(const int power)
 {
 	motor[spinner] = power;
-}*/
+	delay(10);
+}
 
 void stopLiftMotors()
 {
 	motor[liftLeft] = 0;
 	motor[liftRight] = 0;
-	//motor[spinner] = 0;
+	delay(10);
 }
 
 void resetLiftEncoders()
 {
 	nMotorEncoder[liftRight] = 0;
 	nMotorEncoder[liftLeft] = 0;
+	delay(10);
 }
 
 int getLiftEncoder()

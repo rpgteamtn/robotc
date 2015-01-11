@@ -35,11 +35,10 @@ const tMUXSensor LTOUCH = msensor_S4_1;
 task main()
 {
 	disableDiagnosticsDisplay();
-	while(true)
-	{
-		getJoystickSettings(joystick);  // Update Buttons and Joysticks
 
-		wait1Msec(1);
+	while(true) {
+		getJoystickSettings(joystick);  // Update Buttons and Joysticks
+	delay(10);
 
 		/*--------------------------
 		controller one
@@ -63,31 +62,27 @@ task main()
 		R2 =
 		---------------------------*/
 
-		if(nMotorEncoder[liftRight] < GOVLIMIT)
-		{
+		// If lift is too high slower the driver motors
+		if(nMotorEncoder[liftRight] < GOVLIMIT) {
 			GOVERNOR = 1;
-		}
-		else
-		{
+		} else {
 		  GOVERNOR = 2;
 		}
-		if((abs(joystick.joy1_y1) >= deadZone) || (abs(joystick.joy1_y2) >= deadZone))
-		{
+
+		// Drive the robot from joystick 1
+		if((abs(joystick.joy1_y1) >= deadZone) || (abs(joystick.joy1_y2) >= deadZone)) {
 			setMotion(joystick.joy1_y1 / GOVERNOR, joystick.joy1_y2 / GOVERNOR);
 		}
-		else if(joystick.joy1_TopHat == 6)
-		{
+		else if(joystick.joy1_TopHat == 6) {
 			strafe(50);
 		}
-		else if(joystick.joy1_TopHat == 2)
-		{
+		else if(joystick.joy1_TopHat == 2){
 			strafe(-50);
 		}
-		else
-		{
+		else {
 			stopMotors();
 		}
-	}/*
+	/*
 	if(joy1Btn(JOY_BUTTON_A))
 	{
 		int iCRate = servoChangeRate[goalCapture];	// Save change rate
@@ -105,16 +100,15 @@ task main()
 		servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 	}
 */
-		if(joy1Btn(JOY_BUTTON_A))
-		{
+		// Capture/release a goal with the end servo
+		if(joy1Btn(JOY_BUTTON_A)) {
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
 			servo[goalCapture] = 0;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
-		else if(joy1Btn(JOY_BUTTON_B))
-		{
+		else if(joy1Btn(JOY_BUTTON_B)) {
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
 			servo[goalCapture] = 255;					// Set servo position
@@ -143,67 +137,40 @@ task main()
 	RB = small backward
 	RT = small forward
 	---------------------------*/
-	if(abs(joystick.joy2_y2) > deadZone)
-	{
-		if(TSreadState(LTOUCH)/* == 1*/)
-		{
-			if(joystick.joy2_y2 <= 0)
-			{
+		// Raise/lower the lift
+		if(abs(joystick.joy2_y2) > deadZone) {
+			stopLiftTask();
+
+			// if touchsensor hit and lift down stop
+			if((joystick.joy2_y2 <= 0) && TSreadState(LTOUCH)) { // /* == 1*/) {
 				lift(0);
 				nMotorEncoder[liftRight] = 0;
+			} else {
+					lift(rescale(joystick.joy2_y2));
 			}
-
-			else
-			{
-				lift(rescale(joystick.joy2_y2));
-			}
+		} else {
+			lift(0);
 		}
 
-		else
-		{
-			lift(rescale(joystick.joy2_y2));
+		// Set the lift to preset heights
+		if(joy2Btn(JOY_BUTTON_A)) {
+			liftHeight(35);
+		} else if(joy2Btn(JOY_BUTTON_B)) {
+			liftHeight(65);
+		}	else if(joy2Btn(JOY_BUTTON_Y)) {
+			liftHeight(95);
+		} else if(joy2Btn(JOY_BUTTON_X)) {
+			liftHeight(115);
+		} else if(joy2Btn(JOY_BUTTON_RT)) {
+			liftHeight(0);
+			nMotorEncoder[liftRight] = 0;
+		}
+
+		// Run the spinner to pick up balls
+		if((abs(joystick.joy2_y1)) >= deadZone) {
+			spin(rescale(joystick.joy2_y1));
+		} else {
+			spin(0);
 		}
 	}
-
-	else
-	{
-		lift(0)
-	}
-
-	if(joy2Btn(JOY_BUTTON_A))
-	{
-		liftHeight(35);
-	}
-
-	else if(joy2btn(JOY_BUTTON_B))
-	{
-		liftHeight(65);
-	}
-
-	else if(joy2btn(JOY_BUTTON_Y))
-	{
-		liftHeight(95);
-	}
-
-	else if(joy2btn(JOY_BUTTON_X))
-	{
-		liftHeight(115);
-	}
-
-	else if(joy2btn(JOY_BUTTON_RT))
-	{
-		liftHeight(0);
-		nMotorEncoder[liftRight] = 0;
-	}
-
-	/*	if((abs(joystick.joy2_y1) >= deadZone)
-	{
-	spin(rescale(joystick.joy2_y1));
-	}
-
-	else
-	{
-	spin(0);
-	}*/
-
 }
