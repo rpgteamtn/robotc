@@ -95,10 +95,10 @@ void lift(const int power)
 	motor[liftLeft] = power;
 }
 
-/*void spin(const int power)
+void spin(const int power)
 {
 	motor[spinner] = power;
-}*/
+}
 
 void stopLiftMotors()
 {
