@@ -87,7 +87,7 @@ task main()
 		{
 			stopMotors();
 		}
-	}
+	}/*
 	if(joy1Btn(JOY_BUTTON_A))
 	{
 		int iCRate = servoChangeRate[goalCapture];	// Save change rate
@@ -104,7 +104,23 @@ task main()
 		wait1Msec(20);
 		servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 	}
-
+*/
+		if(joy1Btn(JOY_BUTTON_A))
+		{
+			int iCRate = servoChangeRate[goalCapture];	// Save change rate
+			servoChangeRate[goalCapture] = 0; 					// Max Speed
+			servo[goalCapture] = 0;					// Set servo position
+			wait1Msec(20);
+			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
+		}
+		else if(joy1Btn(JOY_BUTTON_B))
+		{
+			int iCRate = servoChangeRate[goalCapture];	// Save change rate
+			servoChangeRate[goalCapture] = 0; 					// Max Speed
+			servo[goalCapture] = 255;					// Set servo position
+			wait1Msec(20);
+			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
+		}
 
 	/*--------------------------
 	controller two
@@ -131,16 +147,16 @@ task main()
 	{
 		if(TSreadState(LTOUCH)/* == 1*/)
 		{
-			if(joystick.joy2_y2 <= (deadZone * -1))
+			if(joystick.joy2_y2 <= 0)
 			{
 				lift(0);
+				nMotorEncoder[liftRight] = 0;
 			}
 
 			else
 			{
 				lift(rescale(joystick.joy2_y2));
 			}
-
 		}
 
 		else
