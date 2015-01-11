@@ -16,6 +16,9 @@
 #define touch 	 msensor_S4_2
 #define sonar    msensor_S4_3
 
+#define GOVLIMIT 3000
+float GOVERNOR
+
 #include "IRsensor.c"
 #include "fourWheelMovement.c"
 #include "gyroSensor.c"
@@ -60,10 +63,17 @@ task main()
 		R2 =
 		---------------------------*/
 
-
+		if(nMotorEncoder[liftRight] < GOVLIMIT)
+		{
+			GOVERNOR = 1;
+		}
+		else
+		{
+		  GOVERNOR = 2;
+		}
 		if((abs(joystick.joy1_y1) >= deadZone) || (abs(joystick.joy1_y2) >= deadZone))
 		{
-			setMotion(joystick.joy1_y1, joystick.joy1_y2);
+			setMotion(joystick.joy1_y1 / GOVERNOR, joystick.joy1_y2 / GOVERNOR);
 		}
 		else if(joystick.joy1_TopHat == 6)
 		{
@@ -77,71 +87,72 @@ task main()
 		{
 			stopMotors();
 		}
-		if(joy1Btn(JOY_BUTTON_A))
-		{
-			int iCRate = servoChangeRate[goalCapture];	// Save change rate
-			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 105;					// Set servo position
-			wait1Msec(20);
-			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
-		}
-		else if(joy1Btn(JOY_BUTTON_B))
-		{
-			int iCRate = servoChangeRate[goalCapture];	// Save change rate
-			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 200;					// Set servo position
-			wait1Msec(20);
-			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
-		}
+	}
+	if(joy1Btn(JOY_BUTTON_A))
+	{
+		int iCRate = servoChangeRate[goalCapture];	// Save change rate
+		servoChangeRate[goalCapture] = 0; 					// Max Speed
+		servo[goalCapture] = 105;					// Set servo position
+		wait1Msec(20);
+		servoChangeRate[goalCapture] = iCRate;			// Reset the servo
+	}
+	else if(joy1Btn(JOY_BUTTON_B))
+	{
+		int iCRate = servoChangeRate[goalCapture];	// Save change rate
+		servoChangeRate[goalCapture] = 0; 					// Max Speed
+		servo[goalCapture] = 200;					// Set servo position
+		wait1Msec(20);
+		servoChangeRate[goalCapture] = iCRate;			// Reset the servo
+	}
 
 
-		/*--------------------------
-		controller two
-		-------------------------*/
-		/*-------------------------
-		maping
-		---------------------------
-		up =
-		down =
-		left =
-		right =
-		joystick left =
-		joystick right =
-		A =
-		B =
-		X =
-		Y =
-		LB = big backward
-		LT = big forward
-		RB = small backward
-		RT = small forward
-		---------------------------*/
-		if(abs(joystick.joy2_y2) > deadZone)
+	/*--------------------------
+	controller two
+	-------------------------*/
+	/*-------------------------
+	maping
+	---------------------------
+	up =
+	down =
+	left =
+	right =
+	joystick left =
+	joystick right =
+	A =
+	B =
+	X =
+	Y =
+	LB = big backward
+	LT = big forward
+	RB = small backward
+	RT = small forward
+	---------------------------*/
+	if(abs(joystick.joy2_y2) > deadZone)
+	{
+		if(TSreadState(LTOUCH)/* == 1*/)
 		{
-			if(TSreadState(LTOUCH)/* == 1*/)
+			if(joystick.joy2_y2 <= (deadZone * -1))
 			{
-				if(joystick.joy2_y2 <= (deadZone * -1))
-				{
-					lift(0);
-				}
-
-				else
-				{
-					lift(rescale(joystick.joy2_y2));
-				}
-
+				lift(0);
 			}
 
 			else
 			{
 				lift(rescale(joystick.joy2_y2));
 			}
+
 		}
 
 		else
 		{
-			lift(0)
+			lift(rescale(joystick.joy2_y2));
 		}
+	}
+
+	else
+	{
+		lift(0)
+	}
 
 	if(joy2Btn(JOY_BUTTON_A))
 	{
@@ -169,14 +180,14 @@ task main()
 		nMotorEncoder[liftRight] = 0;
 	}
 
-		/*	if((abs(joystick.joy2_y1) >= deadZone)
-		{
-		spin(rescale(joystick.joy2_y1));
-		}
-
-		else
-		{
-		spin(0);
-		}*/
+	/*	if((abs(joystick.joy2_y1) >= deadZone)
+	{
+	spin(rescale(joystick.joy2_y1));
 	}
+
+	else
+	{
+	spin(0);
+	}*/
+
 }
