@@ -16,6 +16,8 @@
 #define touch 	 msensor_S4_2
 #define sonar    msensor_S4_3
 
+#define CATCHUP 255
+#define CATCHDOWN 0
 #define GOVLIMIT 3000
 float GOVERNOR
 
@@ -105,14 +107,14 @@ task main()
 		{
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 0;					// Set servo position
+			servo[goalCapture] = CATCHDOWN;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
 		else if(joy1Btn(JOY_BUTTON_B)) {
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = 255;					// Set servo position
+			servo[goalCapture] = CATCHUP;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
@@ -143,7 +145,7 @@ task main()
 			stopLiftTask();
 
 			// if touchsensor hit and lift down stop
-			if((joystick.joy2_y2 <= 0) && TSreadState(LTOUCH)) { // /* == 1*/) {
+			if((joystick.joy2_y2 <= 0) && TSreadState(LTOUCH)) {
 				lift(0);
 				nMotorEncoder[liftRight] = 0;
 			} else {
