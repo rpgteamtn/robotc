@@ -16,7 +16,7 @@
 #include "MovementCommon.c";
 #include "gyroSensor.c";
 
-typedef enum {eshort, emid, etall} eTube;
+typedef enum {eshort, emid, etall, etallest} eTube;
 
 void captureTube()
 {
@@ -68,20 +68,20 @@ releaseTube();
 
 void chooseTube(eTube Tube)
 {
-		if(tube == eshort)
+		if(Tube == eshort)
 		{
 			gyroTurn(50, 0, dRight);
 			travelDistance(1);
 			captureTube();
 		}
-		else if(tube == emid)
+		else if(Tube == emid)
 		{
 			gyroTurn(50, 90, dRight);
 			travelDistance(1);
 			captureTube();
 		}
 
-		else if(tube == etall)
+		else if(Tube == etall)
 		{
 			gyroTurn(50, 45, dRight);
 			travelDistance(1);
@@ -97,23 +97,22 @@ void getTube(eTube tube, int kickstandP)
 {
 	if(kickstandP == 1)
 	{
-		strafe();
-		wait1Msec();
-		travelDistance();
-		rightTurn();
-		gyroTurn(90);
-		travelDistance(-);
+		strafe(1/*not real*/);
+		wait1Msec(1/*not real*/);
+		travelDistance(1/*not real*/);
+		gyroTurn(50,90,dRight);
+		travelDistance(1/*not real*/);
 		chooseTube(tube);
 
 	}
 	else if(kickstandP == 2)
 	{
-		chooseTube(tube)
+		chooseTube(tube);
 	}
 
 	else if(kickstandP == 3)
 	{
-		chooseTube(tube)
+		chooseTube(tube);
 	}
 
 	else
@@ -122,13 +121,13 @@ void getTube(eTube tube, int kickstandP)
 	}
 }
 
-void autoTubes();
+void autoTubes(eTube TUBE)
 {
-	getTube();
-	PlaceTube();
+	getTube(TUBE,1/*not real*/);
+	placeTube(1/*not real*/);
 }
 
-task main()
+/*task main()
 {
-	autoTubes();
-}
+	autoTubes(emid);
+}*/

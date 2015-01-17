@@ -66,9 +66,42 @@ int questionInt(const string squestionText, const string sleftText, const string
 bool questionBool(const string squestionText, const string sleftText, const string srightText)
 {
 	bool bvalue = false;
-	displayCenteredTextLine(1, squestionText);//Displays second question
+	displayCenteredTextLine(1, squestionText);//Displays question
 	displayCenteredTextLine(4, sleftText); // Displays instructions
 	displayCenteredTextLine(3, srightText); // Displays instructions
+
+	repeatUntil(nNxtButtonPressed == nxtOrange)
+	{
+
+		while(nNxtButtonPressed == noButton)
+		{	}
+
+		if(nNxtButtonPressed == nxtRight)
+		{
+			bvalue = true;
+
+		}
+		if(nNxtButtonPressed == nxtLeft)
+		{
+			bvalue = false;
+		}
+		if(nxtOrange == nNxtButtonPressed)
+		{
+			break;
+		}
+		displayCenteredTextLine(6, bvalue?"true":"false");
+		repeatUntil(nNxtButtonPressed == noButton)
+		{}
+	}
+	return bvalue;
+}
+
+bool lastQuestion()
+{
+	bool bvalue = false;
+	displayCenteredTextLine(0, "Are these values correct?");//Displays question
+	displayCenteredTextLine(1, "right = yes"); // Displays instructions
+	displayCenteredTextLine(2, "left = no"); // Displays instructions
 
 	repeatUntil(nNxtButtonPressed == nxtOrange)
 	{

@@ -144,7 +144,7 @@ void autoKickstand()
 	}
 }
 
-task main()
+/*task main()
 {
 	autoKickstand();
-}
+}*/
