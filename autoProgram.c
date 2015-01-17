@@ -72,7 +72,6 @@ task main()
 
 
 
-repeatUntil()
 repeatUntil(((nNxtButtonPressed == nxtGrey)||(nNxtButtonPressed == nxtRight)||(nNxtButtonPressed == nxtLeft)||(nNxtButtonPressed == nxtOrange)))
 {
 		displayCenteredTextLine(3, "your values are:");
