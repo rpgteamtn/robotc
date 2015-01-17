@@ -73,14 +73,15 @@ task main()
 
 
 repeatUntil()
+repeatUntil(((nNxtButtonPressed == nxtGrey)||(nNxtButtonPressed == nxtRight)||(nNxtButtonPressed == nxtLeft)||(nNxtButtonPressed == nxtOrange)))
 {
 		displayCenteredTextLine(3, "your values are:");
-		displayCenteredTextLine(4, tubeDump);
+		displayCenteredTextLine(4, txttubeDump);
 		displayCenteredTextLine(5,  txtDelay);
 		displayCenteredTextLine(6,  txtLocation);
 		displayCenteredTextLine(7, txtKickstand);
 
-		wait1Msec(3000)
+		wait1Msec(3000);
 
 		eraseDisplay();
 
