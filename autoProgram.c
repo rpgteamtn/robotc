@@ -81,7 +81,6 @@ repeatUntil(((nNxtButtonPressed == nxtGrey)||(nNxtButtonPressed == nxtRight)||(n
 		displayCenteredTextLine(7, txtKickstand);
 
 		wait1Msec(3000);
-
 		eraseDisplay();
 
 		displayCenteredTextLine(0, "Are these values correct?");//Displays question
@@ -89,6 +88,9 @@ repeatUntil(((nNxtButtonPressed == nxtGrey)||(nNxtButtonPressed == nxtRight)||(n
 		displayCenteredTextLine(2, "left = no"); // Displays instructions
 		displayCenteredTextLine(4, txtCenter);//need new line
 		displayCenteredTextLine(5, txttubeDump);//need new line
+
+		wait1Msec(3000);
+		eraseDisplay();
 }
 		check = lastQuestion();
 		waitTillNoButton();
