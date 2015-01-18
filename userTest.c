@@ -2,7 +2,7 @@
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
 #pragma config(Sensor, S3,     gyro,           sensorSONAR)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
-#pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C2_2,     leftBack,      tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C3_1,     liftRight,     tmotorTetrix, openLoop, encoder)

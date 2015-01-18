@@ -16,7 +16,7 @@ float calculateDegrees(const float dist)
 }
 
 
-void travelDistance(const float distance)//distance in
+void travelDistance(const float distance, eWay direct)//distance in
 {
 	resetEncoders();
 
@@ -29,11 +29,20 @@ void travelDistance(const float distance)//distance in
 	displayCenteredTextLine(4, text);
 	wait1Msec(3000);
 	*/
-	while(distance > calculateDist(encoderValue))
+	while(distance > abs(calculateDist(encoderValue)))
 	{
-		backward(100);
-		encoderValue = getSingleEncoderValue();
-		wait1Msec(1);
+		if (direct == dForward)
+		{
+			forward(100);
+			encoderValue = getSingleEncoderValue();
+			wait1Msec(1);
+		}
+		else if (direct == dBackward)
+		{
+			backward(100);
+			encoderValue = getSingleEncoderValue();
+			wait1Msec(1);
+		}
 	}
 	stopMotors();
 }
@@ -51,7 +60,7 @@ task taskSetLiftHeight()
 	while((bStop == false) && lrEnc != height) {
 		if(lrEnc > height) {
 			lift(-30);
-		} else if(lrEnc < height) {
+			} else if(lrEnc < height) {
 			lift(30);
 		}
 		// Let main task run
