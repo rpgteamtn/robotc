@@ -1,6 +1,7 @@
 // start rpgCommon.c
 #include "JoystickDriver.c"
 typedef enum {dRight, dLeft } eDirection;
+typedef enum {dForward, dBackward} eWay;
 #define nxtOrange 3
 #define nxtLeft 2
 #define nxtRight 1

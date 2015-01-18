@@ -20,6 +20,7 @@
 #include "fourWheelMovement.c"
 #include "gyroSensor.c"
 #include "MovementCommon.c"
+#include "sonarSensor.c"
 
 //distances for finding the kickstand
 #define pointA 90
@@ -34,6 +35,8 @@
 #define distanceB1 230.0
 #define distanceB2 18.0
 #define distanceB3 13.0
+#define distanceD1 70
+#define distanceD2 70
 #define maxEncoder 5000
 
 
@@ -77,8 +80,6 @@ float findIR()
 	sprintf(text, "dist = %f", distance);
 	displayCenteredTextLine(7, text);
 
-	wait1Msec(5000);
-
 	return distance;
 }
 
@@ -87,10 +88,10 @@ void strategyA()//use if in position 1
 	string text;
 	sprintf(text, "Strategy A");
 	displayCenteredTextLine(1, text);
-	travelDistance(distanceA1);
+	travelDistance(distanceA1, dBackward);
 	stopMotors();
-	gyroTurn(30, 80, dLeft);
-	travelDistance(distanceA2);
+	gyroTurn(30, 80, dRight);
+	travelDistance(distanceA2, dForward);
 	stopMotors();
 }
 
@@ -99,8 +100,8 @@ void strategyB()//use if in position 2
 	string text;
 	sprintf(text, "Strategy B");
 	displayCenteredTextLine(1, text);
-	gyroTurn(30, 45, dLeft);
-	travelDistance(distanceB1);
+	gyroTurn(30, 45, dRight);
+	travelDistance(distanceB1, dForward);
 	stopMotors();
 }
 
@@ -116,10 +117,10 @@ void strategyC()//use if in position 3
 	string text;
 	sprintf(text, "Strategy C");
 	displayCenteredTextLine(1, text);
-	gyroTurn(30, 80, dLeft);
-	travelDistance(distanceA2);
-	gyroTurn(30, 80, dLeft);
-	travelDistance(distanceC1);
+	gyroTurn(30, 80, dRight);
+	travelDistance(distanceA2, dForward);
+	gyroTurn(30, 80, dRight);
+	travelDistance(distanceC1, dForward);
 	stopMotors();
 }
 
@@ -146,9 +147,21 @@ void autoKickstand()
 	{
 		strategyB();
 	}
+	wait1Msec(20);
+	travelDistance(distanceD1, dForward);
+	wait1Msec(20);
+	gyroTurn(30, 90, dLeft);
+	wait1Msec(20);
+	travelDistance(distanceD2, dForward);
+	wait1Msec(20);
+	gyroTurn(30, 90, dRight);
+	approach(50);
 }
 
 task main()
 {
-	autoKickstand();
+//	autoKickstand();
+motor[leftFront] = 100;
+wait1Msec(2000);
+stopMotors();
 }
