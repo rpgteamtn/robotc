@@ -15,31 +15,32 @@
 #pragma config(Servo,  srvo_S2_C1_1,    spinnerServo,         tServoStandard)
 #pragma config(Servo,  srvo_S2_C1_6,    goalCapture,          tServoStandard)
 
-int SPINNEROUT = 0;
-int SPINNERIN = 0;
+int SPINNEROUT = 145;
+int SPINNERIN = 35;
 
 void spinnerOut()
 {
-			int iCRate = servoChangeRate[goalCapture];	// Save change rate
-			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = SPINNEROUT;					// Set servo position
+			int iCRate = servoChangeRate[spinnerServo];	// Save change rate
+			servoChangeRate[spinnerServo] = 0; 					// Max Speed
+			servo[spinnerServo] = SPINNEROUT;					// Set servo position
 			wait1Msec(20);
-			servoChangeRate[goalCapture] = iCRate;
+			servoChangeRate[spinnerServo] = iCRate;
 }
 
 void spinnerIn()
 {
-			int iCRate = servoChangeRate[goalCapture];	// Save change rate
-			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = SPINNERIN;					// Set servo position
+			int iCRate = servoChangeRate[spinnerServo];	// Save change rate
+			servoChangeRate[spinnerServo] = 0; 					// Max Speed
+			servo[spinnerServo] = SPINNERIN;					// Set servo position
 			wait1Msec(20);
-			servoChangeRate[goalCapture] = iCRate;
+			servoChangeRate[spinnerServo] = iCRate;
 }
 
 
 task main()
 {
  spinnerOut();
- wait1Msec(1000);
+ wait1Msec(5000);
  spinnerIn();
+ wait1Msec(5000);
 }
