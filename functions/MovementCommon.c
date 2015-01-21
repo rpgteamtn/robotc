@@ -16,7 +16,7 @@ float calculateDegrees(const float dist)
 }
 
 
-void travelDistance(const float distance, eWay direct)//distance in
+void travelDistance(const float distance, eWay direct)//distance in cm
 {
 	resetEncoders();
 
@@ -33,13 +33,13 @@ void travelDistance(const float distance, eWay direct)//distance in
 	{
 		if (direct == dForward)
 		{
-			forward(100);
+			forward(50);
 			encoderValue = getSingleEncoderValue();
 			wait1Msec(1);
 		}
 		else if (direct == dBackward)
 		{
-			backward(100);
+			backward(50);
 			encoderValue = getSingleEncoderValue();
 			wait1Msec(1);
 		}

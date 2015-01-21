@@ -40,7 +40,7 @@ task main()
 
 	while(true) {
 		getJoystickSettings(joystick);  // Update Buttons and Joysticks
-	delay(10);
+  	wait1Msec(10);
 
 		/*--------------------------
 		controller one
@@ -75,35 +75,40 @@ task main()
 		if((abs(joystick.joy1_y1) >= deadZone) || (abs(joystick.joy1_y2) >= deadZone)) {
 			setMotion(joystick.joy1_y1 / GOVERNOR, joystick.joy1_y2 / GOVERNOR);
 		}
-		else if(joystick.joy1_TopHat == 6) {
+		/*else if(joystick.joy1_TopHat == 6) {
 			strafe(50);
 		}
 		else if(joystick.joy1_TopHat == 2){
 			strafe(-50);
+		}*/
+		else if(joy1Btn(JOY_BUTTON_LT)) {
+		  strafe(50);
 		}
-		else {
-			stopMotors();
+	  else if(joy1Btn(JOY_BUTTON_RT)) {
+	  	strafe(-50);
 		}
-		/*
-		if(joy1Btn(JOY_BUTTON_A))
+	  else {
+		  stopMotors();
+		}
+
+		if(joy1Btn(JOY_BUTTON_RB))
 		{
 		int iCRate = servoChangeRate[goalCapture];	// Save change rate
 		servoChangeRate[goalCapture] = 0; 					// Max Speed
-		servo[goalCapture] = 105;					// Set servo position
+		servo[goalCapture] = CATCHDOWN;					// Set servo position
 		wait1Msec(20);
 		servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
-		else if(joy1Btn(JOY_BUTTON_B))
+		else if(joy1Btn(JOY_BUTTON_LB))
 		{
 		int iCRate = servoChangeRate[goalCapture];	// Save change rate
 		servoChangeRate[goalCapture] = 0; 					// Max Speed
-		servo[goalCapture] = 200;					// Set servo position
+		servo[goalCapture] = CATCHUP;					// Set servo position
 		wait1Msec(20);
 		servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 	}
-*/
 
-		if(joy1Btn(JOY_BUTTON_A))
+		/*if(joy1Btn(JOY_BUTTON_A))
 		{
 			int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
@@ -117,7 +122,7 @@ task main()
 			servo[goalCapture] = CATCHUP;					// Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
-		}
+		}*/
 
 	/*--------------------------
 	controller two

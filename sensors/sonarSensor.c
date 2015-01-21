@@ -42,6 +42,37 @@ void approach(float distance)
 	stopMotors();
 }
 
+void align(float distance, eDirection direct)
+{
+	//int minimum = sensorValue[sonar];
+	while (sensorValue[sonar] > distance/* || sensorValue[sonar] > (minimum + 5)*/)//until the robot reaches its goal...
+	{
+		/*if the robot's current value is smaller
+		than it was a minute ago (it's still lined up),
+		move forward*/
+		if (direct == dLeft)
+		{
+			strafe(-50);
+		}
+		/*if the robot's value is larger than it was a minute ago, it's no longer
+		lined up with the goal.  So, turn right until the robot is lined up again*/
+		else if (direct == dRight)
+		{
+			strafe(50);
+		}
+		/*I don't know what happened, so stop*/
+		else
+		{
+			stopMotors();
+		}
+		/*reset point*/
+		/*if (sensorValue[sonar] < minimum)
+		{
+			minimum = sensorValue[sonar];
+		}*/
+	}
+	stopMotors();
+}
 
 /*This function just has the robot turn right until
 it finds an object within the goal distance*/
