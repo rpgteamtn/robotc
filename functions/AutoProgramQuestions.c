@@ -23,7 +23,7 @@ int questionInt(const string squestionText, const string sleftText, const string
 
 		if(nNxtButtonPressed == nxtRight)
 		{
-			if(ivalue < max)
+			if(ivalue < MAX)
 			{
 				ivalue++;
 			}
@@ -34,7 +34,7 @@ int questionInt(const string squestionText, const string sleftText, const string
 		}
 		if(nNxtButtonPressed == nxtLeft)
 		{
-			if(ivalue > min)
+			if(ivalue > MIN)
 			{
 				ivalue--;
 			}
