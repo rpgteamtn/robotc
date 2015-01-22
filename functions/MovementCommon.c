@@ -71,6 +71,7 @@ task taskSetLiftHeight()
 	bTaskRunning = false;
 }
 
+// Stop the lift task from running
 void stopLiftTask()
 {
 	// Task already running - stop it

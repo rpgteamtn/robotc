@@ -94,27 +94,27 @@ void lift(const int power)
 {
 	motor[liftRight] = power;
 	motor[liftLeft] = power;
-	delay(10);
+	wait1Msec(10);
 }
 
 void spin(const int power)
 {
 	motor[spinner] = power;
-	delay(10);
+	wait1Msec(10);
 }
 
 void stopLiftMotors()
 {
 	motor[liftLeft] = 0;
 	motor[liftRight] = 0;
-	delay(10);
+	wait1Msec(10);
 }
 
 void resetLiftEncoders()
 {
 	nMotorEncoder[liftRight] = 0;
 	nMotorEncoder[liftLeft] = 0;
-	delay(10);
+	wait1Msec(10);
 }
 
 int getLiftEncoder()
