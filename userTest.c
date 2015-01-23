@@ -82,10 +82,10 @@ task main()
 			strafe(-50);
 		}*/
 		else if(joy1Btn(JOY_BUTTON_LT)) {
-		  strafe(50);
+		  strafe(-50);
 		}
 	  else if(joy1Btn(JOY_BUTTON_RT)) {
-	  	strafe(-50);
+	  	strafe(50);
 		}
 	  else {
 		  stopMotors();
@@ -161,7 +161,7 @@ task main()
 		}
 
 		// Set the lift to preset heights
-		if(joy2Btn(JOY_BUTTON_A)) {
+		/*if(joy2Btn(JOY_BUTTON_A)) {
 			liftHeight(35);
 		} else if(joy2Btn(JOY_BUTTON_B)) {
 			liftHeight(65);
@@ -172,7 +172,7 @@ task main()
 		} else if(joy2Btn(JOY_BUTTON_RT)) {
 			liftHeight(0);
 			nMotorEncoder[liftRight] = 0;
-		}
+		}*/
 
 		// Run the spinner to pick up balls
 		if((abs(joystick.joy2_y1)) >= deadZone) {

@@ -15,8 +15,8 @@ float calculateDegrees(const float dist)
 	return degrees;
 }
 
-
-void travelDistance(const float distance, eWay direct)//distance in cm
+//distance in cm
+void travelDistance(const float distance, const eWay direct)
 {
 	resetEncoders();
 

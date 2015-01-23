@@ -8,7 +8,7 @@ void main()
 #enddef*/
 #include "rpgCommon.c"
 
-int questionInt(const string squestionText, const string sleftText, const string srightText, const int min, const int max)
+int questionInt(const string squestionText, const string sleftText, const string srightText, const int MIN, const int MAX)
 {
 	int ivalue = 0;
 	string svalue;

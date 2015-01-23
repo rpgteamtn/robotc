@@ -87,7 +87,7 @@ void setMotion(const int y1, const int y2)
 void strafe(const int forward)
 {
 	int reverse = -1 * forward;
-	setMotors(reverse, forward, forward, reverse);
+	setMotors(forward, reverse, reverse, forward);
 }
 
 void lift(const int power)
