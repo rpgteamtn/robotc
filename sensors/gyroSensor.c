@@ -4,7 +4,7 @@
 #define GYRO_SENSOR true
 
 #include "hitechnic-gyro.h"
-#include "rpgCommon.c"
+//#include "rpgCommon.c"
 
 #define MEASUREMENT_MS 25 //Number of milliseconds
 
