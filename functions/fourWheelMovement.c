@@ -1,3 +1,5 @@
+//#include "rpgCommon.c"
+
 #define DIAMETER 10.0 //diameter of the wheel in centimeters
 #define CIRCUMFERENCE PI * DIAMETER //wheel circumference
 #define PPR 1120.0 //clicks per rotation in the drive motor encoders
@@ -78,4 +80,26 @@ void strafe(const int forward) //Strafe (+ parameter goes right, - parameter goe
 {
 	int reverse = -1 * forward; //Define "reverse" as the opposite of "forward"
 	setMotors(forward, reverse, reverse, forward); //Set drive motors so that robot strafes
+}
+
+int cmToClicksStrafe(const int cm)
+{
+ 	return cm*40;
+}
+
+void strafeDist(int dist, const int power, const eDirection direct)
+{
+	dist = cmToClicksStrafe(dist);
+	while(dist < abs(nMotorEncoder[rightBack]))
+	{
+		if(direct == dRight)
+		{
+			setMotors(power, -power, -power, power);
+		}
+
+		if(direct == dLeft)
+		{
+			setMotors(-power, power, power, -power);
+		}
+	}
 }
