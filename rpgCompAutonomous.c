@@ -18,12 +18,14 @@
 #define sonar    msensor_S4_3
 
 #include "IRsensor.c" //IR functions
-#include "fourWheelMovement.c" //Big robot-specific functions
+#include "fourWheelMovement.c" //Big robot movement functions
+#include "liftFunctions.c" //Lift and spinner functions
 #include "gyroSensor.c" //gyro functions
 #include "MovementCommon.c" //Math or calculation functions
 #include "sonarSensor.c" //Sonar functions
 #include "autoKickstand.c" //Strategies and functions for kickstand
 #include "autoProgramQuestions.c" //Question functions
+
 
 void initializeRobot() //Initialize function (empty)
 {

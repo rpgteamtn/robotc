@@ -18,7 +18,8 @@
 #define sonar    msensor_S4_3
 
 #include "IRsensor.c" //IR functions
-#include "fourWheelMovement.c" //Big robot-specific functions
+#include "fourWheelMovement.c" //Big robot movement functions
+#include "liftFunctions.c" //Lift and spinner functions
 #include "gyroSensor.c" //Gyro functions
 #include "MovementCommon.c" //Math functions or calculations
 #include "lego-touch.h" //Touch sensor functions
