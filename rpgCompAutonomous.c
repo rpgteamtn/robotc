@@ -25,31 +25,43 @@
 #include "autoKickstand.c" //Strategies and functions for kickstand
 #include "autoProgramQuestions.c" //Question functions
 
+void initializeRobot() //Initialize function (empty)
+{
+	return;
+}
+
 task main()
 {
-	wait1Msec(1000);
-	travelDistance(30, dForward);
-	wait1Msec(1000);
-	gyroTurn(30, 90, dLeft);
-	wait1Msec(1000);
-	travelDistance(30, dForward);
-	gyroTurn(30, 90, dRight);
-	wait1Msec(1000);
-	travelDistance(30, dBackward);
-	wait1Msec(1000);
-	gyroTurn(30, 90, dRight);
-	wait1Msec(1000);
-	travelDistance(30, dForward);
-	wait1Msec(1000);
-	gyroTurn(30, 90, dLeft);
-	wait1Msec(1000);
-	gyroTurn(30, 360, dRight);
-	wait1Msec(1000);
-	strafe(-100);
-	wait1Msec(750);
-	stopMotors();
-	wait1Msec(1000);
-	strafe(100);
-	wait1Msec(750);
-	stopMotors();
+	setBluetoothOff(); //Turn bluetooth off (no interference)
+	disableDiagnosticsDisplay(); //Clear screen
+
+	int iDelay = questionInt("Delay?", "left = -1 sec", "right = +1 sec", 0, 30);
+	//Run questionInt function to ask about a delay before running autonomous
+	wait1Msec(500);
+	int delayMsec = iDelay * 1000;
+	//Convert answer from questionInt to milliseconds
+	bool answer = questionBool("ramp or ground?", " ramp=right(t)", "ground=left(f)");
+	//Run questionBool to ask about starting position (ramp or ground)
+
+	initializeRobot(); //Run empty initialize function
+
+	waitForStart(); // Wait for the beginning of autonomous phase.
+
+	bool running = true; //Set bool "running" to true
+
+	wait1Msec(delayMsec); //Wait however long user said to before starting
+
+	while (running) //While "running" is true, infinite loop
+	{
+		if (answer == true) //If user said false (ramp) in questionBool
+		{
+			autoRamp(); //Run autoRamp function
+			running = false; //Set "running" to false (break out of infinite loop)
+		}
+		else //If user said true (ground) in questionBool
+		{
+			autoKickstand(); //Run autoKickstand (from ground)
+			running = false; //Set "running" to false (break out of infinite loop)
+		}
+	}
 }
