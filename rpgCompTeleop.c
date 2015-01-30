@@ -1,8 +1,11 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
+#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
 #pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_2,     leftBack,      tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C3_1,     liftRight,     tmotorTetrix, openLoop)
@@ -46,6 +49,9 @@ task main()
 	initializeRobot(); //Initialize
 
 	waitForStart();   // wait for start of tele-op phase
+
+	string state = "catch";
+	string goal = "release";
 
 	while (true) //Infinite loop
 	{getJoystickSettings(joystick);  // Update Buttons and Joysticks
@@ -96,20 +102,28 @@ task main()
 		}
 
 		if(joy1Btn(JOY_BUTTON_RB))
-		{
-			int iCRate = servoChangeRate[goalCapture];	// Save change rate
-			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = CATCHDOWN;					    // Set servo position
-			wait1Msec(20);
-			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
+		{ if(state == "catch")
+			{ goalRelease();
+				state = "release";
+			}	else if(state == "release")
+			{	goalCatch();
+				state = "catch";
+			}
+			while(joy1Btn(JOY_BUTTON_RB))
+			{
+			}
 		}
 		else if(joy1Btn(JOY_BUTTON_LB))
-		{
-			int iCRate = servoChangeRate[goalCapture];	// Save change rate
-			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = CATCHUP;					      // Set servo position
-			wait1Msec(20);
-			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
+		{ if(state == "catch")
+			{ goalRelease();
+				state = "release";
+			}	else if(state == "release")
+			{	goalCatch();
+				state = "catch";
+			}
+			while(joy1Btn(JOY_BUTTON_LB))
+			{
+			}
 		}
 
 		/*--------------------------
@@ -128,8 +142,8 @@ task main()
 		B = lift to 60cm
 		X = lift to 120cm (Center goal)
 		Y = lift to 90cm
-		LB =
-		LT =
+		LB = bucket down
+		LT = bucket up
 		RB =
 		RT = lift down
 		---------------------------*/
@@ -142,7 +156,7 @@ task main()
 				nMotorEncoder[liftRight] = 0; //The lift is down, so set lift encoder to 0
 				} else {//If touch is NOT active or driver says go up
 				lift(rescale(joystick.joy2_y2)); //Raise lift at a rescaled value of the joystick
-				}
+			}
 			} else { //No controls?
 			lift(0); //Stop lift motors.
 		}
@@ -170,6 +184,19 @@ task main()
 			spin(rescale(joystick.joy2_y1)); //Run the spinner at the rescaled value of joystick
 			} else {
 			spin(0); //Joystick not active?  Stop spinner.
+		}
+
+		if(joy2Btn(JOY_BUTTON_LB))
+		{ if(state == "catch")
+			{ tipRelease();
+				state = "release";
+			}	else if(state == "release")
+			{	tipCatch();
+				state = "catch";
+			}
+			while(joy2Btn(JOY_BUTTON_LB))
+			{
+			}
 		}
 	}
 }
