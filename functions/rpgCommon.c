@@ -1,5 +1,5 @@
 // start rpgCommon.c
-//#include "JoystickDriver.c"
+#include "JoystickDriver.c"
 
 typedef enum typeDirection {dRight, dLeft } eDirection;
 typedef enum typeWay {dForward, dBackward} eWay;

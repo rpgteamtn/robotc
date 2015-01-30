@@ -36,7 +36,6 @@ void spinnerIn()
 			servoChangeRate[spinnerServo] = iCRate;
 }
 
-
 task main()
 {
  spinnerOut();

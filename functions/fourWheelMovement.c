@@ -89,17 +89,22 @@ int cmToClicksStrafe(const int cm)
 
 void strafeDist(int dist, const int power, const eDirection direct)
 {
+	resetEncoders();
+
+	int encoderValue = getSingleEncoderValue();
+
 	dist = cmToClicksStrafe(dist);
-	while(dist < abs(nMotorEncoder[rightBack]))
+	while(dist > abs(nMotorEncoder[rightFront]))
 	{
 		if(direct == dRight)
 		{
-			setMotors(power, -power, -power, power);
+			strafe(power);
 		}
 
 		if(direct == dLeft)
 		{
-			setMotors(-power, power, power, -power);
+			strafe(-power);
 		}
 	}
+	stopMotors();
 }

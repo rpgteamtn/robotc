@@ -21,14 +21,7 @@ void travelDistance(const float distance, const eWay direct)
 	resetEncoders();
 
 	int encoderValue = getSingleEncoderValue();
-	/*
-	string text;
-	sprintf(text, "degrees = %f", degreesToTravel);
-	displayCenteredTextLine(3, text);
-	sprintf(text, "encoder = %i", encoderValue);
-	displayCenteredTextLine(4, text);
-	wait1Msec(3000);
-	*/
+
 	while(distance > abs(calculateDist(encoderValue)))
 	{
 		if (direct == dForward)
