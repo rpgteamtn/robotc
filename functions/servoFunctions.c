@@ -1,6 +1,6 @@
-#define COLLECT 160
-#define DUMP 115
-#define CATCHUP 180 //Degree measure for when goal capture is released
+#define COLLECT 185
+#define DUMP 165
+#define CATCHUP 150 //Degree measure for when goal capture is released
 #define CATCHDOWN 0 //Degree measure for when goal capture is down
 #define SPINNEROUT 145
 #define SPINNERIN 35

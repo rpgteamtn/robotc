@@ -4,12 +4,9 @@
 #define CIRCUMFERENCE PI * DIAMETER //wheel circumference
 #define PPR 1120.0 //clicks per rotation in the drive motor encoders
 
-int SPINNEROUT = 165; //Servo degree measure when spinner is down
-int SPINNERIN = 35;   //Servo degree measure when spinner is up
-
 int getSingleEncoderValue() //Get the average as a more reliable value
 {
-	int value = abs(nMotorEncoder[rightFront]);
+	int value = abs(nMotorEncoder[leftBack]);
 	return value;
 }
 
@@ -79,7 +76,7 @@ void setMotion(const int y1, const int y2) //Drive according to joystick values
 void strafe(const int forward) //Strafe (+ parameter goes right, - parameter goes left)
 {
 	int reverse = -1 * forward; //Define "reverse" as the opposite of "forward"
-	setMotors(forward, reverse, reverse, forward); //Set drive motors so that robot strafes
+	setMotors(reverse, forward, reverse, forward); //Set drive motors so that robot strafes
 }
 
 int cmToClicksStrafe(const int cm)
@@ -94,7 +91,7 @@ void strafeDist(int dist, const int power, const eDirection direct)
 	int encoderValue = getSingleEncoderValue();
 
 	dist = cmToClicksStrafe(dist);
-	while(dist > abs(nMotorEncoder[rightFront]))
+	while(dist > abs(nMotorEncoder[leftBack]))
 	{
 		if(direct == dRight)
 		{

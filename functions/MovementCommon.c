@@ -46,19 +46,19 @@ task taskSetLiftHeight()
 	bTaskRunning = true;
 	bStop = false;
 
-	int lrEnc = (nMotorEncoder[liftRight]);
+	int liftEnc = (nMotorEncoder[liftMotor]);
 	int height = iHeight;
 
 	// Go until height is set or we need to stop
-	while((bStop == false) && lrEnc != height) {
-		if(lrEnc > height) {
+	while((bStop == false) && liftEnc != height) {
+		if(liftEnc > height) {
 			lift(-30);
-			} else if(lrEnc < height) {
+			} else if(liftEnc < height) {
 			lift(30);
 		}
 		// Let main task run
 		wait1Msec(100);
-		lrEnc = (nMotorEncoder[liftRight]);
+		liftEnc = (nMotorEncoder[liftMotor]);
 	}
 	stopLiftMotors();
 	bTaskRunning = false;

@@ -1,13 +1,11 @@
-#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
+#pragma config(Hubs,  S1, HTMotor,  HTMotor,  none,     none)
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
-#pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, PIDControl, encoder)
-#pragma config(Motor,  mtr_S1_C2_2,     leftBack,      tmotorTetrix, PIDControl, encoder)
-#pragma config(Motor,  mtr_S1_C3_1,     liftMotor,     tmotorTetrix, PIDControl, encoder)
+#pragma config(Motor,  mtr_S1_C1_1,     leftFront,     tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     leftBack,      tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_1,     liftMotor,     tmotorTetrix, PIDControl, encoder)
+#pragma config(Motor,  mtr_S1_C2_2,     spinner,       tmotorTetrix, PIDControl, encoder)
 #pragma config(Motor,  mtr_S2_C2_1,     rightFront,    tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Motor,  mtr_S2_C2_2,     rightBack,     tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Servo,  srvo_S2_C1_1,    spinnerServo,         tServoStandard)
@@ -29,15 +27,15 @@
 
 #define GOVLIMIT 3000 //Encoder value when lift is too high to drive fast
 #define deadZone 20 //If joystick value is within the absolute value of this, ignore
-float GOVERNOR; //The denominator for the drive motors' power
+float GOVERNOR = 1.0; //The denominator for the drive motors' power
 
-const tMUXSensor LTOUCH = msensor_S4_1; //Defining touch sensor
+//const tMUXSensor LTOUCH = msensor_S4_1; //Defining touch sensor
 
 void initializeRobot() //Initialize function for teleop
 {
-	spinnerOut(); //Let the spinner lower
+	spinnerRelease(); //Let the spinner lower
 	goalRelease(); //pull the goal capture servo up
-	return;
+	resetLiftEncoders();
 }
 
 task main()
@@ -52,8 +50,11 @@ task main()
 	string goal = "release";
 
 	while (true) //Infinite loop
-	{getJoystickSettings(joystick);  // Update Buttons and Joysticks
+	{
+		getJoystickSettings(joystick);  // Update Buttons and Joysticks
 		wait1Msec(10); //Give it a moment to rest
+		int liftEnc = nMotorEncoder[liftMotor];
+		displayCenteredTextLine(2, "liftEnc = %i", liftEnc);
 
 		/*--------------------------
 		controller one
@@ -78,15 +79,15 @@ task main()
 		---------------------------*/
 
 		// If lift is too high slow the driver motors
-		if(nMotorEncoder[liftRight] < GOVLIMIT) {
-			GOVERNOR = 1; // Automatically set GOVERNOR as 1 (if lift is down)
-			} else {
-			GOVERNOR = 2; //Otherwise, set governor as 2
-		}
+		/*if(nMotorEncoder[liftMotor] < GOVLIMIT) {
+		GOVERNOR = 1; // Automatically set GOVERNOR as 1 (if lift is down)
+		} else {
+		GOVERNOR = 2; //Otherwise, set governor as 2
+		}*/
 
 		// Drive the robot from joystick 1
-		if((abs(joystick.joy1_y1) >= deadZone) || (abs(joystick.joy1_y2) >= deadZone)) /*If either joystick is active*/{
-			setMotion(joystick.joy1_y1 / GOVERNOR, joystick.joy1_y2 / GOVERNOR);
+		if((abs(joystick.joy1_y1) >= deadZone) || (abs(joystick.joy1_y2) >= deadZone)) /*If either joystick is active*/
+		{setMotion(joystick.joy1_y1 / GOVERNOR, joystick.joy1_y2 / GOVERNOR);
 			//The left motors are set at a rescaled value of the left joystick's value, and the same for right
 		} //If lift is down, GOVERNOR is 1 and doesn't affect movement.  If not, speed is cut in half
 		else if(joy1Btn(JOY_BUTTON_LT)) {
@@ -100,29 +101,21 @@ task main()
 		}
 
 		if(joy1Btn(JOY_BUTTON_RB))
-		{ if(state == "catch")
-			{ goalRelease();
-				state = "release";
-			}	else if(state == "release")
-			{	goalCatch();
-				state = "catch";
-			}
-			while(joy1Btn(JOY_BUTTON_RB))
-			{
-			}
+		{ int iCRate = servoChangeRate[goalCapture];	// Save change rate
+			servoChangeRate[goalCapture] = 0; 					// Max Speed
+			servo[goalCapture] = CATCHDOWN;					    // Set servo position
+			wait1Msec(20);
+			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
-		else if(joy1Btn(JOY_BUTTON_LB))
-		{ if(state == "catch")
-			{ goalRelease();
-				state = "release";
-			}	else if(state == "release")
-			{	goalCatch();
-				state = "catch";
-			}
-			while(joy1Btn(JOY_BUTTON_LB))
-			{
-			}
+
+		if(joy1Btn(JOY_BUTTON_LB))
+		{ int iCRate = servoChangeRate[goalCapture];	// Save change rate
+			servoChangeRate[goalCapture] = 0; 					// Max Speed
+			servo[goalCapture] = CATCHUP;					      // Set servo position
+			wait1Msec(20);
+			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
+
 
 		/*--------------------------
 		controller two
@@ -148,13 +141,12 @@ task main()
 		// Raise/lower the lift
 		if(abs(joystick.joy2_y2) > deadZone) {
 			stopLiftTask(); //first, ensure that robot is not already moving the lift
-
-			if((joystick.joy2_y2 <= 0) && TSreadState(LTOUCH)) {
-				lift(0);// if touch sensor is active and driver says go down, stop the lift (don't burn out motor)
-				nMotorEncoder[liftRight] = 0; //The lift is down, so set lift encoder to 0
-				} else {//If touch is NOT active or driver says go up
-				lift(rescale(joystick.joy2_y2)); //Raise lift at a rescaled value of the joystick
-			}
+			int iCRate = servoChangeRate[tipperServo];	// Save change rate
+			servoChangeRate[tipperServo] = 10; 					// Max Speed
+			servo[tipperServo] = 175;					// Set servo position
+			wait1Msec(20);
+			servoChangeRate[tipperServo] = iCRate;
+			lift(rescale(joystick.joy2_y2)); //Raise lift at a rescaled value of the joystick
 			} else { //No controls?
 			lift(0); //Stop lift motors.
 		}
@@ -179,22 +171,26 @@ task main()
 
 		// Run the spinner to pick up balls
 		if((abs(joystick.joy2_y1)) >= deadZone) { // If the left joystick is actve
-			spin(rescale(joystick.joy2_y1)); //Run the spinner at the rescaled value of joystick
+			spin(abs(rescale(joystick.joy2_y1))); //Run the spinner at the rescaled value of joystick
 			} else {
 			spin(0); //Joystick not active?  Stop spinner.
 		}
 
 		if(joy2Btn(JOY_BUTTON_LB))
-		{ if(state == "catch")
-			{ tipRelease();
-				state = "release";
-			}	else if(state == "release")
-			{	tipCatch();
-				state = "catch";
-			}
-			while(joy2Btn(JOY_BUTTON_LB))
-			{
-			}
+		{ int iCRate = servoChangeRate[tipperServo];	// Save change rate
+			servoChangeRate[tipperServo] = 0; 					// Max Speed
+			servo[tipperServo] = DUMP;					// Set servo position
+			wait1Msec(20);
+			servoChangeRate[tipperServo] = iCRate;
 		}
+
+		if(joy2Btn(JOY_BUTTON_RB))
+		{ int iCRate = servoChangeRate[tipperServo];	// Save change rate
+			servoChangeRate[tipperServo] = 10; 					// Max Speed
+			servo[tipperServo] = COLLECT;					// Set servo position
+			wait1Msec(20);
+			servoChangeRate[tipperServo] = iCRate;
+		}
+
 	}
 }

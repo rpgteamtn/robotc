@@ -1,11 +1,11 @@
-#pragma config(Hubs,  S1, HTMotor,  HTMotor,  none,     none)
+#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
 #pragma config(Sensor, S3,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
-#pragma config(Motor,  mtr_S1_C1_1,     leftFront,     tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C1_2,     leftBack,      tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_1,     leftFront,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     leftBack,       tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     liftMotor,     tmotorTetrix, PIDControl, encoder)
-#pragma config(Motor,  mtr_S1_C2_2,     spinner,       tmotorTetrix, PIDControl, encoder)
+#pragma config(Motor,  mtr_S1_C2_2,     spinner,      tmotorTetrix, PIDControl, encoder)
 #pragma config(Motor,  mtr_S2_C2_1,     rightFront,    tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Motor,  mtr_S2_C2_2,     rightBack,     tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Servo,  srvo_S2_C1_1,    spinnerServo,         tServoStandard)
@@ -23,36 +23,38 @@
 #include "gyroSensor.c" //gyro functions
 #include "MovementCommon.c" //Math or calculation functions
 #include "sonarSensor.c" //Sonar functions
+#include "autoKickstand.c" //Strategies and functions for kickstand
 #include "autoProgramQuestions.c" //Question functions
 #include "servoFunctions.c" //servo functions
-#include "autoFloor.c"
-#include "autoKickstand.c"
+
+int height = 20000;
+
+
+void initializeRobot() //Initialize function (empty)
+{
+	spinnerRelease();
+	tipCatch();
+	return;
+}
 
 task main()
 {
-	wait1Msec(1000);
-	travelDistance(30, dForward);
-	wait1Msec(1000);
-	gyroTurn(30, 90, dLeft);
-	wait1Msec(1000);
-	travelDistance(30, dForward);
-	gyroTurn(30, 90, dRight);
-	wait1Msec(1000);
-	travelDistance(30, dBackward);
-	wait1Msec(1000);
-	gyroTurn(30, 90, dRight);
-	wait1Msec(1000);
-	travelDistance(30, dForward);
-	wait1Msec(1000);
-	gyroTurn(30, 90, dLeft);
-	wait1Msec(1000);
-	gyroTurn(30, 360, dRight);
-	wait1Msec(1000);
-	strafe(-100);
-	wait1Msec(750);
-	stopMotors();
-	wait1Msec(1000);
-	strafe(100);
-	wait1Msec(750);
-	stopMotors();
+	disableDiagnosticsDisplay();
+	resetLiftEncoders();
+
+	while(nMotorEncoder[liftMotor] != height)
+	{
+		if(nMotorEncoder[liftMotor] < height)
+		{
+			lift(50);
+		}
+		else if (nMotorEncoder[liftMotor] > height)
+		{
+			lift(-50);
+		}
+	}
+	stopLiftMotors();
+	int liftEnc = nMotorEncoder[liftMotor];
+	displayCenteredTextLine(1, "%i", liftEnc);
+	wait1Msec(5000);
 }

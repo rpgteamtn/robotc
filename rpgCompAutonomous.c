@@ -1,13 +1,11 @@
-#pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
+#pragma config(Hubs,  S1, HTMotor,  HTMotor,  none,     none)
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
-#pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, PIDControl, encoder)
-#pragma config(Motor,  mtr_S1_C2_2,     leftBack,      tmotorTetrix, PIDControl, encoder)
-#pragma config(Motor,  mtr_S1_C3_1,     liftMotor,     tmotorTetrix, PIDControl, encoder)
+#pragma config(Motor,  mtr_S1_C1_1,     leftFront,     tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     leftBack,      tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_1,     liftMotor,     tmotorTetrix, PIDControl, encoder)
+#pragma config(Motor,  mtr_S1_C2_2,     spinner,       tmotorTetrix, PIDControl, encoder)
 #pragma config(Motor,  mtr_S2_C2_1,     rightFront,    tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Motor,  mtr_S2_C2_2,     rightBack,     tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Servo,  srvo_S2_C1_1,    spinnerServo,         tServoStandard)
@@ -25,10 +23,10 @@
 #include "gyroSensor.c" //gyro functions
 #include "MovementCommon.c" //Math or calculation functions
 #include "sonarSensor.c" //Sonar functions
-#include "autoKickstand.c" //Strategies and functions for kickstand
 #include "autoProgramQuestions.c" //Question functions
 #include "servoFunctions.c" //servo functions
-
+#include "autoFloor.c"
+#include "autoKickstand.c"
 
 void initializeRobot() //Initialize function (empty)
 {
@@ -52,7 +50,7 @@ task main()
 
 	initializeRobot(); //Run empty initialize function
 
-	waitForStart(); // Wait for the beginning of autonomous phase.
+	//waitForStart(); // Wait for the beginning of autonomous phase.
 
 	bool running = true; //Set bool "running" to true
 
@@ -67,7 +65,7 @@ task main()
 		}
 		else //If user said true (ground) in questionBool
 		{
-			autoKickstand(); //Run autoKickstand (from ground)
+			autoFloor(); //Run autoKickstand (from ground)
 			running = false; //Set "running" to false (break out of infinite loop)
 		}
 	}

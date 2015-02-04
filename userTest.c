@@ -148,19 +148,16 @@ task main()
 	---------------------------*/
 		// Raise/lower the lift
 		if(abs(joystick.joy2_y2) > deadZone) {
-			stopLiftTask();
-
-			// if touchsensor hit and lift down stop
+			stopLiftTask(); //first, ensure that robot is not already moving the lift
 			if((joystick.joy2_y2 <= 0) && TSreadState(LTOUCH)) {
-				lift(0);
-				nMotorEncoder[liftRight] = 0;
-			} else {
-					lift(rescale(joystick.joy2_y2));
+				lift(0);// if touch sensor is active and driver says go down, stop the lift (don't burn out motor)
+				nMotorEncoder[liftMotor] = 0; //The lift is down, so set lift encoder to 0
+				} else {//If touch is NOT active or driver says go up
+				lift(rescale(joystick.joy2_y2)); //Raise lift at a rescaled value of the joystick
 			}
-		} else {
-			lift(0);
+			} else { //No controls?
+			lift(0); //Stop lift motors.
 		}
-
 		// Set the lift to preset heights
 		/*if(joy2Btn(JOY_BUTTON_A)) {
 			liftHeight(35);

@@ -1,16 +1,11 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  none)
 #pragma config(Hubs,  S2, HTServo,  HTMotor,  none,     none)
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
-#pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
-#pragma config(Motor,  motorB,          leftFront,     tmotorNXT, PIDControl)
-#pragma config(Motor,  motorC,          rightFront,    tmotorNXT, PIDControl)
-#pragma config(Motor,  mtr_S1_C1_1,     spinner,       tmotorTetrix, openLoop)
-#pragma config(Motor,  mtr_S1_C2_1,     leftFront,     tmotorTetrix, PIDControl, encoder)
-#pragma config(Motor,  mtr_S1_C2_2,     leftBack,      tmotorTetrix, PIDControl, encoder)
-#pragma config(Motor,  mtr_S1_C3_1,     liftMotor,     tmotorTetrix, PIDControl, encoder)
+#pragma config(Motor,  mtr_S1_C1_1,     leftFront,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     leftBack,       tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C2_1,     liftMotor,     tmotorTetrix, PIDControl, encoder)
+#pragma config(Motor,  mtr_S1_C2_2,     spinner,      tmotorTetrix, PIDControl, encoder)
 #pragma config(Motor,  mtr_S2_C2_1,     rightFront,    tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Motor,  mtr_S2_C2_2,     rightBack,     tmotorTetrix, PIDControl, reversed, encoder)
 #pragma config(Servo,  srvo_S2_C1_1,    spinnerServo,         tServoStandard)
@@ -36,8 +31,6 @@
 
 
 //sensors
-#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Sensor, S2,     ,               sensorI2CMuxController)
 #pragma config(Sensor, S3,     gyro,           sensorI2CHiTechnicGyro)
 #pragma config(Sensor, S4,     HTSMUX,         sensorI2CCustom)
 
