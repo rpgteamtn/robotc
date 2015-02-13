@@ -26,10 +26,9 @@ void resetEncoders() //Reset the drive motor encoders to 0 for an encoder-depend
 	nMotorEncoder[leftBack] = 0;
 }
 
-float cmToClicks(float centimeters) //Convert a value in cm(from user) to clicks(for robot)
+int cmToClicks(float centimeters) //Convert a value in cm(from user) to clicks(for robot)
 {
-	float clicks = centimeters * 280 / CIRCUMFERENCE;
-	return clicks;
+	return centimeters*34.5;
 }
 
 float clicksToCm(float clicks) //Convert a value in clicks(from robot) to cm(for user)
@@ -88,9 +87,10 @@ void strafeDist(int dist, const int power, const eDirection direct)
 {
 	resetEncoders();
 
-	int encoderValue = getSingleEncoderValue();
-
 	dist = cmToClicksStrafe(dist);
+
+	displayCenteredTextLine(6, "dist = %i", dist);
+
 	while(dist > abs(nMotorEncoder[leftBack]))
 	{
 		if(direct == dRight)

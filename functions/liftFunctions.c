@@ -1,6 +1,6 @@
 void lift(const int power) //Syncs both lift motors lift functions are 1 command
 {
-	motor[liftMotor] = power; //lift motor
+	motor[liftMotor] = -power; //lift motor
 	wait1Msec(10); //Wait a moment (for lift tasks)
 }
 

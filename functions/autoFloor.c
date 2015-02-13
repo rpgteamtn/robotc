@@ -20,7 +20,29 @@ void strategyA()
 	wait1Msec(100);
 	travelDistance(35, dBackward);
 	wait1Msec(100);
-	strafeDist(40, 100, dLeft);
+	strafeDist(25, 100, dLeft);
+	wait1Msec(100);
+	/*while(nMotorEncoder[liftMotor] < CENTERGOAL)
+	{
+		lift(100);
+	}
+	stopLiftMotors();
+	int iCRate = servoChangeRate[tipperServo];	// Save change rate
+	servoChangeRate[tipperServo] = 0; 					// Max Speed
+	servo[tipperServo] = DUMP;					// Set servo position
+	wait1Msec(20);
+	servoChangeRate[tipperServo] = iCRate;
+	wait1Msec(3000);
+	iCRate = servoChangeRate[tipperServo];	// Save change rate
+	servoChangeRate[tipperServo] = 10; 					// Max Speed
+	servo[tipperServo] = COLLECT;					// Set servo position
+	wait1Msec(20);
+	servoChangeRate[tipperServo] = iCRate;
+	while(nMotorEncoder[liftMotor] < 0)
+	{
+		lift(-100);
+	}
+	stopLiftMotors();*/
 	wait1Msec(3000); //lift scores in center goal ADD LIFT FUNCTION
 	strafeDist(45, 50, dLeft);
 	gyroTurn(30, 10, dLeft);
@@ -33,7 +55,6 @@ void strategyB()
 	//strafeDist(15, 30, dRight);
 	gyroTurn(30, 15, dRight);
 	travelDistance(15, dBackward);
-	wait1Msec(30000);
 	gyroTurn(30, 10, dLeft);
 	strafeDist(45, 50, dLeft);
 	travelDistance(125, dBackward);
@@ -42,12 +63,13 @@ void strategyB()
 void strategyC()
 {
 	displayCenteredTextLine(6, "Strategy C");
-	strafeDist(50, 30, dRight);
-	gyroTurn(30, 60, dRight);
-	strafeDist(40, 30, dRight);
+	//strafeDist(50, 75, dRight);
+	gyroTurn(30, 48, dRight);
+	strafeDist(25, 75, dRight);
+	travelDistance(21, dBackward);
 	wait1Msec(3000);
 	gyroTurn(30, 10, dLeft);
-	strafeDist(45, 50, dLeft);
+	strafeDist(45, 75, dLeft);
 	travelDistance(125, dBackward);
 }
 
@@ -109,7 +131,29 @@ void autoRamp()
 	{
 		strategyY();
 	}*/
-	travelDistance(170, dForward);
+	travelDistance(200, dBackward);
+	gyroTurn(30, 5, dRight);
+	goalRelease();
+
+	wait1Msec(100);
+	backward(15);
+	wait1Msec(1250);
+	stopMotors();
+	int iCRate = servoChangeRate[goalCapture];	// Save change rate
+	servoChangeRate[goalCapture] = 0; 					// Max Speed
+	servo[goalCapture] = CATCHDOWN;					    // Set servo position
+	wait1Msec(50);
+	servoChangeRate[goalCapture] = iCRate;			// Reset the servo
+	wait1Msec(100);
+	travelDistance(5, dBackward);
+	strafe(75);
+	wait1Msec(500);
+	stopMotors();
+	gyroTurn(30, 10, dRight);
+	travelDistance(75, dForward);
+	gyroTurn(30, 3, dLeft);
+	travelDistance(180, dForward);
+	gyroTurn(30, 100, dRight);
 }
 
 void autoFloor()
@@ -151,7 +195,7 @@ void autoFloor()
 				while (irValue != 6)
 				{
 					irValue = getIRReading();
-					strafe(75);
+					strafe(100);
 					int enc = abs(nMotorEncoder[leftBack]);
 					displayCenteredTextLine(3, "distance=%i", enc);
 					wait1Msec(1);
@@ -159,7 +203,6 @@ void autoFloor()
 				stopMotors();
 				int enc = abs(nMotorEncoder[leftBack]);
 				displayCenteredTextLine(1, "enc = %i", enc);
-				wait1Msec(20000);
 				if (enc < 1500)
 				{
 					strategyB();

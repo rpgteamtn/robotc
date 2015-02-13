@@ -17,6 +17,9 @@
 #define touch 	 msensor_S4_2
 #define sonar    msensor_S4_3
 
+#define CENTERGOAL 33000
+
+
 #include "IRsensor.c" //IR functions
 #include "fourWheelMovement.c" //Big robot movement functions
 #include "liftFunctions.c" //Lift and spinner functions
@@ -28,9 +31,11 @@
 #include "autoFloor.c"
 #include "autoKickstand.c"
 
+
 void initializeRobot() //Initialize function (empty)
 {
 	spinnerRelease();
+	goalSave();
 	tipCatch();
 	return;
 }

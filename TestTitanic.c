@@ -45,9 +45,11 @@ motor[leftFront] = 50;
 	wait1Msec(1000);
 	motor[rightBack] = 0;
 */
- travelDistance(45, dForward);
+ //travelDistance(45, dForward);
 	//gyroTurn(50, 35, dLeft);
-
+forward(75);
+wait1Msec(1000);
+stopMotors();
 	displayCenteredTextLine(1, "lf = %i", nMotorEncoder[leftFront]);
 	displayCenteredTextLine(2, "lb = %i", nMotorEncoder[leftBack]);
 	displayCenteredTextLine(3, "rf = %i", nMotorEncoder[rightFront]);

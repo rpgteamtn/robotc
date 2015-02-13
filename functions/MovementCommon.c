@@ -16,25 +16,24 @@ float calculateDegrees(const float dist)
 }
 
 //distance in cm
-void travelDistance(const float distance, const eWay direct)
+void travelDistance(float distance, const eWay direct)
 {
 	resetEncoders();
 
-	int encoderValue = getSingleEncoderValue();
+	distance = cmToClicks(distance);
 
-	while(distance > abs(calculateDist(encoderValue)))
+	displayCenteredTextLine(6, "dist = %f", distance);
+
+	while(distance> abs(nMotorEncoder[leftFront]))
 	{
 		if (direct == dForward)
 		{
 			forward(50);
-			encoderValue = getSingleEncoderValue();
-			wait1Msec(1);
 		}
-		else if (direct == dBackward)
+
+		if (direct == dBackward)
 		{
 			backward(50);
-			encoderValue = getSingleEncoderValue();
-			wait1Msec(1);
 		}
 	}
 	stopMotors();

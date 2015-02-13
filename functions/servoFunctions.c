@@ -1,7 +1,8 @@
-#define COLLECT 185
-#define DUMP 165
-#define CATCHUP 150 //Degree measure for when goal capture is released
-#define CATCHDOWN 0 //Degree measure for when goal capture is down
+#define COLLECT 45
+#define DUMP 115
+#define CATCHUP 135 //Degree measure for when goal capture is released
+#define CATCHDOWN 205 //Degree measure for when goal capture is down
+#define CATCHSAVE 0
 #define SPINNEROUT 145
 #define SPINNERIN 35
 
@@ -41,6 +42,14 @@ void goalRelease()
 	servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 }
 
+void goalSave()
+{
+	int iCRate = servoChangeRate[goalCapture];	// Save change rate
+	servoChangeRate[goalCapture] = 0; 					// Max Speed
+	servo[goalCapture] = CATCHSAVE;					      // Set servo position
+	wait1Msec(20);
+	servoChangeRate[goalCapture] = iCRate;			// Reset the servo
+}
 
 void spinnerRelease()
 {
