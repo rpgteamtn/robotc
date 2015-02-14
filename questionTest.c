@@ -16,10 +16,9 @@
 #define MUX1 		 msensor_S4_1 //Definitions for mux sensors
 #define touch 	 msensor_S4_3
 
-#define CENTERGOAL 25000
-#define GOAL90 21000
+#define CENTERGOAL 24000
 #define GOAL60 13000
-
+#define GOAL90 21000
 
 #include "IRsensor.c" //IR functions
 #include "lego-touch.h" //Touch sensor functions
@@ -32,8 +31,6 @@ const tMUXSensor LTOUCH = msensor_S4_3; //Defining touch sensor
 #include "gyroSensor.c" //gyro functions
 #include "MovementCommon.c" //Math or calculation functions
 #include "autoProgramQuestions.c" //Question functions
-#include "autoFloor.c"
-#include "autoKickstand.c"
 
 
 void initializeRobot() //Initialize function (empty)
@@ -57,11 +54,10 @@ task main()
 	wait1Msec(500);
 	bool answer = questionBool("ramp or ground?", " ramp=right(t)", "ground=left(f)");
 	//Run questionBool to ask about starting position (ramp or ground)
-  bool useLift = questionBool("Use lift?", "right = true", "left = false");
+
+	bool useLift = questionBool("Use lift?", "right = true", "left = false");
 
 	initializeRobot(); //Run empty initialize function
-
-	waitForStart(); // Wait for the beginning of autonomous phase.
 
 	bool running = true; //Set bool "running" to true
 
@@ -71,13 +67,31 @@ task main()
 	{
 		if (answer == true) //If user said false (ramp) in questionBool
 		{
-			autoRamp(useLift); //Run autoRamp function
-			running = false; //Set "running" to false (break out of infinite loop)
+			displayCenteredTextLine(1, "ramp");
+			if(useLift == false)
+			{
+				displayCenteredTextLine(2, "lift disabled");
+			}
+			else
+			{
+				displayCenteredTextLine(2, "lift enabled");
+			}
+			running = false;
 		}
 		else //If user said true (ground) in questionBool
 		{
-			autoFloor(useLift); //Run autoKickstand (from ground)
-			running = false; //Set "running" to false (break out of infinite loop)
+
+			displayCenteredTextLine(1, "ground");
+			if(useLift == false)
+			{
+				displayCenteredTextLine(2, "lift disabled");
+			}
+			else
+			{
+				displayCenteredTextLine(2, "lift enabled");
+			}
+			running = false;
 		}
 	}
+	wait1Msec(30000);
 }

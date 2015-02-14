@@ -12,62 +12,44 @@
 
 #define maxEncoder 5000 //The farthest the robot will go before giving up
 
-void strategyA()
+
+
+void strategyA(bool useLift)
 {
 	displayCenteredTextLine(6, "Strategy A");
 	gyroTurn(30, 90, dLeft);
 	stopMotors();
 	wait1Msec(100);
-	travelDistance(35, dBackward);
+	travelDistance(40, dBackward);
 	wait1Msec(100);
-	strafeDist(25, 100, dLeft);
+	strafeDist(27, 100, dLeft);
 	wait1Msec(100);
-	/*while(nMotorEncoder[liftMotor] < CENTERGOAL)
-	{
-		lift(100);
-	}
-	stopLiftMotors();
-	int iCRate = servoChangeRate[tipperServo];	// Save change rate
-	servoChangeRate[tipperServo] = 0; 					// Max Speed
-	servo[tipperServo] = DUMP;					// Set servo position
-	wait1Msec(20);
-	servoChangeRate[tipperServo] = iCRate;
-	wait1Msec(3000);
-	iCRate = servoChangeRate[tipperServo];	// Save change rate
-	servoChangeRate[tipperServo] = 10; 					// Max Speed
-	servo[tipperServo] = COLLECT;					// Set servo position
-	wait1Msec(20);
-	servoChangeRate[tipperServo] = iCRate;
-	while(nMotorEncoder[liftMotor] < 0)
-	{
-		lift(-100);
-	}
-	stopLiftMotors();*/
-	wait1Msec(3000); //lift scores in center goal ADD LIFT FUNCTION
+	goalCenter(useLift);
 	strafeDist(45, 50, dLeft);
 	gyroTurn(30, 10, dLeft);
 	travelDistance(125, dBackward);
 }
 
-void strategyB()
+void strategyB(bool useLift)
 {
 	displayCenteredTextLine(6, "Strategy B");
 	//strafeDist(15, 30, dRight);
 	gyroTurn(30, 15, dRight);
 	travelDistance(15, dBackward);
+	goalCenter(useLift);
 	gyroTurn(30, 10, dLeft);
 	strafeDist(45, 50, dLeft);
 	travelDistance(125, dBackward);
 }
 
-void strategyC()
+void strategyC(bool useLift)
 {
 	displayCenteredTextLine(6, "Strategy C");
 	//strafeDist(50, 75, dRight);
 	gyroTurn(30, 48, dRight);
 	strafeDist(25, 75, dRight);
 	travelDistance(21, dBackward);
-	wait1Msec(3000);
+	goalCenter(useLift);
 	gyroTurn(30, 10, dLeft);
 	strafeDist(45, 75, dLeft);
 	travelDistance(125, dBackward);
@@ -112,25 +94,8 @@ void strategyZ() //use if in position 1, from ramp
 	return distance;
 }*/
 
-void autoRamp()
+void autoRamp(bool useLift)
 {
-/*	disableDiagnosticsDisplay();
-	resetEncoders();
-	float travelled = abs(rampOff());
-	wait1Msec(500);
-
-	if (travelled < pointZ)
-	{
-		strategyZ();
-	}
-	else if (travelled < pointX)
-	{
-		strategyX();
-	}
-	else if (travelled < pointY)
-	{
-		strategyY();
-	}*/
 	travelDistance(200, dBackward);
 	gyroTurn(30, 5, dRight);
 	goalRelease();
@@ -154,23 +119,24 @@ void autoRamp()
 	gyroTurn(30, 3, dLeft);
 	travelDistance(180, dForward);
 	gyroTurn(30, 100, dRight);
+	goalMed(useLift);
 }
 
-void autoFloor()
+void autoFloor(bool useLift)
 {
 	int irValue = getIRReading();
 	strafeDist(40, 100, dRight);
 	displayCenteredTextLine(1, "IR = %i", irValue);
 	if (irValue == 2)
 	{
-		strategyA();
+		strategyA(useLift);
 	}
 	else
 	{
 		irValue = getIRReading();
 		if (irValue == 2)
 		{
-			strategyA();
+			strategyA(useLift);
 		}
 
 		else
@@ -185,7 +151,7 @@ void autoFloor()
 			if (irValue1 == 2 || irValue2 == 2)
 			{
 				gyroTurn(10, 5, dRight);
-				strategyA();
+				strategyA(useLift);
 			}
 			else
 			{
@@ -205,11 +171,11 @@ void autoFloor()
 				displayCenteredTextLine(1, "enc = %i", enc);
 				if (enc < 1500)
 				{
-					strategyB();
+					strategyB(useLift);
 				}
 				else
 				{
-					strategyC();
+					strategyC(useLift);
 				}
 			}
 		}

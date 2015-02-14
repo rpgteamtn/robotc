@@ -75,9 +75,9 @@ bool questionBool(const string squestionText, const string sleftText, const stri
 			break; //break out of the loop
 		}
 	displayCenteredTextLine(6, bvalue?"true":"false"); //Let user know result
-		repeatUntil(nNxtButtonPressed == noButton) //When no button is pressed, end function
-		{}
 	}
+	repeatUntil(nNxtButtonPressed == noButton) //When no button is pressed, end function
+	{}
 	eraseDisplay();
 
 	return bvalue;
@@ -111,8 +111,8 @@ bool lastQuestion() //The last question: verifies your answers
 	displayCenteredTextLine(6, bvalue?"true":"false"); //Let user know the result
 		repeatUntil(nNxtButtonPressed == noButton) //When user let go, end the function
 		{}
-	}
-	eraseDisplay();
 
+		eraseDisplay();
+	}
 	return bvalue;
 }

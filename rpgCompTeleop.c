@@ -16,20 +16,21 @@
 #define MUX1 		 msensor_S4_1 //Definitions for mux sensors
 #define touch    msensor_S4_3
 
-#include "IRsensor.c" //IR functions
-#include "fourWheelMovement.c" //Big robot movement functions
-#include "liftFunctions.c" //Lift and spinner functions
-#include "gyroSensor.c" //Gyro functions
-#include "MovementCommon.c" //Math functions or calculations
-#include "lego-touch.h" //Touch sensor functions
-#include "servoFunctions.c" //servo functions
-
 #define GOVLIMIT 3000 //Encoder value when lift is too high to drive fast
 #define deadZone 20 //If joystick value is within the absolute value of this, ignore
 float GOVERNOR = 1.5; //The denominator for the drive motors' power
-#define CENTERGOAL 33000
+#define CENTERGOAL 24000
+#define GOAL90 21000
+#define GOAL60 13000
 
+#include "IRsensor.c" //IR functions
+#include "fourWheelMovement.c" //Big robot movement functions
+#include "lego-touch.h" //Touch sensor functions
+#include "gyroSensor.c" //Gyro functions
 const tMUXSensor LTOUCH = msensor_S4_3; //Defining touch sensor
+#include "servoFunctions.c" //servo functions
+#include "liftFunctions.c" //Lift and spinner functions
+#include "MovementCommon.c" //Math functions or calculations
 
 void initializeRobot() //Initialize function for teleop
 {
@@ -126,7 +127,6 @@ task main()
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
 
-
 		/*--------------------------
 		controller two
 		-------------------------*/
@@ -149,12 +149,15 @@ task main()
 		RT = lift down
 		---------------------------*/
 		// Raise/lower the lift
+		int touchState = TSreadState(LTOUCH);
+		displayCenteredTextLine(4, "touch = %i", touchState);
 		if(abs(joystick.joy2_y2) > deadZone) {
 			stopLiftTask(); //first, ensure that robot is not already moving the lift
+
 			if((joystick.joy2_y2 <= 0) && (TSreadState(LTOUCH) == 1)) {
 				lift(0);// if touch sensor is active and driver says go down, stop the lift (don't burn out motor)
 				nMotorEncoder[liftMotor] = 0; //The lift is down, so set lift encoder to 0
-				} else {      //If touch is NOT active or driver says go up
+			} else {      //If touch is NOT active or driver says go up
 				int iCRate = servoChangeRate[tipperServo];	// Save change rate
 				servoChangeRate[tipperServo] = 10; 					// Max Speed
 				servo[tipperServo] = COLLECT;					// Set servo position
@@ -162,7 +165,7 @@ task main()
 				servoChangeRate[tipperServo] = iCRate;
 				lift(rescale(joystick.joy2_y2)); //Raise lift at a rescaled value of the joystick
 			}
-			} else { //No controls?
+		} else { //No controls?
 			lift(0); //Stop lift motors.
 		}
 
