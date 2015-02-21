@@ -35,7 +35,7 @@ void liftDown()
 	servo[tipperServo] = COLLECT;					// Set servo position
 	wait1Msec(20);
 	servoChangeRate[tipperServo] = iCRate;
-	while(abs(getLiftEncoder()) > 0 && (TSreadState(LTOUCH) != 1))
+	while(abs(getLiftEncoder()) > 50 && (TSreadState(LTOUCH) != 1))
 	{
 		lift(-100);
 	}

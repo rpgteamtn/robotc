@@ -35,8 +35,10 @@ const tMUXSensor LTOUCH = msensor_S4_3; //Defining touch sensor
 void initializeRobot() //Initialize function for teleop
 {
 	spinnerRelease(); //Let the spinner lower
-	goalSave(); //pull the goal capture servo up
+	goalRelease(); //pull the goal capture servo up
 	resetLiftEncoders();
+	tipCatch();
+	return;
 }
 
 task main()

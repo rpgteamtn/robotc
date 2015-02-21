@@ -97,12 +97,11 @@ void strategyZ() //use if in position 1, from ramp
 void autoRamp(bool useLift)
 {
 	travelDistance(200, dBackward);
-	gyroTurn(30, 5, dRight);
+	gyroTurn(30, 15, dRight);
 	goalRelease();
-
 	wait1Msec(100);
 	backward(15);
-	wait1Msec(1250);
+	wait1Msec(1500);
 	stopMotors();
 	int iCRate = servoChangeRate[goalCapture];	// Save change rate
 	servoChangeRate[goalCapture] = 0; 					// Max Speed
@@ -110,15 +109,14 @@ void autoRamp(bool useLift)
 	wait1Msec(50);
 	servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 	wait1Msec(100);
-	travelDistance(5, dBackward);
+	travelDistance(10, dBackward);
 	strafe(75);
 	wait1Msec(500);
 	stopMotors();
-	gyroTurn(30, 10, dRight);
-	travelDistance(75, dForward);
-	gyroTurn(30, 3, dLeft);
-	travelDistance(180, dForward);
-	gyroTurn(30, 100, dRight);
+	travelDistance(100, dForward);
+	gyroTurn(30, 2, dLeft);
+	travelDistance(150, dForward);
+	gyroTurn(20, 100, dRight);
 	goalMed(useLift);
 }
 
