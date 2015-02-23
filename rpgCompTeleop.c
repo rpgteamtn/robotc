@@ -116,7 +116,7 @@ task main()
 		if(joy1Btn(JOY_BUTTON_LB))
 		{ int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = CATCHUP;					      // Set servo position
+			servo[goalCapture] = CATCHSAVE;					      // Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
@@ -124,7 +124,7 @@ task main()
 		if(joy1Btn(JOY_BUTTON_X))
 		{ int iCRate = servoChangeRate[goalCapture];	// Save change rate
 			servoChangeRate[goalCapture] = 0; 					// Max Speed
-			servo[goalCapture] = CATCHSAVE;					      // Set servo position
+			servo[goalCapture] = CATCHUP;					      // Set servo position
 			wait1Msec(20);
 			servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 		}
