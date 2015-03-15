@@ -1,8 +1,4 @@
-void lift(const int power) //Syncs both lift motors lift functions are 1 command
-{
-	motor[liftMotor] = -power; //lift motor
-	wait1Msec(10); //Wait a moment (for lift tasks)
-}
+int Lheight;
 
 void spin(const int power) //Run the spinner
 {
@@ -28,13 +24,19 @@ int getLiftEncoder() //Get the average value of the lift encoders
 	return value;
 }
 
+void lift(const int power) //Syncs both lift motors lift functions are 1 command
+{
+	motor[liftMotor] = -power; //lift motor
+	wait1Msec(10); //Wait a moment (for lift tasks)
+	Lheight = getLiftEncoder();
+}
+
 void liftDown()
 {
 	int iCRate = servoChangeRate[tipperServo];	// Save change rate
 	servoChangeRate[tipperServo] = 10; 					// Max Speed
 	servo[tipperServo] = COLLECT;					// Set servo position
-	wait1Msec(20);
-	servoChangeRate[tipperServo] = iCRate;
+	wait1Msec(20);servoChangeRate[tipperServo] = iCRate;
 	while(abs(getLiftEncoder()) > 50 && (TSreadState(LTOUCH) != 1))
 	{
 		lift(-100);
