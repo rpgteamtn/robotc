@@ -30,7 +30,7 @@ const tMUXSensor LTOUCH = msensor_S4_3; //Defining touch sensor
 #include "liftFunctions.c" //Lift and spinner functions
 #include "MovementCommon.c" //Math functions or calculations
 
-int maxHeight = CENTERGOAL;
+int maxHeight = -29000;
 float GOVERNOR = 1.5; //The denominator for the drive motors' ;power
 
 void initializeRobot() //Initialize function for teleop
@@ -167,7 +167,11 @@ task main()
 			}
 			else
 			{      //If touch is NOT active or driver says go up
-				if(Lheight < maxHeight)
+				if((Lheight <= maxHeight)&&(joystick.joy2_y2 >= 0 ))
+				{
+					lift(0);
+				}
+				else
 				{
 					int iCRate = servoChangeRate[goalCapture];	// Save change rate
 					servoChangeRate[tipperServo] = 0; 					// Max Speed
@@ -175,10 +179,6 @@ task main()
 					wait1Msec(20);
 					servoChangeRate[goalCapture] = iCRate;			// Reset the servo
 					lift(rescale(joystick.joy2_y2)); //Raise lift at a rescaled value of the joystick
-				}
-				else
-				{
-					lift(0);
 				}
 			}
 		}
